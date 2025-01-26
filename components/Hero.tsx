@@ -8,13 +8,7 @@ import ParticleAnimation from "./ParticleAnimation";
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Animated gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-background to-primary/20 z-0">
-        <div className="absolute inset-0 bg-grid-white/20 bg-grid animate-grid-movement" />
-        <div className="absolute inset-0 animate-gradient" />
-      </div>
-
+    <section className="relative min-h-screen flex items-center justify-center">
       {/* Particle animation */}
       <ParticleAnimation />
 
@@ -95,10 +89,14 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.6 }}
-          className="space-x-4"
+          className="flex flex-col sm:flex-row gap-4 sm:gap-4 justify-center items-center"
         >
-          <Button asChild className="group relative overflow-hidden" size="lg">
-            <a href="#about">
+          <Button
+            asChild
+            className="group relative overflow-hidden w-full sm:w-auto"
+            size="lg"
+          >
+            <a href="#about" className="flex items-center justify-center">
               Explore My Work
               <motion.span
                 className="absolute inset-0 bg-primary/20"
@@ -112,10 +110,10 @@ export default function Hero() {
           <Button
             variant="outline"
             size="lg"
-            className="group hover:border-primary/50 transition-colors"
+            className="group hover:border-primary/50 transition-colors w-full sm:w-auto"
             asChild
           >
-            <a href="#connect">
+            <a href="#connect" className="flex items-center justify-center">
               Get in Touch
               <motion.span
                 className="ml-2 inline-block"

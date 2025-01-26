@@ -17,28 +17,28 @@ const socialLinks = [
   {
     name: "GitHub",
     icon: GithubIcon,
-    url: "https://github.com/yourusername",
+    url: "https://github.com/gnatnib",
     color:
       "bg-[#f3e8ff] hover:bg-[#e9d5ff] dark:bg-[#2d1b69] dark:hover:bg-[#382180]",
   },
   {
     name: "LinkedIn",
     icon: LinkedinIcon,
-    url: "https://linkedin.com/in/yourusername",
+    url: "https://linkedin.com/in/bintangsyafrian",
     color:
       "bg-[#e0f2fe] hover:bg-[#bae6fd] dark:bg-[#172554] dark:hover:bg-[#1e3a8a]",
   },
   {
     name: "Twitter",
     icon: TwitterIcon,
-    url: "https://facebook.com/yourusername",
+    url: "https://x.com/carpacciao",
     color:
       "bg-[#dbeafe] hover:bg-[#bfdbfe] dark:bg-[#1e3a8a] dark:hover:bg-[#1e40af]",
   },
   {
     name: "Instagram",
     icon: InstagramIcon,
-    url: "https://instagram.com/yourusername",
+    url: "https://instagram.com/bintwang",
     color:
       "bg-[#fce7f3] hover:bg-[#fbcfe8] dark:bg-[#831843] dark:hover:bg-[#9d174d]",
   },
@@ -47,17 +47,19 @@ const socialLinks = [
 const contactMethods = [
   {
     name: "Email",
-    value: "your.email@example.com",
+    value: "bintang.syafrian@gmail.com",
     icon: MailIcon,
+    url: "mailto:bintang.syafrian@gmail.com",
     color:
-      "bg-[#fce7f3] hover:bg-[#fbcfe8] dark:bg-[#831843] dark:hover:bg-[#9d174d]",
+      "bg-[#fce7f3] hover:bg-[#fbcfe8] dark:bg-[#831843] dark:hover:bg-[#9d174d] cursor-pointer",
   },
   {
     name: "WhatsApp",
-    value: "+1 234 567 8900",
+    value: "+6285172152969",
     icon: PhoneIcon,
+    url: "https://wa.me/6285172152969",
     color:
-      "bg-[#dcfce7] hover:bg-[#bbf7d0] dark:bg-[#14532d] dark:hover:bg-[#166534]",
+      "bg-[#dcfce7] hover:bg-[#bbf7d0] dark:bg-[#14532d] dark:hover:bg-[#166534] cursor-pointer",
   },
 ];
 
@@ -116,8 +118,11 @@ export default function Connect() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <div
-                      className={`${method.color} rounded-lg p-6 transition-colors duration-300 shadow-lg`}
+                    <a
+                      href={method.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`block ${method.color} rounded-lg p-6 transition-colors duration-300 shadow-lg`}
                     >
                       <div className="space-y-2">
                         <div className="flex items-center gap-2 font-medium">
@@ -126,7 +131,7 @@ export default function Connect() {
                         </div>
                         <p className="text-sm opacity-90">{method.value}</p>
                       </div>
-                    </div>
+                    </a>
                   </motion.div>
                 ))}
               </div>

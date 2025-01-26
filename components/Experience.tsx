@@ -1,33 +1,48 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { GraduationCapIcon, BriefcaseIcon, AtomIcon } from "lucide-react";
+import {
+  GraduationCapIcon,
+  SchoolIcon,
+  LayoutTemplateIcon,
+  BracesIcon,
+  GlobeLockIcon,
+} from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 const experiences = [
   {
-    title: "Graduated Bootcamp",
-    location: "Miami, FL",
-    date: "2019",
+    title: "Graduated Highschool",
+    location: "Semarang, Indonesia",
+    date: "2020",
     description:
-      "I graduated after 6 months of studying. I immediately found a job as a front-end developer.",
-    icon: GraduationCapIcon,
+      "I graduated highschool in 2020. I was a student at SMAN 4 Semarang. I reached top 10 in my almamater.",
+    icon: SchoolIcon,
   },
   {
-    title: "Front-End Developer",
-    location: "Orlando, FL",
-    date: "2019 - 2021",
+    title: "Computer Network Teaching Assistant",
+    location: "Universitas Diponegoro, Indonesia",
+    date: "2024",
     description:
-      "I worked as a front-end developer for 2 years in 1 job and 1 year in another job. I also upskilled to the full stack.",
-    icon: BriefcaseIcon,
+      "Teaching Assistant for PAIK6402 Computer Networking Laboratory.",
+    icon: GlobeLockIcon,
   },
   {
-    title: "Full-Stack Developer",
-    location: "Houston, TX",
-    date: "2021 - present",
+    title: "Data Structures Teaching Assistant",
+    location: "Universitas Diponegoro, Indonesia",
+    date: "2024",
     description:
-      "I'm now a full-stack developer working as a freelancer. My stack includes React, Next.js, TypeScript, Tailwind, Prisma and MongoDB. I'm open to full-time opportunities.",
-    icon: AtomIcon,
+      "Teaching Assistant for PAIK6301 Data Structures and Algorithms Laboratory.",
+    icon: BracesIcon,
+  },
+
+  {
+    title: "Software Engineering Intern at PT. UG Mandiri",
+    location: "Jakarta, Indonesia",
+    date: "2025",
+    description:
+      "Developing UG Booking and UG Procurement System using Laravel and PHP.",
+    icon: LayoutTemplateIcon,
   },
 ];
 
@@ -49,30 +64,29 @@ export default function Experience() {
           <div className="absolute left-1/2 transform -translate-x-1/2 w-px h-full bg-border" />
 
           {experiences.map((exp, index) => (
-            <div
-              key={index}
-              className={`flex items-center mb-8 ${
-                index % 2 === 0 ? "justify-end" : ""
-              }`}
-            >
-              {/* Timeline content */}
-              <motion.div
-                className={`w-5/12 ${
-                  index % 2 === 0 ? "text-right pr-8" : "pl-8"
-                }`}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.2 }}
-              >
-                <h3 className="text-xl font-semibold">{exp.title}</h3>
-                <p className="text-muted-foreground">{exp.location}</p>
-                <p className="text-sm text-muted-foreground mt-1">{exp.date}</p>
-                <p className="mt-2">{exp.description}</p>
-              </motion.div>
+            <div key={index} className="relative flex justify-center mb-8">
+              {/* Left content */}
+              <div className="w-5/12">
+                {index % 2 === 0 && (
+                  <motion.div
+                    className="text-right pr-8"
+                    initial={{ opacity: 0, x: -50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.2 }}
+                  >
+                    <h3 className="text-xl font-semibold">{exp.title}</h3>
+                    <p className="text-muted-foreground">{exp.location}</p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {exp.date}
+                    </p>
+                    <p className="mt-2">{exp.description}</p>
+                  </motion.div>
+                )}
+              </div>
 
               {/* Timeline icon */}
-              <div className="relative">
+              <div className="relative z-10">
                 <motion.div
                   className="w-12 h-12 rounded-full bg-background border-2 border-primary flex items-center justify-center"
                   initial={{ scale: 0 }}
@@ -84,8 +98,25 @@ export default function Experience() {
                 </motion.div>
               </div>
 
-              {/* Empty div for layout on alternate sides */}
-              <div className={`w-5/12 ${index % 2 === 0 ? "pl-8" : "pr-8"}`} />
+              {/* Right content */}
+              <div className="w-5/12">
+                {index % 2 === 1 && (
+                  <motion.div
+                    className="text-left pl-8"
+                    initial={{ opacity: 0, x: 50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.2 }}
+                  >
+                    <h3 className="text-xl font-semibold">{exp.title}</h3>
+                    <p className="text-muted-foreground">{exp.location}</p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {exp.date}
+                    </p>
+                    <p className="mt-2">{exp.description}</p>
+                  </motion.div>
+                )}
+              </div>
             </div>
           ))}
         </motion.div>
