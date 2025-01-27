@@ -5,14 +5,16 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { LinkedinIcon, FileDown } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { useState } from "react";
 
 export default function About() {
   const { ref, controls, initial } = useScrollAnimation();
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <section
       id="about"
-      className="min-h-screen flex items-center justify-center py-20 bg-muted/50"
+      className="min-h-[90vh] flex items-center justify-center bg-muted/50"
     >
       <div className="container mx-auto px-4">
         <motion.div
@@ -22,8 +24,27 @@ export default function About() {
           transition={{ duration: 0.5 }}
           className="flex flex-col md:flex-row items-center gap-12 max-w-6xl mx-auto"
         >
+          {/* Profile Picture with Hover Effects */}
           <div className="md:w-1/2 flex justify-center">
-            <div className="relative w-80 h-80">
+            <motion.div
+              className="relative w-80 h-80"
+              whileHover={{ scale: 1.1 }}
+              onHoverStart={() => setIsHovered(true)}
+              onHoverEnd={() => setIsHovered(false)}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div
+                className={`absolute inset-0 rounded-full ${
+                  isHovered ? "bg-blue-500/20" : "bg-transparent"
+                }`}
+                style={{
+                  boxShadow: isHovered
+                    ? "0 0 40px rgba(0, 123, 255, 0.7)"
+                    : "none",
+                  transition:
+                    "box-shadow 0.5s ease, background-color 0.5s ease",
+                }}
+              />
               <Image
                 src="/profile.png"
                 alt="profile"
@@ -31,13 +52,15 @@ export default function About() {
                 className="rounded-full object-cover shadow-lg"
                 priority
               />
-            </div>
+            </motion.div>
           </div>
+
+          {/* About Section */}
           <div className="md:w-1/2 space-y-6">
             <h2 className="text-4xl font-bold">About Me</h2>
             <div className="space-y-4 text-lg">
               <p>
-                Hello! My name is Bintang Syafrian Rizal,a Computer Science
+                Hello! My name is Bintang Syafrian Rizal, a Computer Science
                 student at Universitas Diponegoro. I’m passionate about solving
                 problems through code and continuously exploring new
                 technologies to expand my knowledge.
