@@ -193,8 +193,13 @@ export default function Projects() {
                       {project.description}
                     </CardDescription>
                   </CardContent>
-                  <CardFooter className="bg-muted/50 p-3 md:p-4 flex justify-between">
-                    <Button variant="outline" size="sm" asChild>
+                  <CardFooter className="bg-muted/50 p-3 md:p-4 flex flex-wrap gap-2 justify-center md:justify-between">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      asChild
+                      className="w-full sm:w-auto"
+                    >
                       <a
                         href={project.github}
                         target="_blank"
@@ -205,7 +210,7 @@ export default function Projects() {
                       </a>
                     </Button>
                     {project.live && (
-                      <Button size="sm" asChild>
+                      <Button size="sm" asChild className="w-full sm:w-auto">
                         <a
                           href={project.live}
                           target="_blank"
