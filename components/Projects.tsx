@@ -1,5 +1,3 @@
-"use client";
-
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -28,6 +26,7 @@ const projects = [
     image: "/project2.png",
     github: "https://github.com/gnatnib/financipal",
     live: "https://financipal.vercel.app",
+    techStack: ["NextJS", "ShadCn Ui", "Clerk", "Prisma ORM"],
   },
   {
     title: "UG Booking",
@@ -35,6 +34,7 @@ const projects = [
       "A booking web app for PT. Usaha Gedung Mandiri built with PHP, Laravel, and MySQL.",
     image: "/project3.png",
     github: "https://github.com/gnatnib/ugbooking",
+    techStack: ["PHP", "Laravel", "MySQL"],
   },
   {
     title: "UG Procurement",
@@ -42,6 +42,7 @@ const projects = [
       "A procurement web app for PT. Usaha Gedung Mandiri built with PHP, Laravel, and MySQL.",
     image: "/project4.png",
     github: "https://github.com/gnatnib/ugprocurement",
+    techStack: ["PHP", "Laravel", "MySQL"],
   },
   {
     title: "Bidlix",
@@ -50,8 +51,57 @@ const projects = [
     image: "/project1.png",
     github: "https://github.com/gnatnib/bidlix",
     live: "https://bidlix.vercel.app/",
+    techStack: ["HTML", "CSS", "JavaScript", "MovieDB API"],
   },
 ];
+
+const getTechColor = (tech) => {
+  // Mapping hex colors to closest Tailwind color combinations
+  const techColors = {
+    // Frontend
+    JavaScript: "bg-yellow-100 text-yellow-800", // #F7DF1E
+    TypeScript: "bg-blue-100 text-blue-800", // #3178C6
+    React: "bg-cyan-100 text-cyan-800", // #61DAFB
+    "Next.js": "bg-neutral-100 text-neutral-800", // #000000
+    NextJS: "bg-neutral-100 text-neutral-800", // #000000
+    "shadcn/ui": "bg-pink-100 text-pink-800", // #FF0080
+    "ShadCn Ui": "bg-pink-100 text-pink-800", // #FF0080
+    Framer: "bg-cyan-100 text-cyan-800", // #06B6D4
+    HTML: "bg-orange-100 text-orange-800", // #E34F26
+    CSS: "bg-blue-100 text-blue-800", // #1572B6
+    "Tailwind CSS": "bg-cyan-100 text-cyan-800", // #06B6D4
+
+    // Backend
+    "Node.js": "bg-green-100 text-green-800", // #339933
+    PHP: "bg-indigo-100 text-indigo-800", // #777BB4
+    Laravel: "bg-red-100 text-red-800", // #FF2D20
+    Python: "bg-blue-100 text-blue-800", // #3776AB
+
+    // Database
+    MySQL: "bg-blue-100 text-blue-800", // #4479A1
+    Prisma: "bg-green-100 text-green-800", // #47A248
+    "Prisma ORM": "bg-green-100 text-green-800", // #47A248
+
+    // Tools
+    Git: "bg-orange-100 text-orange-800", // #F05032
+
+    // Additional technologies from your projects
+    Clerk: "bg-green-100 text-green-800",
+    "MovieDB API": "bg-cyan-100 text-cyan-800",
+  };
+
+  return techColors[tech] || "bg-gray-100 text-gray-800"; // Default fallback
+};
+
+const TechStackLabel = ({ tech }) => (
+  <span
+    className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getTechColor(
+      tech
+    )}`}
+  >
+    {tech}
+  </span>
+);
 
 export default function Projects() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -111,15 +161,15 @@ export default function Projects() {
       id="projects"
       className="min-h-screen flex items-center bg-muted/50 relative overflow-hidden pb-16"
     >
-      <div className="w-full py-12">
+      <div className="w-full py-8">
         <motion.div
           ref={ref}
           initial={initial}
           animate={controls}
           transition={{ duration: 0.5 }}
-          className="space-y-8"
+          className="space-y-6"
         >
-          <h2 className="text-3xl font-bold text-center mb-16">My Projects</h2>
+          <h2 className="text-3xl font-bold text-center mb-8">My Projects</h2>
 
           {/* Navigation Buttons */}
           <div className="container mx-auto px-4 flex justify-between items-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full z-10 pointer-events-none">
@@ -176,7 +226,7 @@ export default function Projects() {
               >
                 <Card className="h-full overflow-hidden backdrop-blur-sm bg-card/80">
                   <CardHeader className="p-0">
-                    <div className="relative h-[180px] md:h-[250px] w-full">
+                    <div className="relative h-[150px] md:h-[200px] w-full">
                       <Image
                         src={project.image || "/placeholder.svg"}
                         alt={project.title}
@@ -185,15 +235,20 @@ export default function Projects() {
                       />
                     </div>
                   </CardHeader>
-                  <CardContent className="p-3 md:p-4">
-                    <CardTitle className="text-lg md:text-2xl mb-3">
+                  <CardContent className="p-2 md:p-3">
+                    <CardTitle className="text-lg md:text-xl mb-2">
                       {project.title}
                     </CardTitle>
-                    <CardDescription className="text-sm md:text-base">
+                    <CardDescription className="text-sm md:text-base mb-2">
                       {project.description}
                     </CardDescription>
+                    <div className="flex flex-wrap gap-2">
+                      {project.techStack.map((tech, idx) => (
+                        <TechStackLabel key={idx} tech={tech} />
+                      ))}
+                    </div>
                   </CardContent>
-                  <CardFooter className="bg-muted/50 p-3 md:p-4 flex flex-wrap gap-2 justify-center md:justify-between">
+                  <CardFooter className="bg-muted/50 p-2 md:p-3 flex flex-wrap gap-2 justify-center md:justify-between">
                     <Button
                       variant="outline"
                       size="sm"

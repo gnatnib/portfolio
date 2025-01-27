@@ -82,7 +82,9 @@ export default function Header() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            gnatnib
+            <span className="bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-transparent">
+              gnatnib
+            </span>
           </motion.button>
 
           {/* Desktop Navigation */}

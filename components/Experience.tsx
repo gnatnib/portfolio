@@ -2,11 +2,10 @@
 
 import { motion } from "framer-motion";
 import {
-  GraduationCapIcon,
   SchoolIcon,
-  LayoutTemplateIcon,
-  BracesIcon,
   GlobeLockIcon,
+  BracesIcon,
+  LayoutTemplateIcon,
 } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
@@ -35,7 +34,6 @@ const experiences = [
       "Teaching Assistant for PAIK6301 Data Structures and Algorithms Laboratory.",
     icon: BracesIcon,
   },
-
   {
     title: "Software Engineer Intern at PT. UG Mandiri",
     location: "Jakarta, Indonesia",
@@ -60,8 +58,22 @@ export default function Experience() {
           transition={{ duration: 0.5 }}
           className="relative"
         >
-          {/* Timeline line */}
-          <div className="absolute left-1/2 transform -translate-x-1/2 w-px h-full bg-border" />
+          {/* Timeline line with animated glowing effect */}
+          <div className="absolute left-1/2 transform -translate-x-1/2 w-1.5 h-full bg-gray-300 overflow-hidden">
+            <motion.div
+              className="w-full h-16 bg-gradient-to-b from-[#0077B5] to-transparent rounded-full"
+              initial={{ y: -100 }}
+              animate={{ y: "100vh" }}
+              transition={{
+                duration: 2, // Faster animation
+                repeat: Infinity,
+                ease: "linear",
+              }}
+              style={{
+                boxShadow: "0 0 15px 5px rgba(0, 119, 181, 0.8)",
+              }}
+            />
+          </div>
 
           {experiences.map((exp, index) => (
             <div key={index} className="relative flex justify-center mb-8">
@@ -91,8 +103,9 @@ export default function Experience() {
                   className="w-12 h-12 rounded-full bg-background border-2 border-[#0077B5] flex items-center justify-center"
                   initial={{ scale: 0 }}
                   whileInView={{ scale: 1 }}
+                  whileHover={{ scale: 1.2, rotate: 10 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.2 }}
+                  transition={{ duration: 0.5 }}
                 >
                   <exp.icon className="w-6 h-6 text-primary" />
                 </motion.div>

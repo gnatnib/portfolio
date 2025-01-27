@@ -56,12 +56,15 @@ export default function Hero() {
         </motion.div>
 
         <motion.h1
-          className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent pb-2"
+          className="text-4xl md:text-6xl font-bold mb-4 pb-2"
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          Hi, I'm Bintang
+          <span className="text-zinc-900">Hi, I'm </span>
+          <span className="bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-transparent">
+            Bintang
+          </span>
         </motion.h1>
 
         <motion.div
