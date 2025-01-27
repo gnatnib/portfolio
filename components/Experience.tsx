@@ -37,7 +37,7 @@ const experiences = [
   },
 
   {
-    title: "Software Engineering Intern at PT. UG Mandiri",
+    title: "Software Engineer Intern at PT. UG Mandiri",
     location: "Jakarta, Indonesia",
     date: "2025",
     description:
