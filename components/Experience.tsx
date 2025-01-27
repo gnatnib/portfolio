@@ -88,7 +88,7 @@ export default function Experience() {
               {/* Timeline icon */}
               <div className="relative z-10">
                 <motion.div
-                  className="w-12 h-12 rounded-full bg-background border-2 border-primary flex items-center justify-center"
+                  className="w-12 h-12 rounded-full bg-background border-2 border-[#0077B5] flex items-center justify-center"
                   initial={{ scale: 0 }}
                   whileInView={{ scale: 1 }}
                   viewport={{ once: true }}

@@ -27,7 +27,7 @@ export default function About() {
           {/* Profile Picture with Hover Effects */}
           <div className="md:w-1/2 flex justify-center">
             <motion.div
-              className="relative w-80 h-80"
+              className="relative w-40 h-40 md:w-80 md:h-80"
               whileHover={{ scale: 1.1 }}
               onHoverStart={() => setIsHovered(true)}
               onHoverEnd={() => setIsHovered(false)}
@@ -57,8 +57,8 @@ export default function About() {
 
           {/* About Section */}
           <div className="md:w-1/2 space-y-6">
-            <h2 className="text-4xl font-bold">About Me</h2>
-            <div className="space-y-4 text-lg">
+            <h2 className="text-2xl md:text-4xl font-bold">About Me</h2>
+            <div className="space-y-4 text-base md:text-lg">
               <p>
                 Hello! My name is Bintang Syafrian Rizal, a Computer Science
                 student at Universitas Diponegoro. I’m passionate about solving
