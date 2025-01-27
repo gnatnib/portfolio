@@ -66,10 +66,10 @@ export default function Header() {
   return (
     <>
       <motion.header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed w-full z-50 transition-all duration-300 ease-in-out ${
           hasScrolled
-            ? "bg-gradient-to-r from-primary/10 via-primary/5 to-background/80 backdrop-blur-md shadow-lg"
-            : "bg-background/50 backdrop-blur-sm"
+            ? "bg-background/95 backdrop-blur-md shadow-lg"
+            : "bg-background/85 backdrop-blur-sm"
         }`}
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}

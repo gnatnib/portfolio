@@ -76,31 +76,6 @@
 }
 
 @layer utilities {
-  .bg-grid {
-    background-size: 50px 50px;
-    background-image: linear-gradient(
-        to right,
-        rgb(var(--primary) / 0.1) 1px,
-        transparent 1px
-      ),
-      linear-gradient(to bottom, rgb(var(--primary) / 0.1) 1px, transparent 1px);
-  }
-
-  .animate-grid-movement {
-    animation: grid 20s linear infinite;
-  }
-
-  .animate-gradient {
-    background: linear-gradient(
-      60deg,
-      rgba(var(--primary) / 0.1),
-      rgba(var(--primary) / 0.05),
-      rgba(var(--primary) / 0.1)
-    );
-    background-size: 400% 400%;
-    animation: gradient 15s ease infinite;
-  }
-
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -127,18 +102,6 @@
   }
   100% {
     transform: translateX(-50px) translateY(-50px);
-  }
-}
-
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
   }
 }
 

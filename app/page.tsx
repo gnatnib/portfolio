@@ -37,14 +37,6 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-background relative overflow-x-hidden w-full">
-      {/* Animated gradient background that spans all sections */}
-      <div className="fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-background to-primary/20 overflow-hidden">
-          <div className="absolute inset-0 bg-grid-white/20 bg-grid animate-grid-movement" />
-          <div className="absolute inset-0 animate-gradient" />
-        </div>
-      </div>
-
       <div className="relative z-10">
         <Header />
         <div className="relative">
