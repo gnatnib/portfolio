@@ -74,11 +74,11 @@ export default function Projects() {
     if (!containerRef.current) return;
     const container = containerRef.current;
     const projectWidth = isMobile
-      ? container.offsetWidth * 0.8
-      : container.offsetWidth * 0.5;
+      ? container.offsetWidth * 0.6
+      : container.offsetWidth * 0.35;
     const spacing = isMobile
-      ? container.offsetWidth * 0.1
-      : container.offsetWidth * 0.25;
+      ? container.offsetWidth * 0.2
+      : container.offsetWidth * 0.325;
     const scrollPosition = projectWidth * index + spacing;
 
     container.scrollTo({
@@ -92,14 +92,14 @@ export default function Projects() {
     if (!containerRef.current) return;
     const container = containerRef.current;
     const projectWidth = isMobile
-      ? container.offsetWidth * 0.8
-      : container.offsetWidth * 0.5;
+      ? container.offsetWidth * 0.6
+      : container.offsetWidth * 0.35;
     const spacing = isMobile
-      ? container.offsetWidth * 0.1
-      : container.offsetWidth * 0.25;
+      ? container.offsetWidth * 0.2
+      : container.offsetWidth * 0.325;
 
     const scrollPosition = container.scrollLeft;
-    const index = Math.round((scrollPosition - spacing) / projectWidth);
+    const index = Math.round(scrollPosition / (projectWidth + 16)); // Account for gap
 
     if (index >= 0 && index < projects.length && index !== activeIndex) {
       setActiveIndex(index);
@@ -109,9 +109,9 @@ export default function Projects() {
   return (
     <section
       id="projects"
-      className="min-h-screen flex items-center bg-muted/50 relative overflow-hidden"
+      className="min-h-screen flex items-center bg-muted/50 relative overflow-hidden pb-16"
     >
-      <div className="w-full py-20">
+      <div className="w-full py-12">
         <motion.div
           ref={ref}
           initial={initial}
@@ -151,20 +151,22 @@ export default function Projects() {
             className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory"
             style={{
               scrollSnapType: "x mandatory",
-              scrollPaddingLeft: isMobile ? "10vw" : "25vw",
-              scrollPaddingRight: isMobile ? "10vw" : "25vw",
+              scrollPaddingLeft: isMobile ? "20vw" : "32.5vw",
+              scrollPaddingRight: isMobile ? "20vw" : "32.5vw",
             }}
             onScroll={handleScroll}
           >
             {/* Initial spacing */}
-            <div className={`${isMobile ? "w-[10vw]" : "w-[25vw]"} shrink-0`} />
+            <div
+              className={`${isMobile ? "w-[20vw]" : "w-[32.5vw]"} shrink-0`}
+            />
 
             {projects.map((project, index) => (
               <motion.div
                 key={index}
                 className={`${
-                  isMobile ? "w-[80vw]" : "w-[50vw]"
-                } shrink-0 snap-center px-2 md:px-4 scroll-snap-align-center`}
+                  isMobile ? "w-[60vw]" : "w-[35vw]"
+                } shrink-0 snap-center px-2 md:px-4`}
                 initial={{ scale: 0.8, opacity: 0.5 }}
                 animate={{
                   scale: activeIndex === index ? 1 : 0.8,
@@ -174,7 +176,7 @@ export default function Projects() {
               >
                 <Card className="h-full overflow-hidden backdrop-blur-sm bg-card/80">
                   <CardHeader className="p-0">
-                    <div className="relative h-[200px] md:h-[300px] w-full">
+                    <div className="relative h-[180px] md:h-[250px] w-full">
                       <Image
                         src={project.image || "/placeholder.svg"}
                         alt={project.title}
@@ -183,15 +185,15 @@ export default function Projects() {
                       />
                     </div>
                   </CardHeader>
-                  <CardContent className="p-4 md:p-6">
-                    <CardTitle className="text-xl md:text-2xl mb-2">
+                  <CardContent className="p-3 md:p-4">
+                    <CardTitle className="text-lg md:text-2xl mb-3">
                       {project.title}
                     </CardTitle>
                     <CardDescription className="text-sm md:text-base">
                       {project.description}
                     </CardDescription>
                   </CardContent>
-                  <CardFooter className="bg-muted/50 p-4 md:p-6 flex justify-between">
+                  <CardFooter className="bg-muted/50 p-3 md:p-4 flex justify-between">
                     <Button variant="outline" size="sm" asChild>
                       <a
                         href={project.github}
@@ -220,7 +222,9 @@ export default function Projects() {
             ))}
 
             {/* Final spacing */}
-            <div className={`${isMobile ? "w-[10vw]" : "w-[25vw]"} shrink-0`} />
+            <div
+              className={`${isMobile ? "w-[20vw]" : "w-[32.5vw]"} shrink-0`}
+            />
           </div>
 
           {/* Project Indicators */}

@@ -50,9 +50,13 @@ export default function Header() {
   const handleNavClick = (itemId: string) => {
     const element = document.getElementById(itemId);
     if (element) {
-      const offsetTop = element.offsetTop;
+      const headerHeight = 72; // Approximate header height
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition =
+        elementPosition + window.pageYOffset - headerHeight;
+
       window.scrollTo({
-        top: offsetTop - 100,
+        top: offsetPosition,
         behavior: "smooth",
       });
       setIsOpen(false);
