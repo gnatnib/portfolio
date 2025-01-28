@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
 import {
   SchoolIcon,
   GlobeLockIcon,
@@ -8,6 +8,7 @@ import {
   LayoutTemplateIcon,
 } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { useEffect, useState } from "react";
 
 const experiences = [
   {
@@ -46,6 +47,22 @@ const experiences = [
 
 export default function Experience() {
   const { ref, controls, initial } = useScrollAnimation();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth <= 768); // Adjust the breakpoint as needed
+    };
+
+    // Initial check
+    checkIfMobile();
+
+    // Add event listener for window resize
+    window.addEventListener("resize", checkIfMobile);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", checkIfMobile);
+  }, []);
 
   return (
     <section id="experience" className="py-20">
@@ -63,7 +80,7 @@ export default function Experience() {
             <motion.div
               className="w-full h-16 bg-gradient-to-b from-[#0077B5] to-transparent rounded-full"
               initial={{ y: -100 }}
-              animate={{ y: "100vh" }}
+              animate={{ y: isMobile ? "200vh" : "100vh" }}
               transition={{
                 duration: 2, // Faster animation
                 repeat: Infinity,
