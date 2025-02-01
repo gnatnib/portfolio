@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
   const rows = new Array(80).fill(1);
-  const cols = new Array(40).fill(1);
+  const cols = new Array(62).fill(1);
 
   // Memoize the colors array
   const colors = useMemo(
