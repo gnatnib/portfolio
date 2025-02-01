@@ -1,13 +1,25 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
-  const rows = new Array(80).fill(1);
-  const cols = new Array(62).fill(1);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Memoize the colors array
+  // Update isMobile state on mount and window resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Adjust grid size based on device
+  const rows = new Array(isMobile ? 20 : 80).fill(1);
+  const cols = new Array(isMobile ? 15 : 62).fill(1);
+
   const colors = useMemo(
     () => [
       "--sky-300",
@@ -20,7 +32,6 @@ export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
     []
   );
 
-  // Memoize the random color function
   const getRandomColor = useMemo(
     () => () => {
       return colors[Math.floor(Math.random() * colors.length)];
@@ -28,21 +39,28 @@ export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
     [colors]
   );
 
-  // Optimize animation settings
-  const motionConfig = {
-    whileHover: {
-      backgroundColor: `var(${getRandomColor()})`,
-      transition: { duration: 0 },
-    },
-    animate: {
-      transition: { duration: 2 },
-    },
-  };
+  // Only enable hover animations on desktop
+  const motionConfig = useMemo(
+    () => ({
+      whileHover: !isMobile
+        ? {
+            backgroundColor: `var(${getRandomColor()})`,
+            transition: { duration: 0 },
+          }
+        : {},
+      animate: {
+        transition: { duration: 2 },
+      },
+    }),
+    [isMobile, getRandomColor]
+  );
 
   return (
     <div
       style={{
-        transform: `translate(-40%,-60%) skewX(-48deg) skewY(14deg) scale(0.675) rotate(-6deg) translateZ(0)`,
+        transform: `translate(-40%,-60%) skewX(-48deg) skewY(14deg) scale(${
+          isMobile ? 0.5 : 0.675
+        }) rotate(-6deg) translateZ(0)`,
         willChange: "transform",
       }}
       className={cn(
@@ -55,23 +73,25 @@ export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
         <motion.div
           key={`row${i}`}
           className="w-16 h-8 border-l border-slate-700/[0.1] relative"
-          initial={false} // Disable initial animation
+          initial={false}
         >
           {cols.map((_, j) => (
             <motion.div
               key={`col${j}`}
               {...motionConfig}
-              initial={false} // Disable initial animation
-              className="w-16 h-8 border-r border-t border-slate-700/[0.6] relative"
+              initial={false}
+              className="w-16 h-8 border-r border-t border-slate-700/[0.2] relative"
             >
-              {j % 2 === 0 && i % 2 === 0 ? (
+              {/* Only render plus signs on desktop or every 4th intersection on mobile */}
+              {(!isMobile && j % 2 === 0 && i % 2 === 0) ||
+              (isMobile && j % 4 === 0 && i % 4 === 0) ? (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth="1.5"
                   stroke="currentColor"
-                  className="absolute h-6 w-10 -top-[14px] -left-[22px] text-slate-700/[0.6] stroke-[1px] pointer-events-none"
+                  className="absolute h-6 w-10 -top-[14px] -left-[22px] text-slate-700/[0.2] stroke-[1px] pointer-events-none"
                 >
                   <path
                     strokeLinecap="round"
@@ -88,5 +108,4 @@ export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
   );
 };
 
-// Memoize the entire component
 export const Boxes = React.memo(BoxesCore);
