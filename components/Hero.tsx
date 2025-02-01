@@ -4,46 +4,21 @@ import { motion } from "framer-motion";
 import { ArrowDownIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TypeAnimation } from "react-type-animation";
-import ParticleAnimation from "./ParticleAnimation";
+import { Boxes } from "@/components/ui/background-boxes";
 
 export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center pt-20"
+      className="relative min-h-screen flex items-center justify-center pt-20 bg-background dark:bg-black"
     >
-      {/* Particle animation */}
-      <ParticleAnimation />
+      {/* Background wrapper */}
+      <div className="absolute inset-0 w-full h-full">
+        <div className="absolute inset-0 w-full h-full z-20 pointer-events-none" />
+        <Boxes className="absolute inset-0 opacity-[0.25]" />
+      </div>
 
-      {/* Floating shapes */}
-      <motion.div
-        className="absolute top-20 left-20 w-64 h-64 bg-primary/5 rounded-full mix-blend-multiply filter blur-xl"
-        animate={{
-          scale: [1, 1.2, 1],
-          x: [0, 30, 0],
-          y: [0, 50, 0],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Number.POSITIVE_INFINITY,
-          repeatType: "reverse",
-        }}
-      />
-      <motion.div
-        className="absolute bottom-20 right-20 w-64 h-64 bg-primary/10 rounded-full mix-blend-multiply filter blur-xl"
-        animate={{
-          scale: [1, 1.2, 1],
-          x: [0, -30, 0],
-          y: [0, -50, 0],
-        }}
-        transition={{
-          duration: 10,
-          repeat: Number.POSITIVE_INFINITY,
-          repeatType: "reverse",
-        }}
-      />
-
-      <div className="relative z-10 text-center px-4">
+      <div className="relative z-20 text-center px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -61,7 +36,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <span className="text-zinc-900">Hi, I'm </span>
+          <span>Hi, I'm </span>
           <span className="bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-transparent">
             Bintang
           </span>

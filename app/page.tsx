@@ -36,7 +36,7 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-background relative overflow-x-hidden w-full">
+    <main className="min-h-screen bg-background dark:bg-black relative overflow-x-hidden w-full">
       <div className="relative z-10">
         <Header />
         <div className="relative">

@@ -1,10 +1,22 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
+import { useTheme } from "next-themes";
 
 const [mounted, setMounted] = useState(false);
 const [isOpen, setIsOpen] = useState(false);
 const { theme, setTheme } = useTheme();
 const [hasScrolled, setHasScrolled] = useState(false);
-const MobileMenu = ({ isOpen, navigationItems, handleNavClick }) => {
+interface MobileMenuProps {
+  isOpen: boolean;
+  navigationItems: { id: string; name: string }[];
+  handleNavClick: (id: string) => void;
+}
+
+const MobileMenu = ({
+  isOpen,
+  navigationItems,
+  handleNavClick,
+}: MobileMenuProps) => {
   return (
     <AnimatePresence>
       {isOpen && (

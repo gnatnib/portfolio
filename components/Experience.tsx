@@ -65,7 +65,10 @@ export default function Experience() {
   }, []);
 
   return (
-    <section id="experience" className="py-20">
+    <section
+      id="experience"
+      className="min-h-screen py-20 bg-background dark:bg-black"
+    >
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold mb-16 text-center">My Experience</h2>
         <motion.div

@@ -14,7 +14,7 @@ export default function About() {
   return (
     <section
       id="about"
-      className="min-h-[90vh] flex items-center justify-center bg-muted/50"
+      className="min-h-[90vh] flex items-center justify-center bg-background dark:bg-black"
     >
       <div className="container mx-auto px-4">
         <motion.div

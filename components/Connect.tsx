@@ -69,7 +69,7 @@ export default function Connect() {
   return (
     <section
       id="connect"
-      className="min-h-screen flex items-center bg-muted/50"
+      className="min-h-screen flex items-center bg-background dark:bg-black"
     >
       <div className="container mx-auto px-4 py-20">
         <div className="max-w-4xl mx-auto">

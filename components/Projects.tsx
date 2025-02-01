@@ -168,7 +168,7 @@ export default function Projects() {
   return (
     <section
       id="projects"
-      className="min-h-screen flex items-center bg-muted/50 relative overflow-hidden pb-16"
+      className="min-h-screen flex items-center bg-muted/30 relative overflow-hidden pb-16"
     >
       <div className="w-full py-8">
         <motion.div

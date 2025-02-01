@@ -127,7 +127,7 @@ export default function TechStack() {
   return (
     <section
       id="tech-stack"
-      className="min-h-screen py-20 bg-gradient-to-b from-background to-muted/50"
+      className="min-h-screen py-20 bg-background dark:bg-black"
     >
       <div className="container mx-auto px-4">
         <motion.div
