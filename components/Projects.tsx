@@ -45,6 +45,14 @@ const projects = [
     techStack: ["PHP", "Laravel", "MySQL"],
   },
   {
+    title: "E-Tarteel",
+    description:
+      "A Quran recitation web app built with NextJS, ShadCn Ui, and RadixUI.",
+    image: "/project5.png",
+    github: "https://github.com/gnatnib/e-tarteel",
+    techStack: ["NextJS", "ShadCn Ui", "RadixUI"],
+  },
+  {
     title: "Bidlix",
     description:
       "A movie database app built with simple HTML, CSS, and JavaScript and MovieDB API.",
