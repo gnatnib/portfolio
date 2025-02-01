@@ -50,6 +50,7 @@ const projects = [
       "A Quran recitation web app built with NextJS, ShadCn Ui, and RadixUI.",
     image: "/project5.png",
     github: "https://github.com/gnatnib/e-tarteel",
+    live: "https://etarteel.vercel.app/",
     techStack: ["NextJS", "ShadCn Ui", "RadixUI"],
   },
   {
