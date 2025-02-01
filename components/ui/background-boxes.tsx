@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
-  const rows = new Array(50).fill(1);
-  const cols = new Array(30).fill(1);
+  const rows = new Array(80).fill(1);
+  const cols = new Array(40).fill(1);
 
   // Memoize the colors array
   const colors = useMemo(
@@ -42,7 +42,7 @@ export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
   return (
     <div
       style={{
-        transform: `translate(-40%,-60%) skewX(-48deg) skewY(14deg) scale(0.675) rotate(6deg) translateZ(0)`,
+        transform: `translate(-40%,-60%) skewX(-48deg) skewY(14deg) scale(0.675) rotate(-6deg) translateZ(0)`,
         willChange: "transform",
       }}
       className={cn(
@@ -62,7 +62,7 @@ export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
               key={`col${j}`}
               {...motionConfig}
               initial={false} // Disable initial animation
-              className="w-16 h-8 border-r border-t border-slate-700/[0.1] relative"
+              className="w-16 h-8 border-r border-t border-slate-700/[0.6] relative"
             >
               {j % 2 === 0 && i % 2 === 0 ? (
                 <svg
@@ -71,7 +71,7 @@ export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
                   viewBox="0 0 24 24"
                   strokeWidth="1.5"
                   stroke="currentColor"
-                  className="absolute h-6 w-10 -top-[14px] -left-[22px] text-slate-700/[0.1] stroke-[1px] pointer-events-none"
+                  className="absolute h-6 w-10 -top-[14px] -left-[22px] text-slate-700/[0.6] stroke-[1px] pointer-events-none"
                 >
                   <path
                     strokeLinecap="round"
