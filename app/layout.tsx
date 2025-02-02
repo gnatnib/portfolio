@@ -8,6 +8,15 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata = {
   title: "gnatnib",
   description: "Portfolio showcasing my web development projects and skills",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-icon.png",
+    other: {
+      rel: "icon",
+      url: "/icon.svg",
+    },
+  },
 };
 
 export default function RootLayout({
