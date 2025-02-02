@@ -54,6 +54,14 @@ const projects = [
     techStack: ["NextJS", "ShadCn Ui", "RadixUI"],
   },
   {
+    title: "Sumanto",
+    description:
+      "Sumanto - Sistem Unggulan Manajemen Akademik dan Terintegrasi Online Sumanto is an academic management application designed to streamline the administrative processes of higher education. Features include IRS submission for students, IRS approval for lecturers, and document printing for IRS and KHS.",
+    image: "/project6.png",
+    github: "https://github.com/gnatnib/Sumanto",
+    techStack: ["PHP", "Laravel", "Tailwind CSS", "JQuery", "MySQL"],
+  },
+  {
     title: "Bidlix",
     description:
       "A movie database app built with simple HTML, CSS, and JavaScript and MovieDB API.",
