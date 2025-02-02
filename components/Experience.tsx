@@ -14,9 +14,9 @@ const experiences = [
   {
     title: "Graduated Highschool",
     location: "Semarang, Indonesia",
-    date: "2020",
+    date: "2019",
     description:
-      "I graduated highschool in 2020. I was a student at SMAN 4 Semarang. I reached top 10 in my almamater.",
+      "I graduated highschool in 2019. I was a student at SMAN 4 Semarang. I reached top 10 in my almamater.",
     icon: SchoolIcon,
   },
   {
