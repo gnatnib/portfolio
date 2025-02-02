@@ -1,3 +1,4 @@
+// page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -40,22 +41,22 @@ export default function Home() {
       <div className="relative z-10">
         <Header />
         <div className="relative">
-          <section className="min-h-screen w-full">
+          <section className="min-h-screen w-full" id="home">
             <Hero />
           </section>
-          <section className="min-h-screen w-full">
+          <section className="min-h-screen w-full" id="about">
             <About />
           </section>
-          <section className="min-h-screen w-full">
-            <Experience />
-          </section>
-          <section className="min-h-screen w-full">
+          <section className="min-h-screen w-full" id="projects">
             <Projects />
           </section>
-          <section className="min-h-screen w-full">
+          <section className="min-h-screen w-full" id="experience">
+            <Experience />
+          </section>
+          <section className="min-h-screen w-full" id="tech-stack">
             <TechStack />
           </section>
-          <section className="min-h-screen w-full">
+          <section className="min-h-screen w-full" id="contact">
             <Connect />
           </section>
         </div>

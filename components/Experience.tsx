@@ -13,10 +13,10 @@ import { useEffect, useState } from "react";
 const experiences = [
   {
     title: "Graduated Highschool",
-    location: "Semarang, Indonesia",
+    location: "SMA Negeri 4 Semarang, Indonesia",
     date: "2019",
     description:
-      "I graduated highschool in 2019. I was a student at SMAN 4 Semarang. I reached top 10 in my almamater.",
+      "I graduated highschool in 2019. I took science class and finished with 94+ average. I reached top 10 in my almamater.",
     icon: SchoolIcon,
   },
   {
