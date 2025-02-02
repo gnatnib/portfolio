@@ -15,8 +15,62 @@ import {
   ExternalLinkIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  XIcon,
 } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+
+interface ImageModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  image: string;
+  title: string;
+}
+
+const ImageModal = ({ isOpen, onClose, image, title }: ImageModalProps) => (
+  <AnimatePresence>
+    {isOpen && (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+        onClick={onClose}
+      >
+        <motion.div
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.5, opacity: 0 }}
+          transition={{ type: "spring", damping: 20 }}
+          className="relative w-[90vw] h-[90vh] max-w-7xl rounded-lg bg-background/5 backdrop-blur-sm p-4"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-6 right-6 z-50 bg-background/80 backdrop-blur-sm hover:bg-background/90"
+            onClick={onClose}
+          >
+            <XIcon className="h-6 w-6" />
+          </Button>
+          <div className="relative w-full h-full">
+            <Image
+              src={image}
+              alt={title}
+              fill
+              className="object-contain rounded-lg"
+              sizes="90vw"
+              priority
+              quality={100}
+            />
+            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/50 to-transparent">
+              <h3 className="text-xl font-semibold text-white">{title}</h3>
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
 
 const projects = [
   {
@@ -62,6 +116,15 @@ const projects = [
     techStack: ["PHP", "Laravel", "Tailwind CSS", "JQuery", "MySQL"],
   },
   {
+    title: "K-Means World Happiness Report",
+    description:
+      "Streamlit app of clustering analysis of the World Happiness Report dataset using K-Means algorithm.",
+    image: "/project7.png",
+    github: "https://github.com/gnatnib/world_happiness_report",
+    live: "https://kmeans-world-happiness-report.streamlit.app/",
+    techStack: ["Streamlit", "Google Colab", "Pandas", "Numpy", "Python"],
+  },
+  {
     title: "Bidlix",
     description:
       "A movie database app built with simple HTML, CSS, and JavaScript and MovieDB API.",
@@ -72,9 +135,9 @@ const projects = [
   },
 ];
 
-const getTechColor = (tech) => {
+const getTechColor = (tech: string): string => {
   // Mapping hex colors to closest Tailwind color combinations
-  const techColors = {
+  const techColors: { [key: string]: string } = {
     // Frontend
     JavaScript: "bg-yellow-100 text-yellow-800", // #F7DF1E
     TypeScript: "bg-blue-100 text-blue-800", // #3178C6
@@ -107,10 +170,10 @@ const getTechColor = (tech) => {
     "MovieDB API": "bg-cyan-100 text-cyan-800",
   };
 
-  return techColors[tech] || "bg-gray-100 text-gray-800"; // Default fallback
+  return techColors[tech] ?? "bg-gray-100 text-gray-800"; // Default fallback
 };
 
-const TechStackLabel = ({ tech }) => (
+const TechStackLabel = ({ tech }: { tech: string }) => (
   <span
     className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getTechColor(
       tech
@@ -122,6 +185,8 @@ const TechStackLabel = ({ tech }) => (
 
 export default function Projects() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [modalImage, setModalImage] = useState<string | null>(null);
+  const [modalTitle, setModalTitle] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
   const { ref, controls, initial } = useScrollAnimation();
   const [isMobile, setIsMobile] = useState(false);
@@ -173,11 +238,30 @@ export default function Projects() {
     }
   };
 
+  const openModal = (image: string, title: string) => {
+    document.body.style.overflow = "hidden";
+    setModalImage(image);
+    setModalTitle(title);
+  };
+
+  const closeModal = () => {
+    document.body.style.overflow = "unset";
+    setModalImage(null);
+    setModalTitle("");
+  };
+
   return (
     <section
       id="projects"
       className="min-h-screen flex items-center bg-muted/30 relative overflow-hidden pb-16"
     >
+      <ImageModal
+        isOpen={!!modalImage}
+        onClose={closeModal}
+        image={modalImage || ""}
+        title={modalTitle}
+      />
+
       <div className="w-full py-8">
         <motion.div
           ref={ref}
@@ -243,13 +327,22 @@ export default function Projects() {
               >
                 <Card className="h-full overflow-hidden backdrop-blur-sm bg-card/80">
                   <CardHeader className="p-0">
-                    <div className="relative h-[150px] md:h-[200px] w-full">
+                    <div
+                      className="relative h-[150px] md:h-[200px] w-full cursor-pointer overflow-hidden group"
+                      onClick={() => openModal(project.image, project.title)}
+                    >
                       <Image
                         src={project.image || "/placeholder.svg"}
                         alt={project.title}
                         fill
-                        className="object-cover"
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        sizes="(max-width: 768px) 60vw, 35vw"
                       />
+                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span className="text-white text-sm font-medium bg-black/50 px-3 py-1 rounded-full">
+                          Click to enlarge
+                        </span>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent className="p-2 md:p-3">
