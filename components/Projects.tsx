@@ -110,7 +110,7 @@ const projects = [
   {
     title: "Sumanto",
     description:
-      "Sumanto - Sistem Unggulan Manajemen Akademik dan Terintegrasi Online Sumanto is an academic management application designed to streamline the administrative processes of higher education. Features include IRS submission for students, IRS approval for lecturers, and document printing for IRS and KHS.",
+      "Sistem Unggulan Manajemen Akademik dan Terintegrasi Online Sumanto - Academic management app designed to streamline the administrative processes of education.",
     image: "/project6.png",
     github: "https://github.com/gnatnib/Sumanto",
     techStack: ["PHP", "Laravel", "Tailwind CSS", "JQuery", "MySQL"],
@@ -118,11 +118,11 @@ const projects = [
   {
     title: "K-Means World Happiness Report",
     description:
-      "Streamlit app of clustering analysis of the World Happiness Report dataset using K-Means algorithm.",
+      "K-Means clustering analysis of the World Happiness Report dataset built on Streamlit.",
     image: "/project7.png",
     github: "https://github.com/gnatnib/world_happiness_report",
     live: "https://kmeans-world-happiness-report.streamlit.app/",
-    techStack: ["Streamlit", "Google Colab", "Pandas", "Numpy", "Python"],
+    techStack: ["Streamlit", "Pandas", "Numpy", "Python"],
   },
   {
     title: "Bidlix",
@@ -317,7 +317,7 @@ export default function Projects() {
                 key={index}
                 className={`${
                   isMobile ? "w-[60vw]" : "w-[35vw]"
-                } shrink-0 snap-center px-2 md:px-4`}
+                } shrink-0 snap-center px-2 md:px-4 relative`} // Added relative
                 initial={{ scale: 0.8, opacity: 0.5 }}
                 animate={{
                   scale: activeIndex === index ? 1 : 0.8,
@@ -325,6 +325,9 @@ export default function Projects() {
                 }}
                 transition={{ duration: 0.3 }}
               >
+                {activeIndex !== index && (
+                  <div className="absolute inset-0 bg-transparent z-50" />
+                )}
                 <Card className="h-full overflow-hidden backdrop-blur-sm bg-card/80">
                   <CardHeader className="p-0">
                     <div
@@ -349,7 +352,7 @@ export default function Projects() {
                     <CardTitle className="text-lg md:text-xl mb-2">
                       {project.title}
                     </CardTitle>
-                    <CardDescription className="text-sm md:text-base mb-2">
+                    <CardDescription className="text-sm md:text-base mb-2 line-clamp-3">
                       {project.description}
                     </CardDescription>
                     <div className="flex flex-wrap gap-2">
@@ -358,31 +361,43 @@ export default function Projects() {
                       ))}
                     </div>
                   </CardContent>
-                  <CardFooter className="bg-muted/50 p-2 md:p-3 flex flex-wrap gap-2 justify-center md:justify-between">
+                  <CardFooter className="bg-muted/50 p-2 md:p-3 flex flex-col sm:flex-row gap-2 w-full">
                     <Button
                       variant="outline"
                       size="sm"
                       asChild
-                      className="w-full sm:w-auto"
+                      className="w-full group relative overflow-hidden transition-all duration-300 hover:-translate-y-0.5"
                     >
                       <a
                         href={project.github}
                         target="_blank"
                         rel="noopener noreferrer"
+                        className="w-full flex items-center justify-center relative z-10 transition-colors"
                       >
-                        <GithubIcon className="w-4 h-4 mr-2" />
-                        GitHub
+                        <GithubIcon className="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-12" />
+                        <span className="relative z-10 transition-transform duration-300 group-hover:scale-105">
+                          GitHub
+                        </span>
+                        <div className="absolute inset-0 bg-primary/10 transform transition-transform duration-300 group-hover:scale-105" />
                       </a>
                     </Button>
                     {project.live && (
-                      <Button size="sm" asChild className="w-full sm:w-auto">
+                      <Button
+                        size="sm"
+                        asChild
+                        className="w-full group relative overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+                      >
                         <a
                           href={project.live}
                           target="_blank"
                           rel="noopener noreferrer"
+                          className="w-full flex items-center justify-center relative z-10"
                         >
-                          <ExternalLinkIcon className="w-4 h-4 mr-2" />
-                          Live Demo
+                          <ExternalLinkIcon className="w-4 h-4 mr-2 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                          <span className="relative z-10 transition-transform duration-300 group-hover:scale-105">
+                            Live Demo
+                          </span>
+                          <div className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-10 transform transition-all duration-300 group-hover:scale-105" />
                         </a>
                       </Button>
                     )}
