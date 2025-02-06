@@ -83,11 +83,12 @@ const projects = [
     techStack: ["NextJS", "ShadCn Ui", "Clerk", "Prisma ORM"],
   },
   {
-    title: "UG Booking",
+    title: "Rumeet",
     description:
       "A booking web app for PT. Usaha Gedung Mandiri built with PHP, Laravel, and MySQL.",
     image: "/project3.png",
     github: "https://github.com/gnatnib/ugbooking",
+    live: "https://rumeet.ugmandiri.co.id/",
     techStack: ["PHP", "Laravel", "MySQL"],
   },
   {
