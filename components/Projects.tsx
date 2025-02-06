@@ -202,39 +202,88 @@ export default function Projects() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    let scrollTimeout: NodeJS.Timeout;
+    const debouncedHandleScroll = () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        handleScroll();
+      }, 50);
+    };
+
+    container.addEventListener("scroll", debouncedHandleScroll);
+    return () => {
+      container.removeEventListener("scroll", debouncedHandleScroll);
+      clearTimeout(scrollTimeout);
+    };
+  }, [activeIndex]);
+
+  const [isScrolling, setIsScrolling] = useState(false);
+
   const scrollToProject = (index: number) => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || isScrolling) return;
+
+    setIsScrolling(true);
     const container = containerRef.current;
     const projectWidth = isMobile
       ? container.offsetWidth * 0.6
       : container.offsetWidth * 0.35;
-    const spacing = isMobile
-      ? container.offsetWidth * 0.2
-      : container.offsetWidth * 0.325;
-    const scrollPosition = projectWidth * index + spacing;
+    const gap = 16; // gap between items
+
+    const scrollPosition = (projectWidth + gap) * index;
 
     container.scrollTo({
       left: scrollPosition,
       behavior: "smooth",
     });
+
     setActiveIndex(index);
+
+    // Reset scrolling state after animation
+    setTimeout(() => {
+      setIsScrolling(false);
+    }, 500);
+  };
+
+  const variants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? 200 : -200,
+      opacity: 0,
+      scale: 0.8,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      scale: 1,
+    },
+    exit: (direction: number) => ({
+      x: direction < 0 ? 200 : -200,
+      opacity: 0,
+      scale: 0.8,
+    }),
   };
 
   const handleScroll = () => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || isScrolling) return;
+
     const container = containerRef.current;
     const projectWidth = isMobile
       ? container.offsetWidth * 0.6
       : container.offsetWidth * 0.35;
-    const spacing = isMobile
-      ? container.offsetWidth * 0.2
-      : container.offsetWidth * 0.325;
+    const gap = 16;
 
     const scrollPosition = container.scrollLeft;
-    const index = Math.round(scrollPosition / (projectWidth + 16)); // Account for gap
+    const newIndex = Math.round(scrollPosition / (projectWidth + gap));
 
-    if (index >= 0 && index < projects.length && index !== activeIndex) {
-      setActiveIndex(index);
+    if (
+      newIndex >= 0 &&
+      newIndex < projects.length &&
+      newIndex !== activeIndex
+    ) {
+      setActiveIndex(newIndex);
     }
   };
 
@@ -248,6 +297,16 @@ export default function Projects() {
     document.body.style.overflow = "unset";
     setModalImage(null);
     setModalTitle("");
+  };
+
+  const handlePrevious = () => {
+    const newIndex = Math.max(0, activeIndex - 1);
+    scrollToProject(newIndex);
+  };
+
+  const handleNext = () => {
+    const newIndex = Math.min(projects.length - 1, activeIndex + 1);
+    scrollToProject(newIndex);
   };
 
   return (
@@ -278,19 +337,18 @@ export default function Projects() {
               variant="ghost"
               size="icon"
               className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-background/80 backdrop-blur-sm shadow-lg pointer-events-auto"
-              onClick={() => scrollToProject(Math.max(0, activeIndex - 1))}
-              disabled={activeIndex === 0}
+              onClick={handlePrevious}
+              disabled={activeIndex === 0 || isScrolling}
             >
               <ChevronLeftIcon className="h-5 w-5 md:h-6 md:w-6" />
             </Button>
+
             <Button
               variant="ghost"
               size="icon"
               className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-background/80 backdrop-blur-sm shadow-lg pointer-events-auto"
-              onClick={() =>
-                scrollToProject(Math.min(projects.length - 1, activeIndex + 1))
-              }
-              disabled={activeIndex === projects.length - 1}
+              onClick={handleNext}
+              disabled={activeIndex === projects.length - 1 || isScrolling}
             >
               <ChevronRightIcon className="h-5 w-5 md:h-6 md:w-6" />
             </Button>
