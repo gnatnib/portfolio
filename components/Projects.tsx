@@ -92,12 +92,12 @@ const projects = [
     techStack: ["PHP", "Laravel", "MySQL"],
   },
   {
-    title: "Eproc",
+    title: "Sipp",
     description:
       "A procurement web app for PT. Usaha Gedung Mandiri built with PHP, Laravel, and MySQL.",
     image: "/project4.png",
     github: "https://github.com/gnatnib/ugprocurement",
-    live: "https://eproc.ugmandiri.co.id/",
+    live: "https://sipp.ugmandiri.co.id/",
     techStack: ["PHP", "Laravel", "MySQL"],
   },
   {
