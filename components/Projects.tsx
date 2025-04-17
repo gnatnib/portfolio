@@ -85,16 +85,16 @@ const projects = [
   {
     title: "Rumeet",
     description:
-      "A booking web app for PT. Usaha Gedung Mandiri built with PHP, Laravel, and MySQL.",
+      "Room booking web app for PT. Usaha Gedung Mandiri built with PHP, Laravel, and MySQL.",
     image: "/project3.png",
     github: "https://github.com/gnatnib/ugbooking",
     live: "https://rumeet.ugmandiri.co.id/",
     techStack: ["PHP", "Laravel", "MySQL"],
   },
   {
-    title: "Sipp",
+    title: "SiPP",
     description:
-      "A procurement web app for PT. Usaha Gedung Mandiri built with PHP, Laravel, and MySQL.",
+      "Procurement web app for PT. Usaha Gedung Mandiri built with PHP, Laravel, and MySQL.",
     image: "/project4.png",
     github: "https://github.com/gnatnib/ugprocurement",
     live: "https://sipp.ugmandiri.co.id/",
