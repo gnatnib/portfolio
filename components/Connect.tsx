@@ -55,7 +55,7 @@ const contactMethods = [
   },
   {
     name: "WhatsApp",
-    value: "+6285172152969",
+    value: "Secret 🤫",
     icon: PhoneIcon,
     url: "https://wa.me/6285172152969",
     color:
