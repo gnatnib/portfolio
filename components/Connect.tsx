@@ -57,7 +57,7 @@ const contactMethods = [
     name: "WhatsApp",
     value: "Secret 🤫",
     icon: PhoneIcon,
-    url: "https://wa.me/6285172152969",
+    url: "https://www.youtube.com/watch?v=PayvWj2piKg",
     color:
       "bg-[#dcfce7] hover:bg-[#bbf7d0] dark:bg-[#14532d] dark:hover:bg-[#166534] cursor-pointer",
   },
