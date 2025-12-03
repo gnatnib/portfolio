@@ -1,192 +1,83 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { Card } from "@/components/ui/card";
+import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import StackIcon from "tech-stack-icons";
 
 const techStack = [
-  {
-    name: "JavaScript",
-    icon: "js",
-    color: "#F7DF1E",
-    category: "Frontend",
-  },
-  {
-    name: "TypeScript",
-    icon: "typescript",
-    color: "#3178C6",
-    category: "Frontend",
-  },
-  {
-    name: "React",
-    icon: "reactjs",
-    color: "#61DAFB",
-    category: "Frontend",
-  },
-  {
-    name: "Next.js",
-    icon: "nextjs2",
-    color: "#000000",
-    category: "Frontend",
-  },
-  {
-    name: "shadcn/ui",
-    icon: "shadcnui",
-    color: "#FF0080",
-    category: "Frontend",
-  },
-  {
-    name: "Framer",
-    icon: "framer",
-    color: "#06B6D4",
-    category: "Frontend",
-  },
-  {
-    name: "Node.js",
-    icon: "nodejs",
-    color: "#339933",
-    category: "Backend",
-  },
-  {
-    name: "PHP",
-    icon: "php",
-    color: "#777BB4",
-    category: "Backend",
-  },
-  {
-    name: "Laravel",
-    icon: "laravel",
-    color: "#FF2D20",
-    category: "Backend",
-  },
-  {
-    name: "HTML",
-    icon: "html5",
-    color: "#E34F26",
-    category: "Frontend",
-  },
-  {
-    name: "CSS",
-    icon: "css3",
-    color: "#1572B6",
-    category: "Frontend",
-  },
-  {
-    name: "Tailwind CSS",
-    icon: "tailwindcss",
-    color: "#06B6D4",
-    category: "Frontend",
-  },
-  {
-    name: "Python",
-    icon: "python",
-    color: "#3776AB",
-    category: "Backend",
-  },
-  {
-    name: "MySQL",
-    icon: "mysql",
-    color: "#4479A1",
-    category: "Database",
-  },
-  {
-    name: "Prisma",
-    icon: "prisma",
-    color: "#47A248",
-    category: "Database",
-  },
-  {
-    name: "Git",
-    icon: "git",
-    color: "#F05032",
-    category: "Tools",
-  },
+  { name: "JavaScript", icon: "js" },
+  { name: "TypeScript", icon: "typescript" },
+  { name: "React", icon: "reactjs" },
+  { name: "Next.js", icon: "nextjs2" },
+  { name: "shadcn/ui", icon: "shadcnui" },
+  { name: "Framer", icon: "framer" },
+  { name: "Node.js", icon: "nodejs" },
+  { name: "PHP", icon: "php" },
+  { name: "Laravel", icon: "laravel" },
+  { name: "HTML", icon: "html5" },
+  { name: "CSS", icon: "css3" },
+  { name: "Tailwind CSS", icon: "tailwindcss" },
+  { name: "Python", icon: "python" },
+  { name: "MySQL", icon: "mysql" },
+  { name: "Prisma", icon: "prisma" },
+  { name: "Git", icon: "git" },
 ];
 
-const categories = ["Frontend", "Backend", "Database", "Tools"];
-
 export default function TechStack() {
-  const { ref, controls, initial } = useScrollAnimation();
+  // Split into two rows for symmetry and visual interest
+  const row1 = techStack.slice(0, Math.ceil(techStack.length / 2));
+  const row2 = techStack.slice(Math.ceil(techStack.length / 2));
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
+  const items1 = row1.map((tech) => ({
+    name: tech.name,
+    icon: <StackIcon name={tech.icon} className="w-12 h-12" />,
+  }));
 
-  const item = {
-    hidden: { y: 20, opacity: 0 },
-    show: { y: 0, opacity: 1 },
-  };
+  const items2 = row2.map((tech) => ({
+    name: tech.name,
+    icon: <StackIcon name={tech.icon} className="w-12 h-12" />,
+  }));
 
   return (
     <section
       id="tech-stack"
-      className="min-h-screen py-20 bg-background dark:bg-black"
+      className="min-h-screen flex flex-col justify-center bg-background dark:bg-black relative overflow-hidden py-32"
     >
-      <div className="container mx-auto px-4">
-        <motion.div
-          ref={ref}
-          initial={initial}
-          animate={controls}
-          transition={{ duration: 0.5 }}
-          className="space-y-12"
-        >
-          <div className="text-center space-y-4">
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent">
-              My Tech Stack
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Technologies and tools I use to bring ideas to life
-            </p>
-          </div>
+      {/* Background Animation - Digital Rain / Particles */}
+      <div className="absolute inset-0 w-full h-full bg-black">
+        <div className="absolute inset-0 bg-[radial-gradient(#ffffff33_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-20" />
+      </div>
 
-          {categories.map((category) => (
-            <div key={category} className="space-y-4">
-              <h3 className="text-xl font-semibold text-primary/80">
-                {category}
-              </h3>
-              <motion.div
-                variants={container}
-                initial="hidden"
-                animate="show"
-                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"
-              >
-                {techStack
-                  .filter((tech) => tech.category === category)
-                  .map((tech, index) => (
-                    <motion.div
-                      key={index}
-                      variants={item}
-                      whileHover={{ scale: 1.05 }}
-                      className="group"
-                    >
-                      <Card className="relative h-32 flex flex-col items-center justify-center p-4 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 border border-primary/10 bg-background/50 backdrop-blur-sm">
-                        <div
-                          className="w-12 h-12 mb-3 relative group-hover:animate-bounce"
-                          style={{ color: tech.color }}
-                        >
-                          <StackIcon
-                            name={tech.icon}
-                            className="w-full h-full"
-                          />
-                        </div>
-                        <p className="text-sm font-medium text-center group-hover:text-primary transition-colors">
-                          {tech.name}
-                        </p>
-                        <div className="absolute inset-0 border border-primary/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </Card>
-                    </motion.div>
-                  ))}
-              </motion.div>
-            </div>
-          ))}
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500">
+            Tech Stack
+          </h2>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            The tools and technologies I use to build digital products.
+          </p>
         </motion.div>
+
+        <div className="flex flex-col gap-8">
+          <InfiniteMovingCards
+            items={items1}
+            direction="left"
+            speed="normal"
+            className="bg-transparent"
+          />
+          <InfiniteMovingCards
+            items={items2}
+            direction="right"
+            speed="normal"
+            className="bg-transparent"
+          />
+        </div>
       </div>
     </section>
   );

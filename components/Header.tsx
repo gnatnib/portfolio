@@ -2,14 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MoonIcon, SunIcon, MenuIcon, XIcon } from "lucide-react";
-import { useTheme } from "next-themes";
+import { MenuIcon, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Header() {
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const { theme, setTheme } = useTheme();
   const [hasScrolled, setHasScrolled] = useState(false);
 
   useEffect(() => {
@@ -44,21 +42,13 @@ export default function Header() {
     { name: "Experience", id: "experience" },
     { name: "Projects", id: "projects" },
     { name: "Tech Stack", id: "tech-stack" },
-    { name: "Connect", id: "connect" },
+    { name: "Connect", id: "contact" },
   ];
 
   const handleNavClick = (itemId: string) => {
     const element = document.getElementById(itemId);
     if (element) {
-      const headerHeight = 72; // Approximate header height
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition =
-        elementPosition + window.pageYOffset - headerHeight;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth",
-      });
+      element.scrollIntoView({ behavior: "smooth" });
       setIsOpen(false);
     }
   };
@@ -66,29 +56,35 @@ export default function Header() {
   return (
     <>
       <motion.header
-        className={`fixed w-full z-50 transition-all duration-300 ease-in-out ${
-          hasScrolled
-            ? "bg-background/95 backdrop-blur-md shadow-lg"
-            : "bg-background/85 backdrop-blur-sm"
-        }`}
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        className="fixed top-0 left-0 right-0 z-50 flex justify-center"
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <nav className="container mx-auto px-4 py-4 flex justify-between items-center">
+        <motion.nav
+          layout
+          initial={false}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          className={`flex justify-between items-center transition-colors duration-500 ${hasScrolled
+            ? "mt-4 w-[90%] max-w-4xl rounded-full border border-white/10 bg-black/20 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] py-4 px-8"
+            : "w-full py-6 px-6 md:px-12 bg-transparent border-transparent"
+            }`}
+        >
           <motion.button
+            layout
             onClick={scrollToTop}
-            className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent"
+            className="relative group"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <span className="bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-transparent">
+            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-neutral-200 via-white to-neutral-200 bg-[length:200%_auto] animate-shine">
               gnatnib
             </span>
+            <span className="absolute -inset-1 blur-lg bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           </motion.button>
 
           {/* Desktop Navigation */}
-          <ul className="hidden md:flex space-x-8">
+          <ul className="hidden md:flex space-x-8 items-center">
             {navigationItems.map((item) => (
               <motion.li
                 key={item.id}
@@ -97,33 +93,21 @@ export default function Header() {
               >
                 <button
                   onClick={() => handleNavClick(item.id)}
-                  className="hover:text-primary transition-colors"
+                  className="text-base font-medium text-neutral-400 hover:text-white transition-colors relative group"
                 >
                   {item.name}
+                  <span className="absolute -bottom-1 left-0 w-0 h-px bg-white transition-all duration-300 group-hover:w-full" />
                 </button>
               </motion.li>
             ))}
           </ul>
 
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-              className="rounded-full hover:bg-primary/10"
-            >
-              {theme === "light" ? (
-                <MoonIcon className="h-5 w-5" />
-              ) : (
-                <SunIcon className="h-5 w-5" />
-              )}
-            </Button>
-
+          <div className="flex items-center gap-4">
             {/* Mobile Menu Button */}
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden rounded-full hover:bg-primary/10"
+              className="md:hidden rounded-full hover:bg-white/10 text-neutral-400 hover:text-white"
               onClick={() => setIsOpen(!isOpen)}
             >
               {isOpen ? (
@@ -133,7 +117,7 @@ export default function Header() {
               )}
             </Button>
           </div>
-        </nav>
+        </motion.nav>
       </motion.header>
 
       {/* Mobile Menu */}
@@ -155,14 +139,14 @@ export default function Header() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween", ease: "easeInOut" }}
-              className="fixed top-0 right-0 bottom-0 w-64 bg-background border-l border-border shadow-xl z-50 pt-16"
+              className="fixed top-0 right-0 bottom-0 w-64 bg-black border-l border-white/10 shadow-xl z-50 pt-16"
             >
               <div className="flex flex-col">
                 {navigationItems.map((item) => (
                   <motion.button
                     key={item.id}
                     onClick={() => handleNavClick(item.id)}
-                    className="w-full px-6 py-4 text-left text-lg font-medium hover:bg-primary/10 transition-colors"
+                    className="w-full px-6 py-4 text-left text-lg font-medium text-neutral-300 hover:bg-white/10 hover:text-white transition-colors"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >

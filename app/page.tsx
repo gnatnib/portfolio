@@ -41,22 +41,22 @@ export default function Home() {
       <div className="relative z-10">
         <Header />
         <div className="relative">
-          <section className="min-h-screen w-full" id="home">
+          <section className="min-h-screen w-full scroll-mt-0" id="home">
             <Hero />
           </section>
-          <section className="min-h-screen w-full" id="about">
+          <section className="min-h-screen w-full scroll-mt-0" id="about">
             <About />
           </section>
-          <section className="min-h-screen w-full" id="projects">
-            <Projects />
-          </section>
-          <section className="min-h-screen w-full" id="experience">
+          <section className="min-h-screen w-full scroll-mt-0" id="experience">
             <Experience />
           </section>
-          <section className="min-h-screen w-full" id="tech-stack">
+          <section className="min-h-screen w-full scroll-mt-0" id="projects">
+            <Projects />
+          </section>
+          <section className="min-h-screen w-full scroll-mt-0" id="tech-stack">
             <TechStack />
           </section>
-          <section className="min-h-screen w-full" id="contact">
+          <section className="w-full scroll-mt-0" id="contact">
             <Connect />
           </section>
         </div>

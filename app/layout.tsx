@@ -27,8 +27,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn(inter.className, "bg-background dark:bg-black")}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <body className={cn(inter.className, "bg-background dark:bg-black antialiased")}>
+        <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark" enableSystem={false}>
           {children}
           <Footer />
         </ThemeProvider>

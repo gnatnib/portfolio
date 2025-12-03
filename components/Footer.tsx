@@ -61,7 +61,7 @@ const Footer = () => {
 
   return (
     <motion.footer
-      className="w-full bg-slate-100 dark:bg-slate-900 py-4 px-4 text-center"
+      className="w-full bg-background dark:bg-black pb-8 pt-0 px-4 text-center"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
