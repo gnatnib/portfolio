@@ -37,6 +37,14 @@ const projects = [
     techStack: ["NextJS", "RadixUI", "Tailwind"],
   },
   {
+    title: "Twentyfour",
+    description: "Retro Arcade Multiplayer Card Game.",
+    image: "/project8.png",
+    github: "https://github.com/gnatnib/twentyfour",
+    live: "https://twentyfourgame.vercel.app/",
+    techStack: ["HTML5", "Firebase", "JavaScript"],
+  },
+  {
     title: "Sumanto",
     description: "Integrated academic management system.",
     image: "/project6.png",
