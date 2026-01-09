@@ -143,7 +143,7 @@ export default function About() {
           <Button
             variant="outline"
             className="gap-2 rounded-full"
-            onClick={() => window.open("/cv.pdf", "_blank")}
+            onClick={() => window.open("/CV_ATS_Bintang Syafrian Rizal.pdf", "_blank")}
           >
             <FileDown className="w-4 h-4" />
             Download CV
