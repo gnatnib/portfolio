@@ -60,6 +60,14 @@ const projects = [
     techStack: ["Python", "Streamlit", "Pandas"],
   },
   {
+    title: "Helmet Detection",
+    description: "Computer Vision Project for Detecting Helmet on Motorcyclist using YOLOv11.",
+    image: "/project9.png",
+    github: "https://github.com/gnatnib/helmet_detection",
+    live: "https://helmetdetectioncomvis.streamlit.app/",
+    techStack: ["Python", "YOLO", "Streamlit"],
+  },
+  {
     title: "Bidlix",
     description: "Movie database explorer using TMDB API.",
     image: "/project1.png",
