@@ -1,41 +1,143 @@
-"use client";
-
+import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { LinkedinIcon, FileDown, Code, User, GraduationCap, MapPin, Heart } from "lucide-react";
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
 import { Globe } from "@/components/ui/globe";
+import { AsciiReveal } from "@/components/ui/AsciiReveal";
 
 const PassionBubbles = () => {
   const passions = ["Data Science", "Machine Learning", "Web Dev", "UI/UX", "Hiking", "Photography"];
 
+  const mouseX = useMotionValue(-Infinity);
+  const mouseY = useMotionValue(-Infinity);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    mouseX.set(e.clientX - rect.left);
+    mouseY.set(e.clientY - rect.top);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(-Infinity);
+    mouseY.set(-Infinity);
+  };
+
   return (
-    <div className="relative w-full h-full min-h-[150px] overflow-hidden bg-gradient-to-br from-neutral-900 to-black rounded-xl p-4">
+    <div
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="relative w-full h-full min-h-[150px] overflow-hidden bg-gradient-to-br from-neutral-900 to-black rounded-xl p-4"
+    >
       {passions.map((passion, i) => (
-        <motion.div
+        <Bubble
           key={passion}
-          className="absolute bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 text-sm text-white whitespace-nowrap"
-          initial={{ x: Math.random() * 200, y: Math.random() * 100 }}
-          animate={{
-            y: [0, -20, 0],
-            x: [0, 10, 0],
-          }}
-          transition={{
-            duration: 3 + Math.random() * 2,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: i * 0.5,
-          }}
-          style={{
-            left: `${(i % 3) * 30 + 10}%`,
-            top: `${Math.floor(i / 3) * 40 + 20}%`,
-          }}
-        >
-          {passion}
-        </motion.div>
+          passion={passion}
+          index={i}
+          mouseX={mouseX}
+          mouseY={mouseY}
+        />
       ))}
     </div>
+  );
+};
+
+const Bubble = ({
+  passion,
+  index,
+  mouseX,
+  mouseY
+}: {
+  passion: string,
+  index: number,
+  mouseX: any,
+  mouseY: any
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  // Initial absolute positioning
+  const initialLeft = (index % 3) * 30 + 10;
+  const initialTop = Math.floor(index / 3) * 40 + 20;
+
+  // Measure center position relative to container
+  useEffect(() => {
+    const updatePosition = () => {
+      if (ref.current && ref.current.parentElement) {
+        const parentRect = ref.current.parentElement.getBoundingClientRect();
+        // Calculate expected center based on percentage
+        const centerX = parentRect.width * (initialLeft / 100) + ref.current.offsetWidth / 2;
+        const centerY = parentRect.height * (initialTop / 100) + ref.current.offsetHeight / 2;
+        setPosition({ x: centerX, y: centerY });
+      }
+    };
+
+    updatePosition();
+    window.addEventListener("resize", updatePosition);
+    return () => window.removeEventListener("resize", updatePosition);
+  }, [initialLeft, initialTop]);
+
+  const dx = useTransform(mouseX, (x: number) => {
+    if (x === -Infinity) return 0;
+    return x - position.x;
+  });
+
+  const dy = useTransform(mouseY, (y: number) => {
+    if (y === -Infinity) return 0;
+    return y - position.y;
+  });
+
+  const distance = useTransform([dx, dy], ([x, y]: number[]) => Math.sqrt(x * x + y * y));
+
+  const xShift = useTransform(distance, (d) => {
+    const maxDist = 150;
+    if (d < maxDist && d > 0) {
+      const force = (maxDist - d) / maxDist;
+      const dirX = dx.get() / d;
+      return -dirX * force * 80; // Repulsion strength
+    }
+    return 0;
+  });
+
+  const yShift = useTransform(distance, (d) => {
+    const maxDist = 150;
+    if (d < maxDist && d > 0) {
+      const force = (maxDist - d) / maxDist;
+      const dirY = dy.get() / d;
+      return -dirY * force * 80;
+    }
+    return 0;
+  });
+
+  const springConfig = { damping: 15, stiffness: 150, mass: 0.8 };
+  const x = useSpring(xShift, springConfig);
+  const y = useSpring(yShift, springConfig);
+
+  return (
+    <motion.div
+      ref={ref}
+      className="absolute bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 text-sm text-white whitespace-nowrap z-10"
+      initial={{ x: 0, y: 0 }}
+      animate={{
+        y: [0, -10, 0],
+        x: [0, 5, 0]
+      }}
+      transition={{
+        duration: 3 + index,
+        repeat: Infinity,
+        ease: "easeInOut",
+        delay: index * 0.2
+      }}
+      style={{
+        left: `${initialLeft}%`,
+        top: `${initialTop}%`,
+        translateX: x,
+        translateY: y,
+      }}
+    >
+      {passion}
+    </motion.div>
   );
 };
 
@@ -108,7 +210,18 @@ export default function About() {
             header={
               <div className="flex flex-1 w-full h-full min-h-[150px] rounded-xl bg-neutral-900 items-center justify-center relative overflow-hidden group">
                 <div className="absolute inset-0 bg-grid-white/[0.05]" />
-                <GraduationCap className="w-16 h-16 text-neutral-200 group-hover:scale-110 transition-transform duration-300" />
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.3 }}
+                  className="relative w-24 h-24"
+                >
+                  <Image
+                    src="/undip.png"
+                    alt="Universitas Diponegoro Logo"
+                    fill
+                    className="object-contain"
+                  />
+                </motion.div>
               </div>
             }
             className="md:col-span-1"
@@ -117,7 +230,7 @@ export default function About() {
 
           {/* Passion Bubbles */}
           <BentoGridItem
-            title={<span className="text-xl font-bold">My Passion</span>}
+            title={<span className="text-xl font-bold">Stuff I Mostly Do</span>}
             description={<span className="text-base text-neutral-300">Things that keep me going.</span>}
             header={<PassionBubbles />}
             className="md:col-span-2"
