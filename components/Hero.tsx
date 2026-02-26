@@ -1,110 +1,141 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
+import { Section } from "@/components/Section";
+import ViewAnimation from "@/components/ViewAnimation";
 import { motion } from "framer-motion";
-import { ArrowDownIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { TypeAnimation } from "react-type-animation";
-import { Spotlight } from "@/components/ui/Spotlight";
-import { useEffect, useState } from "react";
 
 export default function Hero() {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!isMounted) {
-    return null;
-  }
-
   return (
-    <section
-      id="hero"
-      className="relative min-h-screen flex items-center justify-center bg-background dark:bg-black overflow-hidden"
-    >
-      <Spotlight
-        className="-top-40 left-0 md:left-60 md:-top-20"
-        fill="white"
-      />
+    <Section sectionNumber="00" label="Home">
+      <div className="relative min-h-[85vh] sm:min-h-[80vh] flex items-center">
+        {/* Faint blueprint grid behind hero */}
+        <div className="absolute inset-0 blueprint-grid opacity-30 pointer-events-none" />
 
-      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-6"
-        >
-          <span className="inline-block py-1 px-3 rounded-full bg-secondary/50 border border-secondary text-sm text-secondary-foreground backdrop-blur-sm">
-            Welcome to my portfolio
-          </span>
-        </motion.div>
+        <div className="relative w-full grid sm:grid-cols-[1.2fr_1fr] gap-0 items-center">
+          {/* Left — Text */}
+          <div className="p-6 sm:p-10 sm:py-20 relative z-10">
+            {/* Coordinate marker */}
+            <ViewAnimation
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              delay={0.1}
+              viewport={{ once: true }}
+            >
+              <span className="font-mono-accent text-[11px] text-muted-foreground/40 tracking-widest mb-6 block">
+                &lt;00.01&gt; PROFILE
+              </span>
+            </ViewAnimation>
 
-        <motion.h1
-          className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <span className="block text-foreground">Hi, I'm</span>
-          <span className="bg-gradient-to-b from-neutral-200 to-neutral-500 bg-clip-text text-transparent">
-            Bintang
-          </span>
-        </motion.h1>
+            <ViewAnimation
+              initial={{ opacity: 0, translateY: -12 }}
+              whileInView={{ opacity: 1, translateY: 0 }}
+              delay={0.2}
+              viewport={{ once: true }}
+            >
+              <h1 className="text-5xl sm:text-7xl lg:text-8xl font-medium tracking-tighter leading-[0.95] mb-8">
+                Bintang
+                <br />
+                <span className="text-muted-foreground/30">Syafrian</span>
+                <br />
+                Rizal
+              </h1>
+            </ViewAnimation>
 
-        <motion.div
-          className="text-xl md:text-2xl mb-10 min-h-[60px] text-muted-foreground font-light"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-        >
-          <TypeAnimation
-            sequence={[
-              "Full-Stack Developer",
-              2000,
-              "UI/UX Enthusiast",
-              2000,
-              "Problem Solver",
-              2000,
-              "Tech Explorer",
-              2000,
-            ]}
-            wrapper="span"
-            speed={50}
-            repeat={Number.POSITIVE_INFINITY}
-          />
-        </motion.div>
+            <ViewAnimation
+              initial={{ opacity: 0, translateY: -4 }}
+              whileInView={{ opacity: 1, translateY: 0 }}
+              delay={0.5}
+              viewport={{ once: true }}
+            >
+              <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-10 max-w-sm">
+                Software developer crafting digital experiences
+                with precision and creative ambition.
+              </p>
+            </ViewAnimation>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-        >
-          <Button
-            asChild
-            className="group relative overflow-hidden rounded-full px-8 py-6 text-lg bg-white text-black hover:bg-neutral-200 transition-all duration-300"
+            <ViewAnimation
+              initial={{ opacity: 0, translateY: -4 }}
+              whileInView={{ opacity: 1, translateY: 0 }}
+              delay={0.7}
+              viewport={{ once: true }}
+            >
+              <div className="flex items-center gap-6">
+                <Link
+                  href="/about"
+                  className="inline-flex items-center gap-2 text-sm font-medium text-foreground hover:text-muted-foreground transition-colors group"
+                >
+                  <span className="font-mono-accent text-[10px] text-muted-foreground/40">→</span>
+                  Explore my work
+                  <motion.span
+                    className="inline-block"
+                    animate={{ x: [0, 4, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    ↗
+                  </motion.span>
+                </Link>
+                <Link
+                  href="/contact"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Get in touch
+                </Link>
+              </div>
+            </ViewAnimation>
+          </div>
+
+          {/* Right — Profile Image with offset frame */}
+          <ViewAnimation
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            delay={0.3}
+            viewport={{ once: true }}
+            className="flex items-center justify-center p-6 sm:p-10 relative"
           >
-            <a href="#about" className="flex items-center justify-center">
-              Explore My Work
-              <ArrowDownIcon className="ml-2 h-4 w-4 group-hover:translate-y-1 transition-transform" />
-            </a>
-          </Button>
-          <Button
-            variant="outline"
-            className="group rounded-full px-8 py-6 text-lg border-neutral-800 hover:bg-neutral-900 hover:text-white transition-all duration-300"
-            asChild
-          >
-            <a href="#contact" className="flex items-center justify-center">
-              Get in Touch
-              <span className="ml-2 group-hover:rotate-12 transition-transform">👋</span>
-            </a>
-          </Button>
-        </motion.div>
+            <div className="relative w-full max-w-[340px]">
+              {/* Offset border frame — creates depth */}
+              <div
+                className="absolute -top-3 -right-3 w-full h-full border border-border/40 rounded-sm pointer-events-none"
+                style={{ transform: "rotate(1deg)" }}
+              />
+
+              {/* Main image */}
+              <div className="relative overflow-hidden rounded-sm group">
+                <div className="relative aspect-[3/4] overflow-hidden">
+                  <Image
+                    src="/profile.png"
+                    alt="Bintang Syafrian Rizal"
+                    fill
+                    className="object-cover object-center transition-transform duration-700 group-hover:scale-[1.03]"
+                    sizes="340px"
+                    priority
+                  />
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/20 via-transparent to-transparent" />
+                </div>
+
+                {/* Bottom annotation */}
+                <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
+                  <span className="font-mono-accent text-[10px] text-white/50 drop-shadow-lg">
+                    Semarang, ID
+                  </span>
+                  <span className="font-mono-accent text-[10px] text-white/50 drop-shadow-lg">
+                    2024
+                  </span>
+                </div>
+              </div>
+
+              {/* Corner tick marks */}
+              <div className="absolute -bottom-2 -left-2 w-3 h-3">
+                <div className="absolute bottom-0 left-0 w-3 h-px bg-muted-foreground/30" />
+                <div className="absolute bottom-0 left-0 w-px h-3 bg-muted-foreground/30" />
+              </div>
+            </div>
+          </ViewAnimation>
+        </div>
       </div>
-
-      {/* Subtle background gradient for depth */}
-      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-background to-transparent pointer-events-none" />
-    </section>
+    </Section>
   );
 }

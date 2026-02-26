@@ -1,117 +1,59 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { useScrollTo } from "@/hooks/useScrollTo";
+import { Section } from "@/components/Section";
+import ViewAnimation from "@/components/ViewAnimation";
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
-  const scrollTo = useScrollTo();
-
-  const navigationItems = [
-    { name: "Home", id: "home" },
-    { name: "About", id: "about" },
-    { name: "Projects", id: "projects" },
-    { name: "Contact", id: "contact" },
-  ];
-
-  const containerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: {
-      opacity: 1,
-      y: 0,
-    },
-  };
-
-  const heartVariants = {
-    initial: { scale: 1 },
-    animate: {
-      scale: [1, 1.2, 1],
-      transition: {
-        duration: 0.8,
-        repeat: Infinity,
-        repeatType: "reverse" as const,
-      },
-    },
-  };
-
-  const handleNavClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    id: string
-  ) => {
-    e.preventDefault();
-    if (id === "home") {
-      scrollTo("top");
-    } else {
-      scrollTo(id);
-    }
-  };
-
   return (
-    <motion.footer
-      className="w-full bg-background dark:bg-black pb-8 pt-0 px-4 text-center"
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-    >
-      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-        <motion.nav className="flex gap-6" variants={containerVariants}>
-          {navigationItems.map((item) => (
-            <motion.div
-              key={item.name}
-              variants={itemVariants}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+    <footer>
+      <Section>
+        <div className="py-6 sm:py-8 px-4 sm:px-6 border-t border-border/30">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <ViewAnimation
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              delay={0.2}
+              viewport={{ once: true }}
             >
-              <Link
-                href={`#${item.id}`}
-                className="text-sm hover:text-primary transition-colors"
-                onClick={(e) => handleNavClick(e, item.id)}
-              >
-                {item.name}
-              </Link>
-            </motion.div>
-          ))}
-        </motion.nav>
-        <motion.p
-          className="text-sm text-muted-foreground"
-          variants={itemVariants}
-        >
-          © {currentYear} Made with{" "}
-          <motion.span
-            className="text-red-500 inline-block"
-            aria-label="love"
-            variants={heartVariants}
-            initial="initial"
-            animate="animate"
-          >
-            ❤
-          </motion.span>{" "}
-          by{" "}
-          <motion.span
-            className="text-primary"
-            whileHover={{
-              scale: 1.05,
-              transition: { duration: 0.2 },
-            }}
-          >
-            Bintang Syafrian Rizal
-          </motion.span>
-        </motion.p>
-      </div>
-    </motion.footer>
+              <div className="flex items-center gap-4 text-xs text-muted-foreground/40">
+                <Link
+                  href="https://github.com/gnatnib"
+                  target="_blank"
+                  className="hover:text-muted-foreground transition-colors font-mono-accent text-[10px] tracking-wider"
+                >
+                  GITHUB
+                </Link>
+                <Link
+                  href="https://linkedin.com/in/bintangsyafrian"
+                  target="_blank"
+                  className="hover:text-muted-foreground transition-colors font-mono-accent text-[10px] tracking-wider"
+                >
+                  LINKEDIN
+                </Link>
+                <Link
+                  href="mailto:bintang.syafrian@gmail.com"
+                  className="hover:text-muted-foreground transition-colors font-mono-accent text-[10px] tracking-wider"
+                >
+                  EMAIL
+                </Link>
+              </div>
+            </ViewAnimation>
+
+            <ViewAnimation
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              delay={0.3}
+              viewport={{ once: true }}
+            >
+              <p className="font-mono-accent text-[10px] text-muted-foreground/30 tracking-wider">
+                © {new Date().getFullYear()} BINTANG SYAFRIAN RIZAL
+              </p>
+            </ViewAnimation>
+          </div>
+        </div>
+      </Section>
+    </footer>
   );
 };
 

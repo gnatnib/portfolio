@@ -1,22 +1,16 @@
 import "./globals.css";
-import { Inter } from "next/font/google";
-import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
+import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-
-const inter = Inter({ subsets: ["latin"] });
+import CursorGlow from "@/components/CursorGlow";
 
 export const metadata = {
-  title: "gnatnib",
+  title: "Bintang Syafrian Rizal | Software Developer",
   description: "Portfolio showcasing my web development projects and skills",
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
     apple: "/apple-icon.png",
-    other: {
-      rel: "icon",
-      url: "/icon.svg",
-    },
   },
 };
 
@@ -27,11 +21,30 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn(inter.className, "bg-background dark:bg-black antialiased")}>
-        <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark" enableSystem={false}>
-          {children}
-          <Footer />
-        </ThemeProvider>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&family=JetBrains+Mono:wght@300..700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body
+        className={cn(
+          "bg-background flex min-h-dvh flex-col overflow-x-hidden antialiased",
+        )}
+        style={{ fontFamily: "'Figtree', sans-serif" }}
+      >
+        <CursorGlow />
+        <Header />
+        {/* Header spacer */}
+        <div className="h-[64px] sm:h-[76px]" />
+        <main className="flex-1 blueprint-grid">{children}</main>
+        <Footer />
       </body>
     </html>
   );

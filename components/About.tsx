@@ -1,267 +1,125 @@
-import React, { useRef, useState, useEffect } from "react";
+"use client";
+
+import { motion } from "framer-motion";
 import Image from "next/image";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { LinkedinIcon, FileDown, Code, User, GraduationCap, MapPin, Heart } from "lucide-react";
-import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
-import { Globe } from "@/components/ui/globe";
-import { AsciiReveal } from "@/components/ui/AsciiReveal";
 
-const PassionBubbles = () => {
-  const passions = ["Data Science", "Machine Learning", "Web Dev", "UI/UX", "Hiking", "Photography"];
+const awards = [
+  { title: "3rd Place - National Cyber Security Competition (LKS)", organization: "Ministry of Education and Culture RI", year: "2020" },
+  { title: "1st Place - Provincial Cyber Security Competition (LKS Central Java)", organization: "Education & Culture Office of Central Java", year: "2020" },
+  { title: "4th Place - Technoinfest Network Competition", organization: "Politeknik Negeri Semarang (Polines)", year: "2020" },
+  { title: "Finalist - Dinasfest IT Competition", organization: "Dinasfest", year: "2020" },
+  { title: "2nd Place - Ebination Networking Competition", organization: "Yogyakarta State University (UNY)", year: "2019" },
+  { title: "2nd Place - City IT Network Support (LKS Semarang)", organization: "Education & Culture Office of Central Java", year: "2019" },
+  { title: "1st Place - Technoinfest Network Competition", organization: "Politeknik Negeri Semarang (Polines)", year: "2019" },
+  { title: "2nd Place - Dinasfest IT Competition (Quiz)", organization: "HMTI UDINUS", year: "2019" },
+];
 
-  const mouseX = useMotionValue(-Infinity);
-  const mouseY = useMotionValue(-Infinity);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    mouseX.set(e.clientX - rect.left);
-    mouseY.set(e.clientY - rect.top);
-  };
-
-  const handleMouseLeave = () => {
-    mouseX.set(-Infinity);
-    mouseY.set(-Infinity);
-  };
-
-  return (
-    <div
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="relative w-full h-full min-h-[150px] overflow-hidden bg-gradient-to-br from-neutral-900 to-black rounded-xl p-4"
-    >
-      {passions.map((passion, i) => (
-        <Bubble
-          key={passion}
-          passion={passion}
-          index={i}
-          mouseX={mouseX}
-          mouseY={mouseY}
-        />
-      ))}
-    </div>
-  );
-};
-
-const Bubble = ({
-  passion,
-  index,
-  mouseX,
-  mouseY
-}: {
-  passion: string,
-  index: number,
-  mouseX: any,
-  mouseY: any
-}) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-
-  // Initial absolute positioning
-  const initialLeft = (index % 3) * 30 + 10;
-  const initialTop = Math.floor(index / 3) * 40 + 20;
-
-  // Measure center position relative to container
-  useEffect(() => {
-    const updatePosition = () => {
-      if (ref.current && ref.current.parentElement) {
-        const parentRect = ref.current.parentElement.getBoundingClientRect();
-        // Calculate expected center based on percentage
-        const centerX = parentRect.width * (initialLeft / 100) + ref.current.offsetWidth / 2;
-        const centerY = parentRect.height * (initialTop / 100) + ref.current.offsetHeight / 2;
-        setPosition({ x: centerX, y: centerY });
-      }
-    };
-
-    updatePosition();
-    window.addEventListener("resize", updatePosition);
-    return () => window.removeEventListener("resize", updatePosition);
-  }, [initialLeft, initialTop]);
-
-  const dx = useTransform(mouseX, (x: number) => {
-    if (x === -Infinity) return 0;
-    return x - position.x;
-  });
-
-  const dy = useTransform(mouseY, (y: number) => {
-    if (y === -Infinity) return 0;
-    return y - position.y;
-  });
-
-  const distance = useTransform([dx, dy], ([x, y]: number[]) => Math.sqrt(x * x + y * y));
-
-  const xShift = useTransform(distance, (d) => {
-    const maxDist = 150;
-    if (d < maxDist && d > 0) {
-      const force = (maxDist - d) / maxDist;
-      const dirX = dx.get() / d;
-      return -dirX * force * 80; // Repulsion strength
-    }
-    return 0;
-  });
-
-  const yShift = useTransform(distance, (d) => {
-    const maxDist = 150;
-    if (d < maxDist && d > 0) {
-      const force = (maxDist - d) / maxDist;
-      const dirY = dy.get() / d;
-      return -dirY * force * 80;
-    }
-    return 0;
-  });
-
-  const springConfig = { damping: 15, stiffness: 150, mass: 0.8 };
-  const x = useSpring(xShift, springConfig);
-  const y = useSpring(yShift, springConfig);
-
-  return (
-    <motion.div
-      ref={ref}
-      className="absolute bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 text-sm text-white whitespace-nowrap z-10"
-      initial={{ x: 0, y: 0 }}
-      animate={{
-        y: [0, -10, 0],
-        x: [0, 5, 0]
-      }}
-      transition={{
-        duration: 3 + index,
-        repeat: Infinity,
-        ease: "easeInOut",
-        delay: index * 0.2
-      }}
-      style={{
-        left: `${initialLeft}%`,
-        top: `${initialTop}%`,
-        translateX: x,
-        translateY: y,
-      }}
-    >
-      {passion}
-    </motion.div>
-  );
-};
+const certificates = [
+  { image: "/Alibaba Cloud Certification.jpg", title: "Alibaba Cloud Professional Cloud Computing Certification" },
+  { image: "/HackerRank Problem Solving (Intermediate).png", title: "HackerRank Problem Solving (Intermediate)" },
+  { image: "/Hackerrank Software Engineer Intern.png", title: "HackerRank Software Engineer Intern" },
+  { image: "/ORACLE Academy_Database Programming with SQL.png", title: "Oracle Academy Database Programming with SQL" },
+];
 
 export default function About() {
   return (
-    <section
-      id="about"
-      className="min-h-screen flex items-center justify-center bg-background dark:bg-black py-20 relative overflow-hidden"
-    >
-      {/* Background Animation */}
-      <div className="absolute inset-0 w-full h-full bg-black">
-        <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/10 via-transparent to-blue-500/10 animate-pulse" />
-      </div>
-
-      <div className="container mx-auto px-4 relative z-10">
+    <section id="about" className="py-20 section-separator">
+      <div className="max-w-6xl mx-auto px-6">
+        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
           viewport={{ once: true }}
-          className="mb-16 text-center"
+          transition={{ duration: 0.5 }}
+          className="mb-16"
         >
-          <h2 className="text-4xl md:text-6xl font-bold mb-6">About Me</h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Get to know me better through my journey and interests.
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            About Me
+          </h2>
+          <p className="text-gray-500 max-w-2xl leading-relaxed">
+            A curated assemblage of reflections, annotations, and musings chronicling my odyssey
+            through an existence richly embroidered with technological fascination, robotic pursuits,
+            athletic diversions, and interface artistry.
           </p>
         </motion.div>
 
-        <BentoGrid className="max-w-6xl mx-auto">
-          {/* Profile Photo - Vertical */}
-          <BentoGridItem
-            title={<span className="text-xl font-bold">Who I Am</span>}
-            description={<span className="text-base text-neutral-300">I'm Bintang Syafrian Rizal, a passionate Computer Science student at Universitas Diponegoro.</span>}
-            header={
-              <div className="relative w-full h-full min-h-[300px] rounded-xl overflow-hidden group">
-                <Image
-                  src="/profile.png"
-                  alt="profile"
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              </div>
-            }
-            className="md:col-span-1 md:row-span-2"
-            icon={<User className="h-5 w-5 text-neutral-500" />}
-          />
+        {/* Awards & Recognition */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mb-20"
+        >
+          <div className="section-separator pt-8 mb-8">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Awards & Recognition</h3>
+            <p className="text-gray-500 text-sm">
+              Honors received for contributions in design, development, and open source.
+            </p>
+          </div>
 
-          {/* Location with Globe */}
-          <BentoGridItem
-            title={<span className="text-xl font-bold">Location</span>}
-            description={<span className="text-base text-neutral-300">Based in Semarang, Indonesia.</span>}
-            header={
-              <div className="relative w-full h-48 rounded-xl overflow-hidden bg-neutral-900">
-                <Globe className="absolute inset-0 w-full h-full" />
-                <div className="absolute bottom-4 left-4 bg-black/50 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-xs text-white font-medium">Remote Ready</span>
+          <div className="space-y-0">
+            {awards.map((award, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+                className="grid grid-cols-12 gap-4 py-4 border-b border-gray-100 hover:bg-gray-50/50 transition-colors"
+              >
+                <div className="col-span-12 md:col-span-6">
+                  <span className="text-gray-900 text-sm font-medium">{award.title}</span>
                 </div>
-              </div>
-            }
-            className="md:col-span-1"
-            icon={<MapPin className="h-5 w-5 text-neutral-500" />}
-          />
+                <div className="col-span-8 md:col-span-4">
+                  <span className="text-gray-500 text-sm">{award.organization}</span>
+                </div>
+                <div className="col-span-4 md:col-span-2 text-right">
+                  <span className="text-gray-400 text-sm">{award.year}</span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
 
-          {/* Education */}
-          <BentoGridItem
-            title={<span className="text-xl font-bold">Education</span>}
-            description={<span className="text-base text-neutral-300">Computer Science at Universitas Diponegoro.</span>}
-            header={
-              <div className="flex flex-1 w-full h-full min-h-[150px] rounded-xl bg-neutral-900 items-center justify-center relative overflow-hidden group">
-                <div className="absolute inset-0 bg-grid-white/[0.05]" />
-                <motion.div
-                  whileHover={{ scale: 1.1 }}
-                  transition={{ duration: 0.3 }}
-                  className="relative w-24 h-24"
-                >
+        {/* Certificates */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="section-separator pt-8 mb-8">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Certificates</h3>
+            <p className="text-gray-500 text-sm">
+              An ambitious scholar and lifelong learner, dedicated to the pursuit of
+              personal and academic achievement.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {certificates.map((cert, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="group"
+              >
+                <div className="aspect-[4/3] relative overflow-hidden bg-gray-100 mb-3 rounded-sm">
                   <Image
-                    src="/undip.png"
-                    alt="Universitas Diponegoro Logo"
+                    src={cert.image}
+                    alt={cert.title}
                     fill
-                    className="object-contain"
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
                   />
-                </motion.div>
-              </div>
-            }
-            className="md:col-span-1"
-            icon={<GraduationCap className="h-5 w-5 text-neutral-500" />}
-          />
-
-          {/* Passion Bubbles */}
-          <BentoGridItem
-            title={<span className="text-xl font-bold">Stuff I Mostly Do</span>}
-            description={<span className="text-base text-neutral-300">Things that keep me going.</span>}
-            header={<PassionBubbles />}
-            className="md:col-span-2"
-            icon={<Heart className="h-5 w-5 text-neutral-500" />}
-          />
-        </BentoGrid>
-
-        <div className="flex justify-center gap-4 mt-12">
-          <Button
-            asChild
-            className="gap-2 rounded-full"
-            variant="default"
-          >
-            <a
-              href="https://linkedin.com/in/bintangsyafrian"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <LinkedinIcon className="w-4 h-4" />
-              LinkedIn
-            </a>
-          </Button>
-          <Button
-            variant="outline"
-            className="gap-2 rounded-full"
-            onClick={() => window.open("/CV_ATS_Bintang Syafrian Rizal.pdf", "_blank")}
-          >
-            <FileDown className="w-4 h-4" />
-            Download CV
-          </Button>
-        </div>
+                </div>
+                <p className="text-xs text-gray-600 leading-relaxed">{cert.title}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   );
