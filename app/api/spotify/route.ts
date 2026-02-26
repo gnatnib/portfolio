@@ -7,12 +7,21 @@ const SPOTIFY_TOP_TRACKS_URL = "https://api.spotify.com/v1/me/top/tracks?limit=8
 const SPOTIFY_TOP_ARTISTS_URL = "https://api.spotify.com/v1/me/top/artists?limit=8&time_range=short_term";
 const SPOTIFY_PLAYLISTS_URL = "https://api.spotify.com/v1/me/playlists?limit=6";
 
+// Force dynamic — never cache this route on Vercel
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 async function getAccessToken() {
   const clientId = process.env.SPOTIFY_CLIENT_ID;
   const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
   const refreshToken = process.env.SPOTIFY_REFRESH_TOKEN;
 
   if (!clientId || !clientSecret || !refreshToken) {
+    console.error("Missing Spotify env vars:", {
+      hasClientId: !!clientId,
+      hasClientSecret: !!clientSecret,
+      hasRefreshToken: !!refreshToken,
+    });
     throw new Error("Missing Spotify credentials in env");
   }
 
@@ -28,6 +37,7 @@ async function getAccessToken() {
       grant_type: "refresh_token",
       refresh_token: refreshToken,
     }),
+    cache: "no-store",
   });
 
   if (!response.ok) {
@@ -45,13 +55,11 @@ async function safeFetch(url: string, token: string) {
       headers: { Authorization: `Bearer ${token}` },
       cache: "no-store",
     });
-    // 204 = no content (e.g. nothing currently playing) — not an error
     if (res.status === 204) return null;
     if (!res.ok) {
       console.error(`Spotify API error for ${url}:`, res.status);
       return null;
     }
-    // Some endpoints might return empty body even with 200
     const text = await res.text();
     if (!text) return null;
     return JSON.parse(text);
@@ -91,7 +99,7 @@ export async function GET() {
       };
     }
 
-    // Recently played (individual tracks, not albums/playlists)
+    // Recently played (individual tracks)
     const recentlyPlayed = (recentlyPlayedData?.items || []).map((item: any) => ({
       title: item.track?.name || "",
       artist: item.track?.artists?.map((a: any) => a.name).join(", ") || "",
@@ -160,7 +168,7 @@ export async function GET() {
         playlists: [],
         error: err.message,
       },
-      { status: 500 }
+      { status: 200 } // Return 200 even on error so the client can still parse it
     );
   }
 }

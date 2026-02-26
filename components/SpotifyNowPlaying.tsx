@@ -51,8 +51,8 @@ interface SpotifyData {
 
 function ScrollRow({ children }: { children: React.ReactNode }) {
   return (
-    <div className="overflow-x-auto scrollbar-hide">
-      <div className="flex gap-3 w-max pb-2">{children}</div>
+    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-3">
+      {children}
     </div>
   );
 }
@@ -63,7 +63,7 @@ function TrackCard({ track }: { track: TrackItem }) {
       href={track.songUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex-shrink-0 w-28 sm:w-32 group"
+      className="group"
     >
       <div className="relative aspect-square overflow-hidden bg-muted rounded-sm mb-2">
         {track.albumImageUrl ? (
@@ -96,9 +96,9 @@ function ArtistCard({ artist }: { artist: ArtistItem }) {
       href={artist.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex-shrink-0 w-20 sm:w-24 group text-center"
+      className="group text-center"
     >
-      <div className="relative overflow-hidden bg-muted rounded-full mb-2 mx-auto w-16 h-16 sm:w-20 sm:h-20">
+      <div className="relative overflow-hidden bg-muted rounded-full mb-2 mx-auto aspect-square">
         {artist.imageUrl ? (
           <Image src={artist.imageUrl} alt={artist.name} fill className="object-cover transition-transform duration-300 group-hover:scale-105" unoptimized />
         ) : (
@@ -122,7 +122,7 @@ function PlaylistCard({ playlist }: { playlist: PlaylistItem }) {
       href={playlist.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex-shrink-0 w-28 sm:w-32 group"
+      className="group"
     >
       <div className="relative aspect-square overflow-hidden bg-muted rounded-sm mb-2">
         {playlist.imageUrl ? (
@@ -243,7 +243,7 @@ export default function SpotifyNowPlaying() {
           {data === null ? (
             <LoadingSkeleton />
           ) : !hasContent ? (
-            <p className="text-sm text-muted-foreground/50">No listening data available right now.</p>
+            <p className="text-sm text-muted-foreground/50">Connecting to Spotify...</p>
           ) : (
             <div className="space-y-8">
               {/* Hero track */}
