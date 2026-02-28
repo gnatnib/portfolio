@@ -14,7 +14,7 @@ const experiences = [
     timeframe: "Feb 2026 – Apr 2026",
     description:
       "Built scalable Human Resource Management System with Vite.js for frontend and Laravel for backend, managing over 150+ employees with features like attendance tracking, payroll management, and employee self-service.",
-    image: "/experience/san.jpeg",
+    image: "/experience/san.png",
     tags: ["Hybrid", "Internship"],
     side: "right" as const,
   },

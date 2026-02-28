@@ -12,7 +12,7 @@ const experiences = [
     title: "Fullstack Developer Intern",
     company: "PT. Sinergi Asta Nusantara",
     period: "Feb 2026 - Present",
-    image: "/experience/san.jpeg",
+    image: "/experience/san.png",
     type: "Internship",
   },
   {
