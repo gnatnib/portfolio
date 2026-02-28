@@ -18,7 +18,7 @@ const experiences = [
   {
     title: "Fullstack Developer Intern",
     company: "PT. Usaha Gedung Mandiri",
-    period: "Jun – Aug 2024",
+    period: "Jan - Feb 2025",
     image: "/experience/Fullstack Developer Intern @PT.Usaha Gedung Mandiri.png",
     type: "Internship",
   },
