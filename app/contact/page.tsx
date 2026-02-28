@@ -10,10 +10,9 @@ import { ArrowUpRight } from "lucide-react";
 const contactLinks = [
   { name: "LinkedIn", link: "https://linkedin.com/in/bintangsyafrian", marker: "01" },
   { name: "GitHub", link: "https://github.com/gnatnib", marker: "02" },
-  { name: "Facebook", link: "https://facebook.com", marker: "03" },
-  { name: "X (Twitter)", link: "https://x.com/carpacciao", marker: "04" },
-  { name: "Instagram", link: "https://instagram.com/bintwang", marker: "05" },
-  { name: "Email", link: "mailto:bintang.syafrian@gmail.com", marker: "06" },
+  { name: "X (Twitter)", link: "https://x.com/bintsora", marker: "03" },
+  { name: "Instagram", link: "https://instagram.com/bintwang", marker: "04" },
+  { name: "Email", link: "mailto:bintang.syafrian@gmail.com", marker: "05" },
 ];
 
 export default function ContactPage() {
