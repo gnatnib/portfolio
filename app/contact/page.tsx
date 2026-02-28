@@ -22,7 +22,7 @@ export default function ContactPage() {
       <HeroSection
         title="Contact"
         sectionNumber="CT.01"
-        description="A digital conduit facilitating seamless discourse, collaboration overtures, and exchanges of inventive ideations."
+        description="I’m always open to new collaborations, projects, and conversations. Whether you have an idea, a question, or just want to say hi, I’d love to hear from you."
       />
 
       <Section sectionNumber="CT.02" label="Connect">

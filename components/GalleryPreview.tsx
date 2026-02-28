@@ -39,7 +39,7 @@ export default function GalleryPreview() {
               Gallery
             </h2>
             <p className="text-sm text-muted-foreground max-w-md">
-              Capturing moments from tech, academia, and collaborative ventures.
+              Moments captured through my lens.
             </p>
           </div>
           <Link

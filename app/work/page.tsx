@@ -8,103 +8,120 @@ import HighlightedWork from "@/components/HighlightedWork";
 import { Section } from "@/components/Section";
 import ViewAnimation from "@/components/ViewAnimation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ExternalLink } from "lucide-react";
+import { ChevronDown, Github, Globe } from "lucide-react";
 
 const allProjects = [
   {
-    title: "E-Tarteel",
+    title: "Pangan.id",
     category: "Web App",
     client: "Personal",
-    year: "2024",
-    images: ["/project1.png"],
-    description: "A Quran learning platform built with modern web technologies, featuring recitation tracking and progress monitoring.",
-    tech: ["Next.js", "TypeScript", "Prisma", "PostgreSQL"],
-    github: "https://github.com/gnatnib",
+    year: "2026",
+    images: ["/panganmockup.png"],
+    description: "Pangan.id is a fast, mobile-view compatible dashboard for tracking daily food prices across all 38 Indonesian provinces using official Bank Indonesia PIHPS data.",
+    tech: ["Next.js", "TypeScript", "Supabase", "Tailwind CSS"],
+    github: "https://github.com/gnatnib/pangan.id",
+    liveDemo: "https://pangan-id.vercel.app",
   },
   {
-    title: "Movie Recommendation System",
-    category: "ML / Data Science",
-    client: "Academic",
-    year: "2024",
-    images: ["/project2.png", "/project3.png"],
-    description: "Machine learning-based movie recommendation system using collaborative filtering and content-based approaches.",
-    tech: ["Python", "Scikit-learn", "Pandas", "Flask"],
-    github: "https://github.com/gnatnib",
-  },
-  {
-    title: "Portfolio Website",
+    title: "SANHRMS",
     category: "Web App",
-    client: "Personal",
-    year: "2024",
-    images: ["/project3.png"],
-    description: "Personal portfolio website showcasing projects and experience with a modern design aesthetic.",
-    tech: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
-    github: "https://github.com/gnatnib",
+    client: "PT. Sinergi Asta Nusantara",
+    year: "2026",
+    images: ["/sanhrms.png"],
+    description: "SANHRMS is a comprehensive Human Resource Management System for PT. Sinergi Asta Nusantara.",
+    tech: ["TypeScript", "Vite.js", "Laravel", "MySQL"],
+    github: "https://github.com/gnatnib/HRMS_PT.SAN",
   },
   {
-    title: "E-Commerce Platform",
+    title: "Sistem Informasi Zona KHAS Kelurahan Sendangmulyo",
     category: "Web App",
-    client: "Academic",
-    year: "2024",
-    images: ["/project4.png", "/project5.png"],
-    description: "Full-featured e-commerce platform with product management, cart system, and payment integration.",
+    client: "Community Service",
+    year: "2025",
+    images: ["/zonakhas.png"],
+    description: "Website KKN IDBU 81 Sebagai Upaya Pembentukan dan Penguatan Zona KHAS.",
+    tech: ["Next.js", "Tailwind CSS", "Typescript"],
+    github: "https://github.com/gnatnib/idbu81",
+    liveDemo: "https://khasklipang.vercel.app",
+  },
+  {
+    title: "Rumeet",
+    category: "Web App",
+    client: "PT. Usaha Gedung Mandiri",
+    year: "2025",
+    images: ["/project3.png", "/project3.png"],
+    description: "Corporate room booking system for efficient scheduling.",
     tech: ["Laravel", "MySQL", "Bootstrap", "PHP"],
-    github: "https://github.com/gnatnib",
+    github: "https://github.com/gnatnib/ugbooking",
   },
   {
-    title: "IoT Monitoring Dashboard",
-    category: "IoT / Web",
+    title: "SiPP",
+    category: "Web App",
+    client: "PT. Usaha Gedung Mandiri",
+    year: "2025",
+    images: ["/project4.png"],
+    description: "Procurement management system for enterprise needs.",
+    tech: ["Laravel", "MySQL", "Bootstrap", "PHP"],
+    github: "https://github.com/gnatnib/ugprocurement",
+  },
+  {
+    title: "E-tarteel",
+    category: "Web App",
+    client: "Personal",
+    year: "2025",
+    images: ["/project5.png", "/project5.png"],
+    description: "Modern Quran recitation app with beautiful UI.",
+    tech: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
+    github: "https://github.com/gnatnib/e-tarteel",
+    liveDemo: "https://etarteel.vercel.app",
+  },
+  {
+    title: "Twentyfour",
+    category: "Web App",
+    client: "Personal",
+    year: "2025",
+    images: ["/project8.png"],
+    description: "Retro arcade multiplayer card game.",
+    tech: ["HTML5", "Firebase", "JavaScript"],
+    github: "https://github.com/gnatnib/twentyfour",
+    liveDemo: "https://twentyfourgame.vercel.app",
+  },
+  {
+    title: "Helmet Detection",
+    category: "Computer Vision",
     client: "Academic",
-    year: "2023",
-    images: ["/project5.png"],
-    description: "Dashboard for monitoring IoT sensor data with real-time visual analytics and alerts.",
-    tech: ["React", "MQTT", "InfluxDB", "Grafana"],
-    github: "https://github.com/gnatnib",
+    year: "2025",
+    images: ["/project9.png"],
+    description: "Computer Vision for detecting helmet on motorcyclist using YOLOv11.",
+    tech: ["Python", "YOLO", "Streamlit"],
+    github: "https://github.com/gnatnib/helmet_detection",
+    liveDemo: "https://helmetdetectioncomvis.streamlit.app/",
   },
   {
-    title: "Student Information System",
+    title: "Financipal",
+    category: "Web App",
+    client: "Personal",
+    year: "2024",
+    images: ["/project2.png", "/project2.png"],
+    description: "Personal finance tracker with comprehensive analytics and insights.",
+    tech: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
+    github: "https://github.com/gnatnib/financipal",
+    liveDemo: "https://financipal.vercel.app",
+  },
+  {
+    title: "Sumanto",
     category: "Web App",
     client: "Academic",
     year: "2023",
     images: ["/project6.png"],
-    description: "Comprehensive student information management with academic tracking and reporting features.",
-    tech: ["Java", "Spring Boot", "MySQL", "React"],
-    github: "https://github.com/gnatnib",
-  },
-  {
-    title: "Chat Application",
-    category: "Web App",
-    client: "Personal",
-    year: "2024",
-    images: ["/project7.png", "/project8.png"],
-    description: "Real-time chat application with WebSocket support, file sharing, and group messaging.",
-    tech: ["Node.js", "Socket.io", "React", "MongoDB"],
-    github: "https://github.com/gnatnib",
-  },
-  {
-    title: "Drone Control System",
-    category: "Embedded",
-    client: "URDC",
-    year: "2023",
-    images: ["/project8.png"],
-    description: "Autonomous drone control system with computer vision capabilities for aerial surveillance.",
-    tech: ["Python", "ROS", "OpenCV", "Arduino"],
-    github: "https://github.com/gnatnib",
-  },
-  {
-    title: "Task Management App",
-    category: "Web App",
-    client: "Personal",
-    year: "2023",
-    images: ["/project9.png"],
-    description: "Kanban-style task management application with drag-and-drop, labels, and team collaboration.",
-    tech: ["React", "TypeScript", "Firebase", "Tailwind CSS"],
-    github: "https://github.com/gnatnib",
+    description: "Integrated academic management system.",
+    tech: ["Laravel", "MySQL", "Bootstrap", "PHP"],
+    github: "https://github.com/gnatnib/Sumanto",
   },
 ];
 
 export default function WorkPage() {
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
+  const [hoveredProject, setHoveredProject] = useState<string | null>(null);
 
   const toggleItem = (title: string) => {
     setExpandedItem(expandedItem === title ? null : title);
@@ -115,7 +132,7 @@ export default function WorkPage() {
       <HeroSection
         title="Work"
         sectionNumber="WK.01"
-        description="A compendium of inventive experiments, coded odysseys, and meticulously sculpted digital constructs reflecting my explorative forays into technological innovation."
+        description="A bunch of projects I’ve built, experiments I’ve tried, and ideas I’ve turned into something real while exploring tech."
       />
 
       <HighlightedWork showLink={false} />
@@ -167,16 +184,95 @@ export default function WorkPage() {
                       className="overflow-hidden"
                     >
                       <div className="border-t border-border/20 bg-muted/5">
-                        {/* Project image */}
+                        {/* Project image with frame */}
                         <div className="px-4 sm:px-6 py-6 sm:py-8">
-                          <div className="relative aspect-[16/9] max-w-2xl mx-auto overflow-hidden rounded-sm bg-muted mb-6">
-                            <Image
-                              src={project.images[0]}
-                              alt={project.title}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
+                          <motion.div 
+                            className="relative max-w-2xl mx-auto mb-6"
+                            onMouseEnter={() => setHoveredProject(project.title)}
+                            onMouseLeave={() => setHoveredProject(null)}
+                          >
+                            {/* Browser frame with hover animation */}
+                            <motion.div 
+                              className="relative bg-muted rounded-lg overflow-hidden border border-border/20 cursor-pointer"
+                              animate={{
+                                y: hoveredProject === project.title ? -8 : 0,
+                                boxShadow: hoveredProject === project.title 
+                                  ? "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1)" 
+                                  : "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+                              }}
+                              transition={{
+                                duration: 0.4,
+                                ease: [0.25, 0.1, 0.25, 1],
+                              }}
+                            >
+                              {/* Browser header */}
+                              <div className="flex items-center gap-2 px-4 py-3 bg-muted/80 border-b border-border/20">
+                                <div className="flex gap-1.5">
+                                  <motion.div 
+                                    className="w-3 h-3 rounded-full bg-red-400/80"
+                                    animate={{
+                                      scale: hoveredProject === project.title ? 1.2 : 1,
+                                    }}
+                                    transition={{ duration: 0.2, delay: 0 }}
+                                  />
+                                  <motion.div 
+                                    className="w-3 h-3 rounded-full bg-yellow-400/80"
+                                    animate={{
+                                      scale: hoveredProject === project.title ? 1.2 : 1,
+                                    }}
+                                    transition={{ duration: 0.2, delay: 0.05 }}
+                                  />
+                                  <motion.div 
+                                    className="w-3 h-3 rounded-full bg-green-400/80"
+                                    animate={{
+                                      scale: hoveredProject === project.title ? 1.2 : 1,
+                                    }}
+                                    transition={{ duration: 0.2, delay: 0.1 }}
+                                  />
+                                </div>
+                                <div className="flex-1 mx-4">
+                                  <motion.div 
+                                    className="rounded-md px-3 py-1 text-xs text-center font-mono"
+                                    animate={{
+                                      backgroundColor: hoveredProject === project.title ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.1)",
+                                    }}
+                                    transition={{ duration: 0.3 }}
+                                  >
+                                    {project.title.toLowerCase().replace(/\s+/g, '-')}
+                                  </motion.div>
+                                </div>
+                              </div>
+                              {/* Image container with zoom effect */}
+                              <div className="relative aspect-[16/9] overflow-hidden bg-background">
+                                <motion.div
+                                  className="relative w-full h-full"
+                                  animate={{
+                                    scale: hoveredProject === project.title ? 1.05 : 1,
+                                  }}
+                                  transition={{
+                                    duration: 0.6,
+                                    ease: [0.25, 0.1, 0.25, 1],
+                                  }}
+                                >
+                                  <Image
+                                    src={project.images[0]}
+                                    alt={project.title}
+                                    fill
+                                    className="object-cover"
+                                  />
+                                </motion.div>
+                                {/* Overlay gradient on hover */}
+                                <motion.div
+                                  className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"
+                                  animate={{
+                                    opacity: hoveredProject === project.title ? 1 : 0,
+                                  }}
+                                  transition={{ duration: 0.3 }}
+                                />
+                              </div>
+                            </motion.div>
+                          </motion.div>
+                          
                           <div className="flex flex-wrap gap-2 mb-4">
                             {project.tech.map((t) => (
                               <span key={t} className="font-mono-accent text-[10px] px-2 py-0.5 border border-border/30 rounded-sm text-muted-foreground/60">
@@ -184,18 +280,34 @@ export default function WorkPage() {
                               </span>
                             ))}
                           </div>
-                          <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-4">
+                          
+                          <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mb-6">
                             {project.description}
                           </p>
-                          {project.github && (
-                            <Link
-                              href={project.github}
-                              target="_blank"
-                              className="inline-flex items-center gap-1.5 text-sm text-foreground hover:text-muted-foreground transition-colors"
-                            >
-                              Visit Project <ExternalLink size={14} />
-                            </Link>
-                          )}
+                          
+                          {/* Action buttons */}
+                          <div className="flex items-center gap-4">
+                            {project.github && (
+                              <Link
+                                href={project.github}
+                                target="_blank"
+                                className="inline-flex items-center gap-2 text-sm text-foreground hover:text-muted-foreground transition-colors"
+                              >
+                                <Github size={16} />
+                                Visit GitHub
+                              </Link>
+                            )}
+                            {project.liveDemo && (
+                              <Link
+                                href={project.liveDemo}
+                                target="_blank"
+                                className="inline-flex items-center gap-2 text-sm text-foreground hover:text-muted-foreground transition-colors"
+                              >
+                                <Globe size={16} />
+                                Live Demo
+                              </Link>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </motion.div>

@@ -7,21 +7,21 @@ import ViewAnimation from "@/components/ViewAnimation";
 
 const highlightedProjects = [
   {
-    title: "E-Tarteel",
-    year: "2024",
-    image: "/project1.png",
+    title: "Pangan.id",
+    year: "2026",
+    image: "/panganmockup.png",
     href: "/work",
   },
   {
-    title: "Movie Recommendation",
-    year: "2024",
-    image: "/project2.png",
+    title: "Sistem Informasi Zona KHAS Kelurahan Sendangmulyo",
+    year: "2025",
+    image: "/zonakhas.png",
     href: "/work",
   },
   {
-    title: "Portfolio Website",
-    year: "2024",
-    image: "/project3.png",
+    title: "SiPP",
+    year: "2025",
+    image: "/project4.png",
     href: "/work",
   },
 ];

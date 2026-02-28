@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import DotMatrixLogo from "@/components/DotMatrixLogo";
 
@@ -10,13 +10,36 @@ const navItems = [
   { name: "About", href: "/about", num: "01" },
   { name: "Experience", href: "/experience", num: "02" },
   { name: "Work", href: "/work", num: "03" },
-  { name: "Gallery", href: "/gallery", num: "04" },
-  { name: "Contact", href: "/contact", num: "05" },
+  // { name: "Gallery", href: "/gallery", num: "04" },
+  { name: "Contact", href: "/contact", num: "04" },
 ];
 
 export default function Header() {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 });
+  const navRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
+
+  // Check if current pathname matches any nav item
+  const isNavItemActive = navItems.some(item => item.href === pathname);
+
+  // Update indicator position when pathname changes
+  useEffect(() => {
+    const activeItem = itemRefs.current.get(pathname);
+    if (activeItem && navRef.current && isNavItemActive) {
+      const navRect = navRef.current.getBoundingClientRect();
+      const itemRect = activeItem.getBoundingClientRect();
+      setIndicatorStyle({
+        left: itemRect.left - navRect.left + 12, // +12 for the px-3 padding
+        width: itemRect.width - 24, // -24 for both sides padding
+        opacity: 1,
+      });
+    } else {
+      // Hide indicator when no nav item is active (e.g., on home page)
+      setIndicatorStyle(prev => ({ ...prev, opacity: 0 }));
+    }
+  }, [pathname, isNavItemActive]);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
@@ -29,13 +52,16 @@ export default function Header() {
           <DotMatrixLogo size={48} />
 
           {/* Desktop Navigation — numbered items */}
-          <div className="hidden sm:flex items-center gap-0.5">
+          <div ref={navRef} className="hidden sm:flex items-center gap-0.5 relative">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               return (
                 <Link
                   key={item.name}
                   href={item.href}
+                  ref={(el) => {
+                    if (el) itemRefs.current.set(item.href, el);
+                  }}
                   className={`relative px-3 py-2 text-sm transition-colors duration-200 group ${
                     isActive
                       ? "text-foreground"
@@ -46,17 +72,25 @@ export default function Header() {
                     {item.num}
                   </span>
                   {item.name}
-                  {/* Active indicator bar */}
-                  {isActive && (
-                    <motion.div
-                      layoutId="nav-indicator"
-                      className="absolute bottom-0 left-3 right-3 h-px bg-foreground"
-                      transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
-                    />
-                  )}
                 </Link>
               );
             })}
+            
+            {/* Active indicator bar - positioned absolutely within nav container */}
+            <motion.div
+              className="absolute bottom-0 h-px bg-foreground pointer-events-none"
+              initial={false}
+              animate={{
+                left: indicatorStyle.left,
+                width: indicatorStyle.width,
+                opacity: indicatorStyle.opacity,
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 500,
+                damping: 30,
+              }}
+            />
           </div>
 
           {/* CTA Button */}

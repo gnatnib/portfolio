@@ -1,16 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="32" height="32"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="32" height="32">
-      {/* Background */}
-      <rect width="100" height="100" rx="10" fill="#282c34"></rect>
-
-      {/* Terminal prompt */}
-      <text x="10" y="40" fontsize="30" fill="#61dafb" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}">
-        $
-      </text>
-
-      {/* Blinking cursor */}
-      <rect x="35" y="20" width="5" height="25" fill="#61dafb">
-        <animate attributeName="opacity" values="0;1;0" dur="1.5s" repeatCount="indefinite"></animate>
-      </rect>
-</svg><style>@media (prefers-color-scheme: light) { :root { filter: none; } }
-@media (prefers-color-scheme: dark) { :root { filter: none; } }
-</style></svg>
+<svg viewBox="0 0 360 226" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .fg { fill: black; }
+    @media (prefers-color-scheme: dark) {
+      .fg { fill: white; }
+    }
+  </style>
+  <mask id="cutmask">
+    <rect width="360" height="226" fill="white" />
+    <path d="M135 170L200 50H250L185 170H135Z" fill="black" />
+    <path d="M80 170L110 110H140L110 170H80Z" fill="black" />
+  </mask>
+  <path class="fg" d="M40 200L120 20H320L240 200H40Z" mask="url(#cutmask)"/>
+</svg>

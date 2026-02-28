@@ -10,44 +10,64 @@ import { motion, AnimatePresence } from "framer-motion";
 const experiences = [
   {
     title: "Fullstack Developer Intern",
-    company: "PT. Usaha Gedung Mandiri",
-    timeframe: "Jun 2024 – Aug 2024",
+    company: "PT. Sinergi Asta Nusantara - Jakarta",
+    timeframe: "Feb 2026 – Apr 2026",
     description:
-      "Developed scalable web applications using modern frameworks. Implemented RESTful APIs and integrated third-party services. Collaborated with cross-functional teams to deliver high-quality software solutions.",
-    image: "/Fullstack Developer Intern @PT.Usaha Gedung Mandiri.png",
+      "Built scalable Human Resource Management System with Vite.js for frontend and Laravel for backend, managing over 150+ employees with features like attendance tracking, payroll management, and employee self-service.",
+    image: "/experience/san.jpeg",
+    tags: ["Hybrid", "Internship"],
+    side: "right" as const,
+  },
+  {
+    title: "Fullstack Developer Intern",
+    company: "PT. Usaha Gedung Mandiri - Jakarta",
+    timeframe: "Jan 2025 – Feb 2025",
+    description:
+      "Developed 2 scalable web applications using modern frameworks. Implemented RESTful APIs and integrated third-party services. Collaborated with cross-functional teams to deliver high-quality software solutions.",
+    image: "/experience/Fullstack Developer Intern @PT.Usaha Gedung Mandiri.png",
     tags: ["Hybrid", "Internship"],
     side: "left" as const,
   },
   {
     title: "Laboratory Assistant — Data Structures",
-    company: "Universitas Diponegoro",
-    timeframe: "Feb 2024 – Jun 2024",
+    company: "Universitas Diponegoro - Semarang",
+    timeframe: "Sep 2024 – Dec 2024",
     description:
       "Guided students through fundamental and advanced data structure concepts including linked lists, trees, graphs, and hash tables. Developed practical lab exercises and conducted weekly mentoring sessions.",
-    image: "/Laboratory_Assistant_Data Structure.png",
+    image: "/experience/Laboratory_Assistant_Data Structure.png",
     tags: ["Onsite", "Part-Time"],
     side: "right" as const,
-  },
-  {
-    title: "Laboratory Assistant — Computer Network",
-    company: "Universitas Diponegoro",
-    timeframe: "Aug 2024 – Dec 2024",
-    description:
-      "Assisted in teaching computer networking fundamentals including TCP/IP, routing protocols, and network security. Maintained lab infrastructure and guided students through hands-on networking exercises.",
-    image: "/Laboratory_Assistant_Computer Network.png",
-    tags: ["Onsite", "Part-Time"],
-    side: "left" as const,
   },
   {
     title: "Liaison Officer — ICICoS 2024",
-    company: "Universitas Diponegoro",
-    timeframe: "Oct 2024",
+    company: "Universitas Diponegoro - Semarang",
+    timeframe: "Jul 2024",
     description:
       "Served as a liaison officer for the International Conference on Information and Communications Security. Coordinated with international speakers, managed event logistics, and ensured smooth operations.",
-    image: "/Liaison Officer_ICICoS 2024.png",
+    image: "/experience/Liaison Officer_ICICoS 2024.png",
     tags: ["Onsite"],
+    side: "left" as const,
+  },
+  {
+    title: "Laboratory Assistant — Computer Network",
+    company: "Universitas Diponegoro - Semarang",
+    timeframe: "Feb 2024 – May 2024",
+    description:
+      "Assisted in teaching computer networking fundamentals including TCP/IP, routing protocols, and network security. Maintained lab infrastructure and guided students through hands-on networking exercises.",
+    image: "/experience/Laboratory_Assistant_Computer Network.png",
+    tags: ["Onsite", "Part-Time"],
     side: "right" as const,
   },
+  {
+    title: "Graduated High School",
+    company: "SMA Negeri 4 Semarang",
+    timeframe: "Jul 2022",
+    description:
+      "Graduated from SMA Negeri 4 Semarang with a focus on science and mathematics, finishing with excellent academic performance and ranked in the top 10%.",
+    image: "/experience/graduated_highschool.jpg",
+    tags: [""],
+    side: "left" as const,
+  },  
 ];
 
 export default function ExperiencePage() {
@@ -58,7 +78,7 @@ export default function ExperiencePage() {
       <HeroSection
         title="Experience"
         sectionNumber="EX.01"
-        description="An anthology of endeavors and technical articulations manifesting my ventures into software orchestration, academic mentorship, and collaborative leadership."
+        description="Visually documented journey of my professional and academic endeavors."
       />
 
       <Section sectionNumber="EX.02" label="Timeline">

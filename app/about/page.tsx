@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Image from "next/image";
@@ -11,27 +11,43 @@ import { motion, AnimatePresence } from "framer-motion";
 const quickFacts = [
   { label: "Location", value: "Semarang, ID" },
   { label: "University", value: "Universitas Diponegoro" },
-  { label: "Focus", value: "Fullstack Development" },
-  { label: "Interests", value: "ML, IoT, Drones" },
+  { label: "Focus", value: "Web Development, Machine Learning" },
+  { label: "Interests", value: "ML, Web Development, AI" },
 ];
 
 const awards = [
-  { title: "Laboratory Assistant — Data Structures", org: "Universitas Diponegoro", year: "2024" },
-  { title: "Laboratory Assistant — Computer Network", org: "Universitas Diponegoro", year: "2024" },
-  { title: "Liaison Officer — ICICoS 2024", org: "Universitas Diponegoro", year: "2024" },
-  { title: "Fullstack Developer Intern", org: "PT. Usaha Gedung Mandiri", year: "2024" },
-  { title: "ICP Web3 Workshop", org: "Internet Computer", year: "2023" },
-  { title: "POINTS 2023 Committee", org: "Universitas Diponegoro", year: "2023" },
+  { title: "First Winner of Men Tennis Court POPDA Sub District Level Competition", org: "POPDA", year: "2015" },
+  { title: "First Winner of Men Tennis Court POPDA Sub District Level Competition", org: "POPDA", year: "2016" },
+  { title: "Third Winner of Men Tennis Court POPDA City Level Competition Held in Semarang", org: "POPDA", year: "2016" },
 ];
 
 const certificates = [
-  { image: "/Alibaba Cloud Certification.jpg", title: "Alibaba Cloud Certification" },
-  { image: "/HackerRank Problem Solving (Intermediate).png", title: "HackerRank Problem Solving" },
+  { image: "/dicoding_Memulai Pemrograman dengan Java.png", title: "Dicoding - Memulai Pemrograman dengan Java" },
+  { image: "/dicoding_Memulai Pemrograman dengan C.png", title: "Dicoding - Memulai Pemrograman dengan C" },
+  { image: "/HackerRank Problem Solving (Intermediate).png", title: "HackerRank Problem Solving (Intermediate)" },
+  { image: "/HackerRank Problem Solving (Basic).png", title: "HackerRank Problem Solving (Basic)" },
   { image: "/Hackerrank Software Engineer Intern.png", title: "HackerRank SWE Intern" },
-  { image: "/ORACLE Academy_Database Programming with SQL.png", title: "Oracle DB with SQL" },
-  { image: "/Laboratory_Assistant_Data Structure.png", title: "Data Structures TA" },
-  { image: "/Laboratory_Assistant_Computer Network.png", title: "Computer Network TA" },
-  { image: "/Liaison Officer_ICICoS 2024.png", title: "LO ICICoS 2024" },
+  { image: "/Hackerrank_SQL Basic.png", title: "HackerRank SQL (Basic)" },
+  { image: "/HackerRank Python (Basic).png", title: "HackerRank Python (Basic)" },
+  { image: "/ORACLE Academy_Database Programming with SQL.png", title: "Database Programming with SQL" },
+  { image: "/ORACLE Academy_Database Design.png", title: "Database Design" },
+  { image: "/Alibaba Cloud Certification.jpg", title: "Alibaba Cloud Certification" },
+  { image: "/img_0ef21bdf766d04c0c4b38c06c741255e.png", title: "The History of Cloud Computing" },
+  { image: "/img_1be594f24d811463f46eaaea34f78a65.png", title: "ECS Fundamentals" },
+  { image: "/img_4a43149da98595ff9b7dcbf973188246.png", title: "Cloud Computing and Application in Sports" },
+  { image: "/img_5c720758bbeeae29df36e836d217b7cf.png", title: "ApsaraDB RPS Fundamentals" },
+  { image: "/img_2969f056d87f8c2b0a6029a2a6220b4d.png", title: "Alibaba Cloud Academy Online Conference" },
+  { image: "/img_577d6d43dbcb6c8672935bed4e2f39d6.png", title: "VPC Fundamentals" },
+  { image: "/img_6808b8bffb62813a3702c4f6322faaa5.png", title: "Fundamentals of Cloud Computing" },
+  { image: "/img_717f4daee32bcb6c4d2fe3b9da132ec2.png", title: "Key Technologies in Cloud Computing" },
+  { image: "/img_7faaefce0782713b8b8f6a7eb7514f24.png", title: "OSS Fundamentals" },
+  { image: "/img_839353e88a7be7fbe195d8fcde2d2cac.png", title: "Uncovering your Stable, Secured and Reliable Cloud" },
+  { image: "/img_88e7f9df7afe84bc763f4c18c1f19fd3.png", title: "Certificate of Achievement" },
+  { image: "/img_b6f0dedb8475a34c7194c5182c54eba1.png", title: "SLB Fundamentals" },
+  { image: "/img_cf1618e0ec491d79485edd0afd993b97.png", title: "The Benefits of Cloud Computing" },
+  { image: "/img_cf4ea38957ed87b659045f5b6d797be7.png", title: "Deploying MySQL on ECS" },
+  { image: "/img_eda48a8dfa150907867499e3a514feb7.png", title: "Auto Scaling Fundamentals" },
+  { image: "/Certification Panitia POINTS 2023.jpg", title: "Panitia POINTS 2023" },
   { image: "/ICP Web3 Workshop.png", title: "ICP Web3 Workshop" },
 ];
 
@@ -46,7 +62,7 @@ export default function AboutPage() {
           <div className="absolute inset-0 blueprint-grid opacity-20 pointer-events-none" />
 
           <div className="relative grid sm:grid-cols-[1.2fr_1fr] gap-8 sm:gap-12 items-center">
-            {/* Left — Title + description */}
+            {/* Left â€” Title + description */}
             <div>
               <ViewAnimation
                 initial={{ opacity: 0, translateY: -8 }}
@@ -85,7 +101,7 @@ export default function AboutPage() {
               </ViewAnimation>
             </div>
 
-            {/* Right — run_about.JPG with frame */}
+            {/* Right â€” run_about.JPG with frame */}
             <ViewAnimation
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -135,13 +151,18 @@ export default function AboutPage() {
           >
             <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
               I&apos;m a Computer Science student at Universitas Diponegoro with a passion for building
-              meaningful software. My journey spans fullstack web development, machine learning, IoT
-              systems, and drone engineering. I thrive at the intersection of creative design and
-              technical depth — turning ideas into experiences that feel both polished and purposeful.
+              meaningful software. My journey spans fullstack web development, machine learning, and AI.
+              I thrive at the intersection of creative design and technical depth turning ideas into
+              experiences that feel both polished and purposeful.
             </p>
             <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mt-4">
-              Beyond code, I actively contribute to academic communities as a lab assistant, participate
-              in international conferences, and explore emerging technologies like Web3 and edge computing.
+              I am always eager to take on new challenges and
+              expand my skill set especially in utilizing AI. I am passionate about using technology to solve real-world problems
+              and create meaningful impact.
+            </p>
+
+            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mt-4">
+              Outside of coding, I enjoy playing tennis, run 5K, and hike mountains.
             </p>
           </ViewAnimation>
 
@@ -222,10 +243,8 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      {/* Certificates — sticky header */}
       <Section sectionNumber="AB.04" label="Certs">
         <div className="py-12 sm:py-16 px-4 sm:px-6">
-          {/* Sticky header — sticks below the navbar */}
           <div className="sticky top-[64px] sm:top-[76px] z-20 bg-background/90 backdrop-blur-sm py-4 -mx-4 px-4 sm:-mx-6 sm:px-6 border-b border-border/20">
             <span className="font-mono-accent text-[11px] text-muted-foreground/40 tracking-widest block mb-2">
               CERTIFICATIONS
@@ -279,7 +298,7 @@ export default function AboutPage() {
 
       {/* Lightbox */}
       <AnimatePresence>
-        {selectedCert !== null && (
+        {selectedCert !== null && certificates[selectedCert] && (
           <motion.div
             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-md p-4 cursor-pointer"
             initial={{ opacity: 0 }}
@@ -315,3 +334,4 @@ export default function AboutPage() {
     </>
   );
 }
+

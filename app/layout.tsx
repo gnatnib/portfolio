@@ -7,11 +7,6 @@ import CursorGlow from "@/components/CursorGlow";
 export const metadata = {
   title: "Bintang Syafrian Rizal | Software Developer",
   description: "Portfolio showcasing my web development projects and skills",
-  icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
-    apple: "/apple-icon.png",
-  },
 };
 
 export default function RootLayout({
