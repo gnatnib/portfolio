@@ -8,7 +8,7 @@ import HighlightedWork from "@/components/HighlightedWork";
 import { Section } from "@/components/Section";
 import ViewAnimation from "@/components/ViewAnimation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Github, Globe } from "lucide-react";
+import { ChevronDown, Github, Globe, X } from "lucide-react";
 
 const allProjects = [
   {
@@ -122,9 +122,18 @@ const allProjects = [
 export default function WorkPage() {
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const [hoveredProject, setHoveredProject] = useState<string | null>(null);
+  const [enlargedImage, setEnlargedImage] = useState<{ src: string; title: string } | null>(null);
 
   const toggleItem = (title: string) => {
     setExpandedItem(expandedItem === title ? null : title);
+  };
+
+  const openEnlargedImage = (src: string, title: string) => {
+    setEnlargedImage({ src, title });
+  };
+
+  const closeEnlargedImage = () => {
+    setEnlargedImage(null);
   };
 
   return (
@@ -132,7 +141,7 @@ export default function WorkPage() {
       <HeroSection
         title="Work"
         sectionNumber="WK.01"
-        description="A bunch of projects I’ve built, experiments I’ve tried, and ideas I’ve turned into something real while exploring tech."
+        description="A bunch of projects I've built, experiments I've tried, and ideas I've turned into something real while exploring tech."
       />
 
       <HighlightedWork showLink={false} />
@@ -191,9 +200,10 @@ export default function WorkPage() {
                             onMouseEnter={() => setHoveredProject(project.title)}
                             onMouseLeave={() => setHoveredProject(null)}
                           >
-                            {/* Browser frame with hover animation */}
+                            {/* Browser frame with hover animation - now clickable */}
                             <motion.div 
-                              className="relative bg-muted rounded-lg overflow-hidden border border-border/20 cursor-pointer"
+                              className="relative bg-muted rounded-lg overflow-hidden border border-border/20 cursor-zoom-in"
+                              onClick={() => openEnlargedImage(project.images[0], project.title)}
                               animate={{
                                 y: hoveredProject === project.title ? -8 : 0,
                                 boxShadow: hoveredProject === project.title 
@@ -269,6 +279,24 @@ export default function WorkPage() {
                                   }}
                                   transition={{ duration: 0.3 }}
                                 />
+                                {/* Click hint */}
+                                <motion.div
+                                  className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                                  animate={{
+                                    opacity: hoveredProject === project.title ? 1 : 0,
+                                  }}
+                                  transition={{ duration: 0.3 }}
+                                >
+                                  <div className="bg-black/50 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                      <circle cx="11" cy="11" r="8"></circle>
+                                      <path d="m21 21-4.35-4.35"></path>
+                                      <path d="M11 8v6"></path>
+                                      <path d="M8 11h6"></path>
+                                    </svg>
+                                    Click to enlarge
+                                  </div>
+                                </motion.div>
                               </div>
                             </motion.div>
                           </motion.div>
@@ -318,6 +346,73 @@ export default function WorkPage() {
           </div>
         </ViewAnimation>
       </Section>
+
+      {/* Enlarged Image Modal */}
+      <AnimatePresence>
+        {enlargedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8"
+            onClick={closeEnlargedImage}
+          >
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/90 backdrop-blur-sm"
+            />
+            
+            {/* Close button */}
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.2, delay: 0.1 }}
+              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              onClick={closeEnlargedImage}
+            >
+              <X size={24} />
+            </motion.button>
+
+            {/* Enlarged image container */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ 
+                duration: 0.4, 
+                ease: [0.25, 0.1, 0.25, 1] 
+              }}
+              className="relative z-10 w-full max-w-6xl max-h-[85vh] aspect-video rounded-lg overflow-hidden shadow-2xl cursor-zoom-out"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Image
+                src={enlargedImage.src}
+                alt={enlargedImage.title}
+                fill
+                className="object-contain bg-black"
+                sizes="(max-width: 768px) 100vw, 90vw"
+                priority
+              />
+            </motion.div>
+
+            {/* Image title */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+              className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 text-white/80 text-sm font-medium"
+            >
+              {enlargedImage.title}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
