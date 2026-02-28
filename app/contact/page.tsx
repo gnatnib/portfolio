@@ -5,14 +5,14 @@ import HeroSection from "@/components/HeroSection";
 import { Section } from "@/components/Section";
 import ViewAnimation from "@/components/ViewAnimation";
 import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Linkedin, Github, Twitter, Instagram, Mail } from "lucide-react";
 
 const contactLinks = [
-  { name: "LinkedIn", link: "https://linkedin.com/in/bintangsyafrian", marker: "01" },
-  { name: "GitHub", link: "https://github.com/gnatnib", marker: "02" },
-  { name: "X (Twitter)", link: "https://x.com/bintsora", marker: "03" },
-  { name: "Instagram", link: "https://instagram.com/bintwang", marker: "04" },
-  { name: "Email", link: "mailto:bintang.syafrian@gmail.com", marker: "05" },
+  { name: "LinkedIn", link: "https://linkedin.com/in/bintangsyafrian", marker: "01", icon: Linkedin },
+  { name: "GitHub", link: "https://github.com/gnatnib", marker: "02", icon: Github },
+  { name: "X (Twitter)", link: "https://x.com/bintsora", marker: "03", icon: Twitter },
+  { name: "Instagram", link: "https://instagram.com/bintwang", marker: "04", icon: Instagram },
+  { name: "Email", link: "mailto:bintang.syafrian@gmail.com", marker: "05", icon: Mail },
 ];
 
 export default function ContactPage() {
@@ -21,7 +21,7 @@ export default function ContactPage() {
       <HeroSection
         title="Contact"
         sectionNumber="CT.01"
-        description="I’m always open to new collaborations, projects, and conversations. Whether you have an idea, a question, or just want to say hi, I’d love to hear from you."
+        description="I'm always open to new collaborations, projects, and conversations. Whether you have an idea, a question, or just want to say hi, I'd love to hear from you."
       />
 
       <Section sectionNumber="CT.02" label="Connect">
@@ -50,32 +50,39 @@ export default function ContactPage() {
             viewport={{ once: true }}
           >
             <div className="divide-y divide-border/30">
-              {contactLinks.map((item, i) => (
-                <motion.div
-                  key={item.name}
-                  whileHover={{ x: 8 }}
-                  transition={{ duration: 0.15 }}
-                >
-                  <Link
-                    href={item.link}
-                    target={item.link.startsWith("mailto") ? "_self" : "_blank"}
-                    className="group flex items-center justify-between py-5 sm:py-6"
+              {contactLinks.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <motion.div
+                    key={item.name}
+                    whileHover={{ x: 8 }}
+                    transition={{ duration: 0.15 }}
                   >
-                    <div className="flex items-center gap-4">
-                      <span className="font-mono-accent text-[10px] text-muted-foreground/30 w-5">
-                        {item.marker}
-                      </span>
-                      <span className="text-base sm:text-lg font-medium group-hover:text-muted-foreground transition-colors">
-                        {item.name}
-                      </span>
-                    </div>
-                    <ArrowUpRight
-                      size={18}
-                      className="text-muted-foreground/20 group-hover:text-foreground transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                    />
-                  </Link>
-                </motion.div>
-              ))}
+                    <Link
+                      href={item.link}
+                      target={item.link.startsWith("mailto") ? "_self" : "_blank"}
+                      className="group flex items-center justify-between py-5 sm:py-6"
+                    >
+                      <div className="flex items-center gap-4">
+                        <span className="font-mono-accent text-[10px] text-muted-foreground/30 w-5">
+                          {item.marker}
+                        </span>
+                        <Icon 
+                          size={18} 
+                          className="text-muted-foreground/50 group-hover:text-foreground transition-colors duration-200" 
+                        />
+                        <span className="text-base sm:text-lg font-medium group-hover:text-muted-foreground transition-colors">
+                          {item.name}
+                        </span>
+                      </div>
+                      <ArrowUpRight
+                        size={18}
+                        className="text-muted-foreground/20 group-hover:text-foreground transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                      />
+                    </Link>
+                  </motion.div>
+                );
+              })}
             </div>
           </ViewAnimation>
 
