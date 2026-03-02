@@ -1,11 +1,11 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Section } from "@/components/Section";
 import ViewAnimation from "@/components/ViewAnimation";
-import { motion, useMotionValue } from "framer-motion";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 
 const experiences = [
   {
@@ -55,10 +55,33 @@ const experiences = [
 export default function ExperienceCarousel() {
   const containerRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
+  const [containerWidth, setContainerWidth] = useState(0);
 
   const cardWidth = 280;
   const gap = 16;
   const totalWidth = experiences.length * (cardWidth + gap) - gap;
+
+  // Update container width on mount and resize
+  useEffect(() => {
+    const updateWidth = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.clientWidth);
+      }
+    };
+
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
+
+  // Calculate left constraint
+  const leftConstraint = Math.min(0, -(totalWidth - containerWidth));
+
+  // Calculate timeline line width based on card layout
+  // Each card is cardWidth + gap, so line should match that spacing
+  const lineWidth = useTransform(
+    () => Math.max(0, (cardWidth + gap) - 8) // Subtract dot size (8px) to fit between dots
+  );
 
   return (
     <Section sectionNumber="02" label="Journey">
@@ -87,23 +110,33 @@ export default function ExperienceCarousel() {
           </Link>
         </ViewAnimation>
 
-        {/* Timeline line */}
+        {/* Timeline line - synced with carousel width */}
         <ViewAnimation
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           delay={0.3}
           viewport={{ once: true }}
         >
-          {/* Step indicators */}
-          <div className="flex items-center gap-0 mb-6">
-            {experiences.map((_, i) => (
-              <div key={i} className="flex items-center">
-                <div className="w-2 h-2 rounded-full bg-border" />
-                {i < experiences.length - 1 && (
-                  <div className="w-16 sm:w-24 h-px bg-border" />
-                )}
-              </div>
-            ))}
+          <div className="overflow-hidden mb-6">
+            <motion.div 
+              className="flex items-center"
+              style={{ 
+                width: totalWidth,
+                x 
+              }}
+            >
+              {experiences.map((_, i) => (
+                <div key={i} className="flex items-center flex-shrink-0" style={{ width: i === experiences.length - 1 ? 'auto' : cardWidth + gap }}>
+                  <div className="w-2 h-2 rounded-full bg-border flex-shrink-0" />
+                  {i < experiences.length - 1 && (
+                    <div 
+                      className="h-px bg-border flex-1 mx-0" 
+                      style={{ width: cardWidth + gap - 8 }}
+                    />
+                  )}
+                </div>
+              ))}
+            </motion.div>
           </div>
         </ViewAnimation>
 
@@ -120,7 +153,7 @@ export default function ExperienceCarousel() {
               style={{ x, gap: `${gap}px` }}
               drag="x"
               dragConstraints={{
-                left: -(totalWidth - (containerRef.current?.clientWidth || 600)),
+                left: leftConstraint,
                 right: 0,
               }}
               dragElastic={0.08}

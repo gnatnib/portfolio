@@ -15,6 +15,7 @@ const experiences = [
     description:
       "Built scalable Human Resource Management System with Vite.js for frontend and Laravel for backend, managing over 150+ employees with features like attendance tracking, payroll management, and employee self-service.",
     image: "/experience/san.png",
+    logo: "/experience/logo/san.png",
     tags: ["Hybrid", "Internship"],
     side: "right" as const,
   },
@@ -25,6 +26,7 @@ const experiences = [
     description:
       "Developed 2 scalable web applications using modern frameworks. Implemented RESTful APIs and integrated third-party services. Collaborated with cross-functional teams to deliver high-quality software solutions.",
     image: "/experience/Fullstack Developer Intern @PT.Usaha Gedung Mandiri.png",
+    logo: "/experience/logo/ugmandiri.png",
     tags: ["Hybrid", "Internship"],
     side: "left" as const,
   },
@@ -35,6 +37,7 @@ const experiences = [
     description:
       "Guided students through fundamental and advanced data structure concepts including linked lists, trees, graphs, and hash tables. Developed practical lab exercises and conducted weekly mentoring sessions.",
     image: "/experience/Laboratory_Assistant_Data Structure.png",
+    logo: "/experience/logo/undipexp.png",
     tags: ["Onsite", "Part-Time"],
     side: "right" as const,
   },
@@ -45,6 +48,7 @@ const experiences = [
     description:
       "Served as a liaison officer for the International Conference on Information and Communications Security. Coordinated with international speakers, managed event logistics, and ensured smooth operations.",
     image: "/experience/Liaison Officer_ICICoS 2024.png",
+    logo: "/experience/logo/IEEEIS.png",
     tags: ["Onsite"],
     side: "left" as const,
   },
@@ -55,6 +59,7 @@ const experiences = [
     description:
       "Assisted in teaching computer networking fundamentals including TCP/IP, routing protocols, and network security. Maintained lab infrastructure and guided students through hands-on networking exercises.",
     image: "/experience/Laboratory_Assistant_Computer Network.png",
+    logo: "/experience/logo/undipexp.png",
     tags: ["Onsite", "Part-Time"],
     side: "right" as const,
   },
@@ -65,6 +70,7 @@ const experiences = [
     description:
       "Graduated from SMA Negeri 4 Semarang with a focus on science and mathematics, finishing with excellent academic performance and ranked in the top 10%.",
     image: "/experience/graduated_highschool.jpg",
+    logo: "/experience/logo/sman4.png",
     tags: [""],
     side: "left" as const,
   },  
@@ -85,7 +91,7 @@ export default function ExperiencePage() {
         <div className="py-12 sm:py-20 px-4 sm:px-6">
           {/* Vertical timeline */}
           <div className="relative">
-            {/* Timeline center line */}
+            {/* Timeline center line - hidden on mobile */}
             <div className="absolute left-4 sm:left-1/2 top-0 bottom-0 w-px bg-border/40 hidden sm:block" />
             <div className="absolute left-4 top-0 bottom-0 w-px bg-border/40 sm:hidden" />
 
@@ -97,22 +103,18 @@ export default function ExperiencePage() {
                 delay={0.2}
                 viewport={{ once: true }}
               >
-                <div
-                  className={`relative flex items-start gap-6 mb-12 sm:mb-16 ${
-                    exp.side === "right" ? "sm:flex-row-reverse" : ""
-                  }`}
-                >
+                <div className="relative flex items-start gap-6 mb-12 sm:mb-16">
                   {/* Timeline dot */}
                   <div className="absolute left-4 sm:left-1/2 top-2 w-2 h-2 rounded-full bg-muted-foreground/30 -translate-x-1/2 z-10" />
 
-                  {/* Content card */}
-                  <div className={`pl-10 sm:pl-0 sm:w-[calc(50%-2rem)] ${exp.side === "left" ? "" : "sm:text-right"}`}>
+                  {/* Mobile: Single column layout */}
+                  <div className="sm:hidden pl-10 w-full">
                     {/* Period marker */}
                     <span className="font-mono-accent text-[10px] text-muted-foreground/40 tracking-wider block mb-2">
                       {exp.timeframe}
                     </span>
 
-                    <h3 className="text-base sm:text-lg font-medium mb-1">{exp.title}</h3>
+                    <h3 className="text-base font-medium mb-1">{exp.title}</h3>
                     <p className="text-sm text-muted-foreground mb-3">{exp.company}</p>
 
                     {/* Image */}
@@ -128,9 +130,7 @@ export default function ExperiencePage() {
                         fill
                         className="object-cover bw-hover group-hover:scale-105 transition-transform duration-500"
                       />
-                      {/* Blueprint hatch overlay on hover */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      {/* Corner tick */}
                       <div className="absolute bottom-2 right-2 w-3 h-3">
                         <div className="absolute bottom-0 right-0 w-3 h-px bg-white/30" />
                         <div className="absolute bottom-0 right-0 w-px h-3 bg-white/30" />
@@ -141,16 +141,141 @@ export default function ExperiencePage() {
                       {exp.description}
                     </p>
 
-                    <div className={`flex flex-wrap gap-2 ${exp.side === "right" ? "sm:justify-end" : ""}`}>
+                    <div className="flex flex-wrap gap-2">
                       {exp.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="font-mono-accent text-[10px] px-2 py-0.5 border border-border/40 rounded-sm text-muted-foreground/60"
-                        >
-                          {tag}
-                        </span>
+                        tag && (
+                          <span
+                            key={tag}
+                            className="font-mono-accent text-[10px] px-2 py-0.5 border border-border/40 rounded-sm text-muted-foreground/60"
+                          >
+                            {tag}
+                          </span>
+                        )
                       ))}
                     </div>
+                  </div>
+
+                  {/* Desktop: Three column layout */}
+                  {/* Left side - Logo when side is "right", Content when side is "left" */}
+                  <div className={`hidden sm:flex sm:w-[calc(50%-3rem)] ${exp.side === "right" ? "justify-start" : "justify-end"} items-start`}>
+                    {exp.side === "right" ? (
+                      <div className="relative w-20 h-20 opacity-100 transition-opacity duration-300">
+  <Image
+    src={exp.logo}
+    alt={`${exp.company} logo`}
+    fill
+    className="object-contain"
+  />
+</div>
+                    ) : (
+                      // Content on left side
+                      <div className="text-right max-w-md">
+                        <span className="font-mono-accent text-[10px] text-muted-foreground/40 tracking-wider block mb-2">
+                          {exp.timeframe}
+                        </span>
+                        <h3 className="text-base sm:text-lg font-medium mb-1">{exp.title}</h3>
+                        <p className="text-sm text-muted-foreground mb-3">{exp.company}</p>
+                        
+                        <motion.div
+                          className="relative aspect-[4/3] overflow-hidden bg-muted rounded-sm mb-4 cursor-pointer group ml-auto"
+                          onClick={() => setSelectedImage(index)}
+                          whileHover={{ scale: 0.98 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <Image
+                            src={exp.image}
+                            alt={exp.company}
+                            fill
+                            className="object-cover bw-hover group-hover:scale-105 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          <div className="absolute bottom-2 right-2 w-3 h-3">
+                            <div className="absolute bottom-0 right-0 w-3 h-px bg-white/30" />
+                            <div className="absolute bottom-0 right-0 w-px h-3 bg-white/30" />
+                          </div>
+                        </motion.div>
+
+                        <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                          {exp.description}
+                        </p>
+
+                        <div className="flex flex-wrap gap-2 justify-end">
+                          {exp.tags.map((tag) => (
+                            tag && (
+                              <span
+                                key={tag}
+                                className="font-mono-accent text-[10px] px-2 py-0.5 border border-border/40 rounded-sm text-muted-foreground/60"
+                              >
+                                {tag}
+                              </span>
+                            )
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Spacer for center line */}
+                  <div className="hidden sm:block sm:w-6" />
+
+                  {/* Right side - Content when side is "right", Logo when side is "left" */}
+                  <div className={`hidden sm:flex sm:w-[calc(50%-3rem)] ${exp.side === "right" ? "justify-start" : "justify-end"} items-start`}>
+                    {exp.side === "right" ? (
+                      // Content on right side
+                      <div className="text-left max-w-md">
+                        <span className="font-mono-accent text-[10px] text-muted-foreground/40 tracking-wider block mb-2">
+                          {exp.timeframe}
+                        </span>
+                        <h3 className="text-base sm:text-lg font-medium mb-1">{exp.title}</h3>
+                        <p className="text-sm text-muted-foreground mb-3">{exp.company}</p>
+                        
+                        <motion.div
+                          className="relative aspect-[4/3] overflow-hidden bg-muted rounded-sm mb-4 cursor-pointer group"
+                          onClick={() => setSelectedImage(index)}
+                          whileHover={{ scale: 0.98 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <Image
+                            src={exp.image}
+                            alt={exp.company}
+                            fill
+                            className="object-cover bw-hover group-hover:scale-105 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          <div className="absolute bottom-2 right-2 w-3 h-3">
+                            <div className="absolute bottom-0 right-0 w-3 h-px bg-white/30" />
+                            <div className="absolute bottom-0 right-0 w-px h-3 bg-white/30" />
+                          </div>
+                        </motion.div>
+
+                        <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                          {exp.description}
+                        </p>
+
+                        <div className="flex flex-wrap gap-2">
+                          {exp.tags.map((tag) => (
+                            tag && (
+                              <span
+                                key={tag}
+                                className="font-mono-accent text-[10px] px-2 py-0.5 border border-border/40 rounded-sm text-muted-foreground/60"
+                              >
+                                {tag}
+                              </span>
+                            )
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      // Logo on right side (far from center)
+                      <div className="relative w-20 h-20 opacity-100 transition-opacity duration-300">
+  <Image
+    src={exp.logo}
+    alt={`${exp.company} logo`}
+    fill
+    className="object-contain"
+  />
+</div>
+                    )}
                   </div>
                 </div>
               </ViewAnimation>
