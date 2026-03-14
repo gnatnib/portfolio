@@ -1,0 +1,13 @@
+
+> my-v0-project@0.1.0 dev
+> next dev --port 4021
+
+  ▲ Next.js 14.2.23
+  - Local:        http://localhost:4021
+  - Environments: .env.local
+  - Experiments (use with caution):
+    · webpackBuildWorker
+    · parallelServerCompiles
+    · parallelServerBuildTraces
+
+ ✓ Starting...

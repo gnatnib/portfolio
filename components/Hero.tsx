@@ -5,17 +5,18 @@ import Link from "next/link";
 import { Section } from "@/components/Section";
 import ViewAnimation from "@/components/ViewAnimation";
 import { motion } from "framer-motion";
+import CompactGitHubCard from "@/components/CompactGitHubCard";
 
 export default function Hero() {
   return (
     <Section sectionNumber="00" label="Home">
-      <div className="relative min-h-[85vh] sm:min-h-[80vh] flex items-center">
+      <div className="relative flex flex-col justify-center pt-10 sm:pt-16 pb-6 sm:pb-8">
         {/* Faint blueprint grid behind hero */}
         <div className="absolute inset-0 blueprint-grid opacity-30 pointer-events-none" />
 
         <div className="relative w-full grid sm:grid-cols-[1.2fr_1fr] gap-0 items-center">
           {/* Left — Text */}
-          <div className="p-6 sm:p-10 sm:py-20 relative z-10">
+          <div className="p-6 sm:p-10 sm:py-10 relative z-10">
             {/* Coordinate marker */}
             <ViewAnimation
               initial={{ opacity: 0 }}
@@ -94,22 +95,27 @@ export default function Hero() {
             viewport={{ once: true }}
             className="flex items-center justify-center p-6 sm:p-10 relative"
           >
-            <div className="relative w-full max-w-[340px]">
-              {/* Offset border frame — creates depth */}
+            <div className="relative w-full max-w-[300px]">
+              {/* Offset border frame — primary */}
               <div
-                className="absolute -top-3 -right-3 w-full h-full border border-border/40 rounded-sm pointer-events-none"
-                style={{ transform: "rotate(1deg)" }}
+                className="absolute -top-3 -right-3 w-full h-full border-2 border-foreground/15 rounded-sm pointer-events-none"
+                style={{ transform: "rotate(1.5deg)" }}
+              />
+              {/* Second decorative frame for depth */}
+              <div
+                className="absolute -top-1.5 -right-1.5 w-full h-full border border-border/25 rounded-sm pointer-events-none"
+                style={{ transform: "rotate(0.5deg)" }}
               />
 
               {/* Main image */}
-              <div className="relative overflow-hidden rounded-sm group">
+              <div className="relative overflow-hidden rounded-sm group border border-border/30">
                 <div className="relative aspect-[3/4] overflow-hidden">
                   <Image
                     src="/profile.png"
                     alt="Bintang Syafrian Rizal"
                     fill
                     className="object-cover object-center transition-transform duration-700 group-hover:scale-[1.03]"
-                    sizes="340px"
+                    sizes="400px"
                     priority
                   />
                   {/* Gradient overlay */}
@@ -118,21 +124,38 @@ export default function Hero() {
 
                 {/* Bottom annotation */}
                 <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
-                  <span className="font-mono-accent text-[10px] text-white/50 drop-shadow-lg">
+                  <span className="font-mono-accent text-[10px] text-white/60 drop-shadow-lg">
                     Semarang, ID
                   </span>
-                  <span className="font-mono-accent text-[10px] text-white/50 drop-shadow-lg">
-                    2024
+                  <span className="font-mono-accent text-[10px] text-white/60 drop-shadow-lg">
+                    
                   </span>
                 </div>
               </div>
 
-              {/* Corner tick marks */}
-              <div className="absolute -bottom-2 -left-2 w-3 h-3">
-                <div className="absolute bottom-0 left-0 w-3 h-px bg-muted-foreground/30" />
-                <div className="absolute bottom-0 left-0 w-px h-3 bg-muted-foreground/30" />
+              {/* Corner tick marks — bottom-left */}
+              <div className="absolute -bottom-2.5 -left-2.5 w-4 h-4">
+                <div className="absolute bottom-0 left-0 w-4 h-px bg-muted-foreground/40" />
+                <div className="absolute bottom-0 left-0 w-px h-4 bg-muted-foreground/40" />
+              </div>
+              {/* Corner tick marks — top-right */}
+              <div className="absolute -top-2.5 -right-2.5 w-4 h-4">
+                <div className="absolute top-0 right-0 w-4 h-px bg-muted-foreground/40" />
+                <div className="absolute top-0 right-0 w-px h-4 bg-muted-foreground/40" />
               </div>
             </div>
+          </ViewAnimation>
+        </div>
+
+        {/* Compact GitHub Contribution Graph spanning bottom */}
+        <div className="w-full px-6 sm:px-10 mt-4 sm:mt-6 relative z-10">
+          <ViewAnimation
+            initial={{ opacity: 0, translateY: 4 }}
+            whileInView={{ opacity: 1, translateY: 0 }}
+            delay={0.9}
+            viewport={{ once: true }}
+          >
+            <CompactGitHubCard />
           </ViewAnimation>
         </div>
       </div>

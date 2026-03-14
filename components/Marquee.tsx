@@ -1,6 +1,7 @@
 "use client";
 
 import StackIcon from "tech-stack-icons";
+import { motion } from "framer-motion";
 
 const techStack = [
   { name: "JavaScript", icon: "js" },
@@ -21,9 +22,19 @@ const techStack = [
   { name: "Git", icon: "git" },
 ];
 
+/* Edge-fade mask: transparent -> opaque -> transparent */
+const edgeFadeMask =
+  "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)";
+
 function MarqueeRow({ direction = "left" }: { direction?: "left" | "right" }) {
   return (
-    <div className="overflow-hidden whitespace-nowrap marquee-pause">
+    <div
+      className="overflow-hidden whitespace-nowrap marquee-pause"
+      style={{
+        WebkitMaskImage: edgeFadeMask,
+        maskImage: edgeFadeMask,
+      }}
+    >
       <div
         className={`inline-flex items-center gap-10 sm:gap-14 ${
           direction === "left" ? "animate-marquee-left" : "animate-marquee-right"
@@ -50,9 +61,15 @@ function MarqueeRow({ direction = "left" }: { direction?: "left" | "right" }) {
 
 export default function Marquee() {
   return (
-    <div className="py-6 sm:py-8 border-y border-border/40 space-y-3 select-none overflow-hidden">
+    <motion.div
+      className="py-6 sm:py-8 border-y border-border/40 space-y-3 select-none overflow-hidden"
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+    >
       <MarqueeRow direction="left" />
       <MarqueeRow direction="right" />
-    </div>
+    </motion.div>
   );
 }

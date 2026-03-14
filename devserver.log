@@ -1,0 +1,35 @@
+
+> my-v0-project@0.1.0 dev
+> next dev
+
+  ▲ Next.js 14.2.23
+  - Local:        http://localhost:3000
+  - Environments: .env.local
+  - Experiments (use with caution):
+    · webpackBuildWorker
+    · parallelServerCompiles
+    · parallelServerBuildTraces
+
+ ✓ Starting...
+ ✓ Ready in 2.7s
+ ○ Compiling / ...
+ ✓ Compiled / in 10.4s (1395 modules)
+ HEAD / 200 in 10904ms
+ ✓ Compiled in 826ms (686 modules)
+ GET / 200 in 158ms
+ GET / 200 in 68ms
+ GET / 200 in 72ms
+ ○ Compiling /manifest.json ...
+ ✓ Compiled /manifest.json in 550ms (740 modules)
+ GET /manifest.json 200 in 685ms
+ ✓ Compiled /icon.svg in 203ms (742 modules)
+ GET /icon.svg?004a351b41549d8c 200 in 303ms
+ ✓ Compiled /api/spotify in 370ms (767 modules)
+ GET /api/spotify 200 in 1141ms
+ GET /api/spotify 200 in 484ms
+ GET /api/spotify 200 in 589ms
+ GET / 200 in 267ms
+ GET /manifest.json 200 in 33ms
+ GET /icon.svg?004a351b41549d8c 200 in 10ms
+ GET /api/spotify 200 in 579ms
+ GET /api/spotify 200 in 460ms
