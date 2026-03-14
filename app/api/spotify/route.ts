@@ -57,7 +57,8 @@ async function safeFetch(url: string, token: string) {
     });
     if (res.status === 204) return null;
     if (!res.ok) {
-      console.error(`Spotify API error for ${url}:`, res.status);
+      const errBody = await res.text().catch(() => "");
+      console.error(`Spotify API error for ${url}:`, res.status, errBody);
       return null;
     }
     const text = await res.text();
@@ -74,13 +75,38 @@ export async function GET() {
     const { access_token } = await getAccessToken();
 
     // Fetch all data in parallel — each call is independent
+    const debugInfo: Record<string, number | string> = {};
+
+    async function debugFetch(url: string, token: string) {
+      try {
+        const res = await fetch(url, {
+          headers: { Authorization: `Bearer ${token}` },
+          cache: "no-store",
+        });
+        debugInfo[url] = res.status;
+        if (res.status === 204) return null;
+        if (!res.ok) {
+          const errBody = await res.text().catch(() => "");
+          console.error(`Spotify API error for ${url}:`, res.status, errBody);
+          debugInfo[url + "_error"] = errBody.substring(0, 200);
+          return null;
+        }
+        const text = await res.text();
+        if (!text) return null;
+        return JSON.parse(text);
+      } catch (err: any) {
+        debugInfo[url] = err.message;
+        return null;
+      }
+    }
+
     const [nowPlayingData, recentlyPlayedData, topTracksData, topArtistsData, playlistsData] =
       await Promise.all([
-        safeFetch(SPOTIFY_NOW_PLAYING_URL, access_token),
-        safeFetch(SPOTIFY_RECENTLY_PLAYED_URL, access_token),
-        safeFetch(SPOTIFY_TOP_TRACKS_URL, access_token),
-        safeFetch(SPOTIFY_TOP_ARTISTS_URL, access_token),
-        safeFetch(SPOTIFY_PLAYLISTS_URL, access_token),
+        debugFetch(SPOTIFY_NOW_PLAYING_URL, access_token),
+        debugFetch(SPOTIFY_RECENTLY_PLAYED_URL, access_token),
+        debugFetch(SPOTIFY_TOP_TRACKS_URL, access_token),
+        debugFetch(SPOTIFY_TOP_ARTISTS_URL, access_token),
+        debugFetch(SPOTIFY_PLAYLISTS_URL, access_token),
       ]);
 
     // Currently playing
@@ -154,6 +180,7 @@ export async function GET() {
       topTracks,
       topArtists,
       playlists,
+      _debug: debugInfo,
     });
   } catch (err: any) {
     console.error("Spotify API handler error:", err.message);
