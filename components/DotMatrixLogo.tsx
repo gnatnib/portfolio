@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 interface DotMatrixLogoProps {
   size?: number;
@@ -18,6 +19,8 @@ export default function DotMatrixLogo({ size = 48 }: DotMatrixLogoProps) {
 
   const svgW = size - 12;
   const svgH = (svgW * 226) / 360;
+  const expandedWidth = size + 100;
+  const showFilled = isLanding || isHovered;
 
   const LogoSvg = ({ color, cutout }: { color: string; cutout: string }) => (
     <svg
@@ -35,48 +38,53 @@ export default function DotMatrixLogo({ size = 48 }: DotMatrixLogoProps) {
 
   return (
     <Link href="/" className="relative z-50 block flex-shrink-0">
-      <div
+      <motion.div
         className="relative"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        style={{ width: isHovered ? 170 : size, height: size, transition: "width 0.3s ease" }}
+        animate={{ width: isHovered ? expandedWidth : size }}
+        transition={{ type: "spring", stiffness: 500, damping: 32 }}
+        style={{ height: size }}
       >
-        {/* Background box */}
-        <div
-          className="absolute inset-0 rounded-sm transition-colors duration-200"
-          style={{
-            backgroundColor: (isLanding || isHovered) ? "hsl(var(--foreground))" : "transparent",
+        <motion.div
+          className="absolute inset-0 rounded-xl"
+          animate={{
+            backgroundColor: showFilled
+              ? "hsl(var(--foreground))"
+              : "hsla(0, 0%, 0%, 0)",
           }}
+          transition={{ duration: 0.2 }}
         />
 
-        {/* Logo — always in the left slot */}
         <div
           className="absolute top-0 left-0 flex items-center justify-center"
           style={{ width: size, height: size }}
         >
           <LogoSvg
-            color={(isLanding || isHovered) ? "white" : "hsl(var(--foreground))"}
-            cutout={(isLanding || isHovered) ? "hsl(var(--foreground))" : "hsl(var(--background))"}
+            color={showFilled ? "white" : "hsl(var(--foreground))"}
+            cutout={showFilled ? "hsl(var(--foreground))" : "hsl(var(--background))"}
           />
         </div>
 
-        {/* Name text — slides in from behind logo */}
-        <div
+        <motion.div
           className="absolute top-0 right-0 flex flex-col justify-center overflow-hidden h-full pr-3"
-          style={{
-            width: isHovered ? 170 - size : 0,
+          animate={{
+            width: isHovered ? expandedWidth - size : 0,
             opacity: isHovered ? 1 : 0,
-            transition: "width 0.3s ease, opacity 0.2s ease 0.1s",
+          }}
+          transition={{
+            width: { type: "spring", stiffness: 500, damping: 32 },
+            opacity: { duration: 0.15, delay: isHovered ? 0.06 : 0 },
           }}
         >
-          <span className="text-background text-xs font-semibold whitespace-nowrap">
+          <span className="text-background text-[11px] font-semibold whitespace-nowrap leading-tight">
             Bintang
           </span>
-          <span className="text-background/60 text-[10px] font-medium whitespace-nowrap">
+          <span className="text-background/50 text-[9px] font-medium whitespace-nowrap leading-tight">
             Syafrian
           </span>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </Link>
   );
 }

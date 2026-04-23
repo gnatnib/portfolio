@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import HeroSection from "@/components/HeroSection";
 import HighlightedWork from "@/components/HighlightedWork";
 import { Section } from "@/components/Section";
@@ -119,10 +120,43 @@ const allProjects = [
   },
 ];
 
+const slugify = (text: string) => text.toLowerCase().replace(/\s+/g, "-");
+
 export default function WorkPage() {
+  const searchParams = useSearchParams();
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const [hoveredProject, setHoveredProject] = useState<string | null>(null);
   const [enlargedImage, setEnlargedImage] = useState<{ src: string; title: string } | null>(null);
+  const didAutoExpand = useRef(false);
+
+  useEffect(() => {
+    if (didAutoExpand.current) return;
+    const projectSlug = searchParams.get("project");
+    if (projectSlug) {
+      const project = allProjects.find((p) => slugify(p.title) === projectSlug);
+      if (project) {
+        didAutoExpand.current = true;
+        setExpandedItem(project.title);
+        setTimeout(() => {
+          document.getElementById(`project-${projectSlug}`)?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }, 450);
+      }
+    }
+  }, [searchParams]);
+
+  const handleHighlightClick = (title: string) => {
+    const slug = slugify(title);
+    setExpandedItem(title);
+    setTimeout(() => {
+      document.getElementById(`project-${slug}`)?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 100);
+  };
 
   const toggleItem = (title: string) => {
     setExpandedItem(expandedItem === title ? null : title);
@@ -144,7 +178,7 @@ export default function WorkPage() {
         description="A bunch of projects I've built, experiments I've tried, and ideas I've turned into something real while exploring tech."
       />
 
-      <HighlightedWork showLink={false} />
+      <HighlightedWork showLink={false} onProjectClick={handleHighlightClick} />
 
       <Section sectionNumber="WK.02" label="All Projects">
         <ViewAnimation
@@ -155,7 +189,7 @@ export default function WorkPage() {
         >
           <div className="divide-y divide-border/40">
             {allProjects.map((project) => (
-              <div key={project.title}>
+              <div key={project.title} id={`project-${slugify(project.title)}`} style={{ scrollMarginTop: "80px" }}>
                 <motion.button
                   onClick={() => toggleItem(project.title)}
                   className="w-full px-4 sm:px-6 py-5 flex items-center justify-between text-left hover:bg-muted/30 transition-colors"

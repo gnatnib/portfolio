@@ -35,7 +35,7 @@ const MobileMenu = ({
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "tween", ease: "easeInOut" }}
-            className="fixed top-[64px] inset-y-0 right-0 w-full bg-background/98 border-t border-border shadow-xl z-50 md:hidden"
+            className="fixed top-16 inset-y-0 right-0 w-full bg-background/98 border-t border-border shadow-xl z-50 md:hidden"
           >
             <div className="flex flex-col items-center justify-center h-full pb-20">
               {navigationItems.map((item) => (

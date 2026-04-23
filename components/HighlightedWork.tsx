@@ -5,32 +5,32 @@ import Link from "next/link";
 import { Section } from "@/components/Section";
 import ViewAnimation from "@/components/ViewAnimation";
 
+const slugify = (text: string) => text.toLowerCase().replace(/\s+/g, "-");
+
 const highlightedProjects = [
   {
     title: "Pangan.id",
     year: "2026",
     image: "/panganmockup.png",
-    href: "/work",
   },
   {
     title: "Sistem Informasi Zona KHAS Kelurahan Sendangmulyo",
     year: "2025",
     image: "/zonakhas.png",
-    href: "/work",
   },
   {
     title: "SiPP",
     year: "2025",
     image: "/project4.png",
-    href: "/work",
   },
 ];
 
 interface HighlightedWorkProps {
   showLink?: boolean;
+  onProjectClick?: (title: string) => void;
 }
 
-export default function HighlightedWork({ showLink = true }: HighlightedWorkProps) {
+export default function HighlightedWork({ showLink = true, onProjectClick }: HighlightedWorkProps) {
   return (
     <Section sectionNumber="01" label="Projects">
       <div className="py-12 sm:py-16 px-4 sm:px-6">
@@ -68,24 +68,48 @@ export default function HighlightedWork({ showLink = true }: HighlightedWorkProp
           viewport={{ once: true }}
           className="grid grid-cols-1 sm:grid-cols-3 gap-5"
         >
-          {highlightedProjects.map((project) => (
-            <Link key={project.title} href={project.href} className="group block">
-              <div className="relative aspect-[4/3] overflow-hidden bg-muted rounded-sm mb-3">
-                <Image
-                  src={project.image}
-                  alt={project.title}
-                  fill
-                  className="object-cover bw-hover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm sm:text-base font-medium group-hover:text-muted-foreground transition-colors">
-                  {project.title}
-                </h3>
-                <span className="text-sm text-muted-foreground">{project.year}</span>
-              </div>
-            </Link>
-          ))}
+          {highlightedProjects.map((project) => {
+            const cardContent = (
+              <>
+                <div className="relative aspect-[4/3] overflow-hidden bg-muted rounded-sm mb-3">
+                  <Image
+                    src={project.image}
+                    alt={project.title}
+                    fill
+                    className="object-cover bw-hover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm sm:text-base font-medium group-hover:text-muted-foreground transition-colors">
+                    {project.title}
+                  </h3>
+                  <span className="text-sm text-muted-foreground">{project.year}</span>
+                </div>
+              </>
+            );
+
+            if (onProjectClick) {
+              return (
+                <div
+                  key={project.title}
+                  onClick={() => onProjectClick(project.title)}
+                  className="group block cursor-pointer"
+                >
+                  {cardContent}
+                </div>
+              );
+            }
+
+            return (
+              <Link
+                key={project.title}
+                href={`/work?project=${slugify(project.title)}`}
+                className="group block"
+              >
+                {cardContent}
+              </Link>
+            );
+          })}
         </ViewAnimation>
       </div>
     </Section>

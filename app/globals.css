@@ -147,6 +147,32 @@ html {
   width: 1px; height: 16px;
 }
 
+/* ========== NAV GRADIENT BORDER ========== */
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes gradient-rotate {
+  0% { --gradient-angle: 0deg; }
+  100% { --gradient-angle: 360deg; }
+}
+
+.nav-gradient-border {
+  background: conic-gradient(
+    from var(--gradient-angle),
+    hsl(var(--border) / 0.25),
+    hsl(var(--border) / 0.25) 20%,
+    hsl(0 0% 55% / 0.6) 30%,
+    hsl(0 0% 70% / 0.8) 35%,
+    hsl(0 0% 55% / 0.6) 40%,
+    hsl(var(--border) / 0.25) 50%,
+    hsl(var(--border) / 0.25)
+  );
+  animation: gradient-rotate 5s linear infinite;
+}
+
 /* ========== MARQUEE ========== */
 @keyframes marquee-left {
   0% { transform: translateX(0); }

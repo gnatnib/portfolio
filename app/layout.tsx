@@ -37,7 +37,7 @@ export default function RootLayout({
         <CursorGlow />
         <Header />
         {/* Header spacer */}
-        <div className="h-[64px] sm:h-[76px]" />
+        <div className="h-16" />
         <main className="flex-1 blueprint-grid">{children}</main>
         <Footer />
       </body>

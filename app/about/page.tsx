@@ -245,7 +245,7 @@ export default function AboutPage() {
 
       <Section sectionNumber="AB.04" label="Certs">
         <div className="py-12 sm:py-16 px-4 sm:px-6">
-          <div className="sticky top-[64px] sm:top-[76px] z-20 bg-background/90 backdrop-blur-sm py-4 -mx-4 px-4 sm:-mx-6 sm:px-6 border-b border-border/20">
+          <div className="sticky top-16 z-20 bg-background/90 backdrop-blur-sm py-4 -mx-4 px-4 sm:-mx-6 sm:px-6 border-b border-border/20">
             <span className="font-mono-accent text-[11px] text-muted-foreground/40 tracking-widest block mb-2">
               CERTIFICATIONS
             </span>
