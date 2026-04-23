@@ -39,18 +39,21 @@ const MONTH_LABELS = [
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 ];
 
-/* ── GitHub-style green palette (distinct shades) ── */
-const LEVEL_FILLS = [
-  "hsl(var(--border) / 0.3)",  // 0 — empty
-  "#9be9a8",                    // 1 — light green
-  "#40c463",                    // 2 — medium green
-  "#30a14e",                    // 3 — dark green
-  "#216e39",                    // 4 — darkest green
-];
+/* ── Opacity-based green fill ──────────────────── */
+/* Level 0 = empty, 1-4 = increasing green opacity */
+const GREEN_HUE = "#39d353";
 
 function getLevelFill(level: number): string {
-  return LEVEL_FILLS[Math.min(Math.max(level, 0), 4)];
+  if (level <= 0) return "hsl(var(--border) / 0.3)";
+  // Opacity scales: 0.25, 0.50, 0.75, 1.0
+  const opacities = [0, 0.25, 0.50, 0.75, 1.0];
+  const opacity = opacities[Math.min(level, 4)];
+  // Convert hex #39d353 to rgba
+  return `rgba(57, 211, 83, ${opacity})`;
 }
+
+/* Legend fills for the footer */
+const LEGEND_FILLS = [0, 1, 2, 3, 4].map(getLevelFill);
 
 /* ── Tooltip state ─────────────────────────────── */
 
@@ -399,18 +402,16 @@ export default function CompactGitHubCard({
         </div>
       </div>
 
-      {/* Contribution Graph — centered on desktop, scrollable on mobile */}
+      {/* Contribution Graph — centered, scrollable on mobile */}
       <div
         ref={scrollRef}
-        className="overflow-x-auto scrollbar-hide px-2 pt-1 pb-1 sm:px-3"
+        className="overflow-x-auto scrollbar-hide px-2 pt-1 pb-1 sm:px-3 flex justify-center"
       >
-        <div style={{ minWidth: "fit-content", margin: "0 auto", width: "fit-content" }}>
-          <ContributionGraph
-            weeks={heatmapWeeks}
-            onHover={handleHover}
-            onLeave={handleLeave}
-          />
-        </div>
+        <ContributionGraph
+          weeks={heatmapWeeks}
+          onHover={handleHover}
+          onLeave={handleLeave}
+        />
       </div>
 
       {/* Footer */}
@@ -424,7 +425,7 @@ export default function CompactGitHubCard({
             Less
           </span>
           <div className="flex items-center gap-[2px]">
-            {LEVEL_FILLS.map((fill, i) => (
+            {LEGEND_FILLS.map((fill, i) => (
               <div
                 key={i}
                 className="rounded-[2px]"
