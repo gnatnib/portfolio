@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -123,6 +123,14 @@ const allProjects = [
 const slugify = (text: string) => text.toLowerCase().replace(/\s+/g, "-");
 
 export default function WorkPage() {
+  return (
+    <Suspense>
+      <WorkPageContent />
+    </Suspense>
+  );
+}
+
+function WorkPageContent() {
   const searchParams = useSearchParams();
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const [hoveredProject, setHoveredProject] = useState<string | null>(null);
