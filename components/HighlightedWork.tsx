@@ -14,9 +14,9 @@ const highlightedProjects = [
     image: "/panganmockup.png",
   },
   {
-    title: "Sistem Informasi Zona KHAS Kelurahan Sendangmulyo",
-    year: "2025",
-    image: "/zonakhas.png",
+    title: "ScanMBG",
+    year: "2026",
+    image: "/project10.png",
   },
   {
     title: "SiPP",
