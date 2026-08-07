@@ -88,8 +88,8 @@ function formatRelativeTime(value: string) {
 function getHeatLevelClass(level: number) {
   if (level >= 4) return "border-foreground/80 bg-foreground/80";
   if (level === 3) return "border-foreground/35 bg-foreground/25";
-  if (level === 2) return "border-muted-foreground/20 bg-muted-foreground/15";
-  if (level === 1) return "border-muted-foreground/15 bg-muted/80";
+  if (level === 2) return "border-muted-foreground/75 bg-muted-foreground/70";
+  if (level === 1) return "border-muted-foreground/70 bg-muted/80";
   return "border-border/70 bg-background/20";
 }
 
@@ -176,7 +176,7 @@ export default function GitHubActivityCard({ className }: GitHubActivityCardProp
           <div>
             <div className="mb-1 flex items-center gap-2">
               <Github className="h-4 w-4 text-foreground/80" />
-              <span className="font-mono-accent text-[11px] uppercase tracking-widest text-muted-foreground/55">
+              <span className="font-mono-accent text-[11px] uppercase tracking-widest text-muted-foreground/80">
                 Live GitHub Activity
               </span>
             </div>
@@ -185,7 +185,7 @@ export default function GitHubActivityCard({ className }: GitHubActivityCardProp
             </p>
           </div>
 
-          <div className="flex items-center gap-2 font-mono-accent text-[10px] uppercase tracking-widest text-muted-foreground/45">
+          <div className="flex items-center gap-2 font-mono-accent text-[10px] uppercase tracking-widest text-muted-foreground/70">
             <motion.span
               className="block h-2 w-2 rounded-full bg-foreground"
               animate={{ opacity: isRefreshing ? [0.35, 1, 0.35] : 1 }}
@@ -201,42 +201,42 @@ export default function GitHubActivityCard({ className }: GitHubActivityCardProp
           <div className="grid gap-4">
             <div className="grid gap-2 sm:grid-cols-3">
               <div className="rounded-sm border border-border/60 bg-background/75 p-3">
-                <p className="mb-2 font-mono-accent text-[10px] uppercase tracking-widest text-muted-foreground/45">
+                <p className="mb-2 font-mono-accent text-[10px] uppercase tracking-widest text-muted-foreground/70">
                   Last Year
                 </p>
                 <p className="text-lg font-medium tracking-tight sm:text-xl">{data.totalContributions}</p>
-                <p className="text-[11px] text-muted-foreground/55">contributions</p>
+                <p className="text-[11px] text-muted-foreground/80">contributions</p>
               </div>
 
               <div className="rounded-sm border border-border/60 bg-background/75 p-3">
-                <p className="mb-2 font-mono-accent text-[10px] uppercase tracking-widest text-muted-foreground/45">
+                <p className="mb-2 font-mono-accent text-[10px] uppercase tracking-widest text-muted-foreground/70">
                   Streak
                 </p>
                 <div className="flex items-center gap-2">
                   <Flame className="h-4 w-4 text-foreground" />
                   <p className="text-lg font-medium tracking-tight sm:text-xl">{data.currentStreak}</p>
                 </div>
-                <p className="text-[11px] text-muted-foreground/55">days active</p>
+                <p className="text-[11px] text-muted-foreground/80">days active</p>
               </div>
 
               <div className="rounded-sm border border-border/60 bg-background/75 p-3">
-                <p className="mb-2 font-mono-accent text-[10px] uppercase tracking-widest text-muted-foreground/45">
+                <p className="mb-2 font-mono-accent text-[10px] uppercase tracking-widest text-muted-foreground/70">
                   Last 7 Days
                 </p>
                 <div className="flex items-center gap-2">
                   <GitCommitHorizontal className="h-4 w-4 text-foreground/70" />
                   <p className="text-lg font-medium tracking-tight sm:text-xl">{data.last7DaysContributions}</p>
                 </div>
-                <p className="text-[11px] text-muted-foreground/55">commit activity</p>
+                <p className="text-[11px] text-muted-foreground/80">commit activity</p>
               </div>
             </div>
 
             <div className="rounded-sm border border-border/60 bg-gradient-to-br from-background via-background to-muted/40 p-3 sm:p-4">
               <div className="mb-3 flex items-center justify-between gap-3">
-                <p className="font-mono-accent text-[10px] uppercase tracking-widest text-muted-foreground/45">
+                <p className="font-mono-accent text-[10px] uppercase tracking-widest text-muted-foreground/70">
                   Contribution Map
                 </p>
-                <p className="text-[11px] text-muted-foreground/55">{data.activeDays} active days</p>
+                <p className="text-[11px] text-muted-foreground/80">{data.activeDays} active days</p>
               </div>
 
               <div className="scrollbar-hide overflow-x-auto pb-1">
@@ -255,7 +255,7 @@ export default function GitHubActivityCard({ className }: GitHubActivityCardProp
                 </div>
               </div>
 
-              <div className="mt-3 flex items-center justify-between gap-3 font-mono-accent text-[10px] uppercase tracking-widest text-muted-foreground/40">
+              <div className="mt-3 flex items-center justify-between gap-3 font-mono-accent text-[10px] uppercase tracking-widest text-muted-foreground/70">
                 <span>{data.publicRepos} public repos</span>
                 <span>best streak {data.longestStreak}d</span>
               </div>
@@ -265,7 +265,7 @@ export default function GitHubActivityCard({ className }: GitHubActivityCardProp
               <div className="mb-3 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <Layers3 className="h-4 w-4 text-foreground/70" />
-                  <p className="font-mono-accent text-[10px] uppercase tracking-widest text-muted-foreground/45">
+                  <p className="font-mono-accent text-[10px] uppercase tracking-widest text-muted-foreground/70">
                     Recent Pushes
                   </p>
                 </div>
@@ -295,19 +295,19 @@ export default function GitHubActivityCard({ className }: GitHubActivityCardProp
                         <p className="truncate text-sm text-foreground/90 transition-colors group-hover:text-foreground">
                           {commit.message}
                         </p>
-                        <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground/55">
+                        <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground/80">
                           <span className="truncate font-mono-accent">{commit.repo}</span>
                           <span>/{commit.shortSha}</span>
                         </div>
                       </div>
 
-                      <span className="shrink-0 text-[11px] text-muted-foreground/45">
+                      <span className="shrink-0 text-[11px] text-muted-foreground/70">
                         {formatRelativeTime(commit.pushedAt)}
                       </span>
                     </a>
                   ))
                 ) : (
-                  <p className="text-sm text-muted-foreground/55">No recent public push events detected yet.</p>
+                  <p className="text-sm text-muted-foreground/80">No recent public push events detected yet.</p>
                 )}
               </div>
             </div>

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Section } from "@/components/Section";
 import ViewAnimation from "@/components/ViewAnimation";
+import SoundToggle from "@/components/SoundToggle";
 
 const Footer = () => {
   return (
@@ -16,7 +17,7 @@ const Footer = () => {
               delay={0.2}
               viewport={{ once: true }}
             >
-              <div className="flex items-center gap-4 text-xs text-muted-foreground/40">
+              <div className="flex items-center gap-4 text-xs text-muted-foreground/70">
                 <Link
                   href="https://github.com/gnatnib"
                   target="_blank"
@@ -46,9 +47,12 @@ const Footer = () => {
               delay={0.3}
               viewport={{ once: true }}
             >
-              <p className="font-mono-accent text-[10px] text-muted-foreground/30 tracking-wider">
-                © {new Date().getFullYear()} BINTANG SYAFRIAN RIZAL
-              </p>
+              <div className="flex items-center gap-5">
+                <SoundToggle />
+                <p className="font-mono-accent text-[10px] text-muted-foreground/85 tracking-wider">
+                  © {new Date().getFullYear()} BINTANG SYAFRIAN RIZAL
+                </p>
+              </div>
             </ViewAnimation>
           </div>
         </div>

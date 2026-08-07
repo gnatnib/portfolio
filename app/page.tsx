@@ -2,6 +2,7 @@ import Hero from "@/components/Hero";
 import Marquee from "@/components/Marquee";
 import HighlightedWork from "@/components/HighlightedWork";
 import ExperienceCarousel from "@/components/ExperienceCarousel";
+import ResumeSection from "@/components/ResumeSection";
 import SpotifyNowPlaying from "@/components/SpotifyNowPlaying";
 // import GalleryPreview from "@/components/GalleryPreview";
 
@@ -12,6 +13,7 @@ export default function Home() {
       <Marquee />
       <HighlightedWork />
       <ExperienceCarousel />
+      <ResumeSection />
       <SpotifyNowPlaying />
       {/* <GalleryPreview /> */}
     </>

@@ -210,7 +210,7 @@ function WorkPageContent() {
                     <div className="flex items-center gap-4 sm:gap-8 text-xs sm:text-sm text-muted-foreground">
                       <span className="hidden sm:inline">{project.client}</span>
                       <span>{project.category}</span>
-                      <span className="font-mono-accent text-[11px] text-muted-foreground/50">{project.year}</span>
+                      <span className="font-mono-accent text-[11px] text-muted-foreground/75">{project.year}</span>
                     </div>
                   </div>
                   <motion.div
@@ -295,25 +295,20 @@ function WorkPageContent() {
                                   </motion.div>
                                 </div>
                               </div>
-                              {/* Image container with zoom effect */}
-                              <div className="relative aspect-[16/9] overflow-hidden bg-background">
-                                <motion.div
-                                  className="relative w-full h-full"
-                                  animate={{
-                                    scale: hoveredProject === project.title ? 1.05 : 1,
-                                  }}
-                                  transition={{
-                                    duration: 0.6,
-                                    ease: [0.25, 0.1, 0.25, 1],
-                                  }}
-                                >
+                              {/* Image container with lens-focus effect */}
+                              <div
+                                data-lens
+                                className="relative aspect-[16/9] overflow-hidden bg-background"
+                              >
+                                <div className="relative w-full h-full">
                                   <Image
                                     src={project.images[0]}
                                     alt={project.title}
                                     fill
-                                    className="object-cover"
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                    className="object-cover lens-focus"
                                   />
-                                </motion.div>
+                                </div>
                                 {/* Overlay gradient on hover */}
                                 <motion.div
                                   className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"
@@ -346,7 +341,7 @@ function WorkPageContent() {
                           
                           <div className="flex flex-wrap gap-2 mb-4">
                             {project.tech.map((t) => (
-                              <span key={t} className="font-mono-accent text-[10px] px-2 py-0.5 border border-border/30 rounded-sm text-muted-foreground/60">
+                              <span key={t} className="font-mono-accent text-[10px] px-2 py-0.5 border border-border/30 rounded-sm text-muted-foreground/85">
                                 {t}
                               </span>
                             ))}

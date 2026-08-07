@@ -71,12 +71,16 @@ export default function HighlightedWork({ showLink = true, onProjectClick }: Hig
           {highlightedProjects.map((project) => {
             const cardContent = (
               <>
-                <div className="relative aspect-[4/3] overflow-hidden bg-muted rounded-sm mb-3">
+                <div
+                  data-lens
+                  className="relative aspect-[4/3] overflow-hidden bg-muted rounded-sm mb-3"
+                >
                   <Image
                     src={project.image}
                     alt={project.title}
                     fill
-                    className="object-cover bw-hover group-hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 640px) 100vw, 33vw"
+                    className="object-cover lens-focus"
                   />
                 </div>
                 <div className="flex items-center justify-between">

@@ -36,7 +36,7 @@ export default function ContactPage() {
             <h2 className="text-4xl sm:text-6xl lg:text-7xl font-medium tracking-tighter leading-[0.95] mb-12 sm:mb-16 max-w-3xl">
               Let&apos;s build
               <br />
-              <span className="text-muted-foreground/30">something</span>
+              <span className="text-muted-foreground/85">something</span>
               <br />
               great.
             </h2>
@@ -64,12 +64,12 @@ export default function ContactPage() {
                       className="group flex items-center justify-between py-5 sm:py-6"
                     >
                       <div className="flex items-center gap-4">
-                        <span className="font-mono-accent text-[10px] text-muted-foreground/30 w-5">
+                        <span className="font-mono-accent text-[10px] text-muted-foreground/85 w-5">
                           {item.marker}
                         </span>
                         <Icon 
                           size={18} 
-                          className="text-muted-foreground/50 group-hover:text-foreground transition-colors duration-200" 
+                          className="text-muted-foreground/75 group-hover:text-foreground transition-colors duration-200" 
                         />
                         <span className="text-base sm:text-lg font-medium group-hover:text-muted-foreground transition-colors">
                           {item.name}
@@ -77,7 +77,7 @@ export default function ContactPage() {
                       </div>
                       <ArrowUpRight
                         size={18}
-                        className="text-muted-foreground/20 group-hover:text-foreground transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                        className="text-muted-foreground/75 group-hover:text-foreground transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                       />
                     </Link>
                   </motion.div>
@@ -93,7 +93,7 @@ export default function ContactPage() {
             delay={0.5}
             viewport={{ once: true }}
           >
-            <p className="font-mono-accent text-[11px] text-muted-foreground/30 tracking-wider mt-12">
+            <p className="font-mono-accent text-[11px] text-muted-foreground/85 tracking-wider mt-12">
               CURRENTLY ACCEPTING NEW PROJECTS AND COLLABORATIONS
             </p>
           </ViewAnimation>

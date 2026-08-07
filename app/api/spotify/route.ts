@@ -49,23 +49,76 @@ async function getAccessToken() {
   return response.json();
 }
 
-async function safeFetch(url: string, token: string) {
+/* Per-endpoint response cache.
+ *
+ * Every request used to fan out to five Spotify endpoints with `no-store`, and
+ * the client polls on an interval — enough to trip Spotify's rate limiter (429)
+ * on the top/recently-played endpoints, which then rendered as an empty
+ * section. These lists barely change, so they're cached by how fast they
+ * actually move, and a 429 falls back to the last good response instead of
+ * dropping to null. */
+const TTL = {
+  nowPlaying: 15_000,
+  recentlyPlayed: 5 * 60_000,
+  slowMoving: 30 * 60_000, // top tracks/artists, playlists
+} as const;
+
+interface CacheEntry {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any;
+  fetchedAt: number;
+}
+
+const cache = new Map<string, CacheEntry>();
+/* When Spotify returns 429 it sends Retry-After, sometimes hours. Hammering
+   through that window only extends the block, so respect it per endpoint. */
+const blockedUntil = new Map<string, number>();
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function safeFetch(url: string, token: string, ttlMs: number): Promise<any> {
+  const cached = cache.get(url);
+  if (cached && Date.now() - cached.fetchedAt < ttlMs) {
+    return cached.value;
+  }
+
+  const blocked = blockedUntil.get(url);
+  if (blocked && Date.now() < blocked) {
+    return cached ? cached.value : null;
+  }
+
   try {
     const res = await fetch(url, {
       headers: { Authorization: `Bearer ${token}` },
       cache: "no-store",
     });
-    if (res.status === 204) return null;
-    if (!res.ok) {
-      console.error(`Spotify API error for ${url}:`, res.status);
+
+    // 204 = nothing playing. That's a real answer, so cache it.
+    if (res.status === 204) {
+      cache.set(url, { value: null, fetchedAt: Date.now() });
       return null;
     }
+
+    if (!res.ok) {
+      if (res.status === 429) {
+        const retryAfter = Number(res.headers.get("retry-after") ?? 60);
+        blockedUntil.set(url, Date.now() + retryAfter * 1000);
+        console.error(
+          `Spotify rate limited for ${url}; backing off ${retryAfter}s`
+        );
+      } else {
+        console.error(`Spotify API error for ${url}:`, res.status);
+      }
+      // Serve stale rather than blanking the section
+      return cached ? cached.value : null;
+    }
+
     const text = await res.text();
-    if (!text) return null;
-    return JSON.parse(text);
+    const value = text ? JSON.parse(text) : null;
+    cache.set(url, { value, fetchedAt: Date.now() });
+    return value;
   } catch (err) {
     console.error(`Fetch error for ${url}:`, err);
-    return null;
+    return cached ? cached.value : null;
   }
 }
 
@@ -76,11 +129,11 @@ export async function GET() {
     // Fetch all data in parallel — each call is independent
     const [nowPlayingData, recentlyPlayedData, topTracksData, topArtistsData, playlistsData] =
       await Promise.all([
-        safeFetch(SPOTIFY_NOW_PLAYING_URL, access_token),
-        safeFetch(SPOTIFY_RECENTLY_PLAYED_URL, access_token),
-        safeFetch(SPOTIFY_TOP_TRACKS_URL, access_token),
-        safeFetch(SPOTIFY_TOP_ARTISTS_URL, access_token),
-        safeFetch(SPOTIFY_PLAYLISTS_URL, access_token),
+        safeFetch(SPOTIFY_NOW_PLAYING_URL, access_token, TTL.nowPlaying),
+        safeFetch(SPOTIFY_RECENTLY_PLAYED_URL, access_token, TTL.recentlyPlayed),
+        safeFetch(SPOTIFY_TOP_TRACKS_URL, access_token, TTL.slowMoving),
+        safeFetch(SPOTIFY_TOP_ARTISTS_URL, access_token, TTL.slowMoving),
+        safeFetch(SPOTIFY_PLAYLISTS_URL, access_token, TTL.slowMoving),
       ]);
 
     // Currently playing

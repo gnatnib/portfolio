@@ -57,11 +57,11 @@ export const Section = ({
           viewport={{ once: true }}
           className="absolute -left-2 sm:left-0 top-4 sm:top-6 hidden sm:flex items-center gap-2 -translate-x-full pr-4"
         >
-          <span className="font-mono-accent text-[10px] text-muted-foreground/50 tracking-wider">
+          <span className="font-mono-accent text-[10px] text-muted-foreground/75 tracking-wider">
             [{sectionNumber}]
           </span>
           {label && (
-            <span className="font-mono-accent text-[10px] text-muted-foreground/30 uppercase tracking-widest">
+            <span className="font-mono-accent text-[10px] text-muted-foreground/85 uppercase tracking-widest">
               {label}
             </span>
           )}

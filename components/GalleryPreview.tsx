@@ -97,7 +97,7 @@
 //             </motion.div>
 //           </div>
 
-//           <p className="font-mono-accent text-[10px] text-muted-foreground/25 mt-4 select-none tracking-wider">
+//           <p className="font-mono-accent text-[10px] text-muted-foreground/80 mt-4 select-none tracking-wider">
 //             ← DRAG TO EXPLORE →
 //           </p>
 //         </ViewAnimation>

@@ -59,21 +59,35 @@ function endOfWeek(date: Date) {
   return next;
 }
 
-function getGitHubHeaders() {
+function getGitHubHeaders(withToken = true) {
   const token = process.env.GITHUB_TOKEN;
 
   return {
     Accept: "application/vnd.github+json",
     "User-Agent": "portfolio-site",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(withToken && token ? { Authorization: `Bearer ${token}` } : {}),
   };
 }
 
+/* These endpoints are all public. A token only buys a higher rate limit, so an
+   expired one must never be fatal — GitHub answers 401 to an invalid
+   Authorization header even on endpoints that need no auth at all. Retry
+   unauthenticated so the widget keeps working with a stale token. */
 async function fetchJson<T>(url: string): Promise<T> {
-  const response = await fetch(url, {
+  let response = await fetch(url, {
     headers: getGitHubHeaders(),
     cache: "no-store",
   });
+
+  if (response.status === 401 && process.env.GITHUB_TOKEN) {
+    console.warn(
+      "GITHUB_TOKEN rejected (401) — falling back to unauthenticated request"
+    );
+    response = await fetch(url, {
+      headers: getGitHubHeaders(false),
+      cache: "no-store",
+    });
+  }
 
   if (!response.ok) {
     throw new Error(`GitHub request failed: ${response.status}`);
@@ -92,14 +106,12 @@ async function fetchContributionWeeks(username: string, year?: string) {
   let from = "";
   
   if (year) {
-    const currentYear = new Date().getUTCFullYear().toString();
-    if (year === currentYear) {
-      const fromDate = new Date(`${year}-01-01T00:00:00Z`);
-      from = formatDate(fromDate);
-    } else {
-      from = `${year}-01-01`;
-      to = `${year}-12-31`;
-    }
+    /* Always span the whole calendar year, including the current one. GitHub
+       serves the full grid for a future `to` date, and a fixed 53-week width
+       keeps the heatmap the same size all year instead of growing week by
+       week (which left it as a small block stranded in a wide card). */
+    from = `${year}-01-01`;
+    to = `${year}-12-31`;
   } else {
     const fromDate = new Date();
     fromDate.setUTCFullYear(fromDate.getUTCFullYear() - 1);
@@ -300,11 +312,26 @@ export async function GET(request: Request) {
   const year = searchParams.get("year");
 
   try {
-    const [{ from, to, days, weeks }, user, recentCommits] = await Promise.all([
+    /* The heatmap is scraped from a public page and needs no auth. The profile
+       and commit calls are supplementary — settle them separately so one
+       failure can't discard contribution data we already have. */
+    const [contributions, userResult, commitsResult] = await Promise.all([
       fetchContributionWeeks(username, year || undefined),
-      fetchJson<GitHubUserResponse>(`${GITHUB_API_BASE}/users/${username}`),
-      fetchRecentCommits(username),
+      fetchJson<GitHubUserResponse>(
+        `${GITHUB_API_BASE}/users/${username}`
+      ).catch((error) => {
+        console.warn("GitHub profile fetch failed:", error.message);
+        return {} as GitHubUserResponse;
+      }),
+      fetchRecentCommits(username).catch((error) => {
+        console.warn("GitHub commits fetch failed:", error.message);
+        return [] as Awaited<ReturnType<typeof fetchRecentCommits>>;
+      }),
     ]);
+
+    const { from, to, days, weeks } = contributions;
+    const user = userResult;
+    const recentCommits = commitsResult;
     const requestedDays = days.filter((day) => day.date >= from && day.date <= to);
 
     const totalContributions = requestedDays.reduce((sum, day) => sum + day.count, 0);

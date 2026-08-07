@@ -95,7 +95,7 @@ export default function ExperienceCarousel() {
           className="flex items-end justify-between mb-10 sm:mb-14"
         >
           <div>
-            <span className="font-mono-accent text-[11px] text-muted-foreground/40 tracking-widest block mb-3">
+            <span className="font-mono-accent text-[11px] text-muted-foreground/70 tracking-widest block mb-3">
               EXPERIENCE
             </span>
             <h2 className="text-3xl sm:text-5xl font-medium tracking-tight">
@@ -168,12 +168,16 @@ export default function ExperienceCarousel() {
                   transition={{ duration: 0.25 }}
                 >
                   {/* Card with image */}
-                  <div className="relative aspect-[4/3] overflow-hidden bg-muted rounded-sm mb-3">
+                  <div
+                    data-lens
+                    className="relative aspect-[4/3] overflow-hidden bg-muted rounded-sm mb-3"
+                  >
                     <Image
                       src={exp.image}
+                      sizes="(max-width: 640px) 80vw, 320px"
                       alt={exp.title}
                       fill
-                      className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+                      className="object-cover lens-focus"
                       draggable={false}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -190,7 +194,7 @@ export default function ExperienceCarousel() {
                       {exp.title}
                     </p>
                     <p className="text-xs text-muted-foreground mt-0.5">{exp.company}</p>
-                    <p className="font-mono-accent text-[10px] text-muted-foreground/50 mt-1">
+                    <p className="font-mono-accent text-[10px] text-muted-foreground/75 mt-1">
                       {exp.period}
                     </p>
                   </div>
@@ -199,7 +203,7 @@ export default function ExperienceCarousel() {
             </motion.div>
           </div>
 
-          <p className="font-mono-accent text-[10px] text-muted-foreground/30 mt-4 select-none tracking-wider">
+          <p className="font-mono-accent text-[10px] text-muted-foreground/85 mt-4 select-none tracking-wider">
             ← DRAG TO EXPLORE →
           </p>
         </ViewAnimation>

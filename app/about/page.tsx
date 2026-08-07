@@ -22,6 +22,11 @@ const awards = [
 ];
 
 const certificates = [
+  { image: "/certs/aws-ai-practitioner.png", title: "AWS Certified AI Practitioner (AIF-C01) · Practice Exam" },
+  { image: "/certs/aws-solutions-architect.png", title: "AWS Solutions Architect – Associate (SAA-C03) · Practice Exam" },
+  { image: "/certs/aws-cloud-practitioner.png", title: "AWS Certified Cloud Practitioner (CLF-C02) · Practice Exam" },
+  { image: "/certs/aws-academy-ml-foundations.png", title: "AWS Academy Graduate — Machine Learning Foundations" },
+  { image: "/certs/aws-academy-cloud-foundations.png", title: "AWS Academy Graduate — Cloud Foundations" },
   { image: "/dicoding_Memulai Pemrograman dengan Java.png", title: "Dicoding - Memulai Pemrograman dengan Java" },
   { image: "/dicoding_Memulai Pemrograman dengan C.png", title: "Dicoding - Memulai Pemrograman dengan C" },
   { image: "/HackerRank Problem Solving (Intermediate).png", title: "HackerRank Problem Solving (Intermediate)" },
@@ -70,7 +75,7 @@ export default function AboutPage() {
                 delay={0.2}
                 viewport={{ once: true }}
               >
-                <span className="font-mono-accent text-[11px] text-muted-foreground/40 tracking-widest block mb-4">
+                <span className="font-mono-accent text-[11px] text-muted-foreground/70 tracking-widest block mb-4">
                   &lt;AB.01&gt;
                 </span>
                 <div className="flex items-center gap-3 mb-6">
@@ -130,8 +135,8 @@ export default function AboutPage() {
 
                 {/* Corner tick marks */}
                 <div className="absolute -bottom-2 -left-2 w-3 h-3">
-                  <div className="absolute bottom-0 left-0 w-3 h-px bg-muted-foreground/30" />
-                  <div className="absolute bottom-0 left-0 w-px h-3 bg-muted-foreground/30" />
+                  <div className="absolute bottom-0 left-0 w-3 h-px bg-muted-foreground/85" />
+                  <div className="absolute bottom-0 left-0 w-px h-3 bg-muted-foreground/85" />
                 </div>
               </div>
             </ViewAnimation>
@@ -174,13 +179,13 @@ export default function AboutPage() {
             viewport={{ once: true }}
             className="sm:border-l sm:pl-8 border-border/40"
           >
-            <h3 className="font-mono-accent text-[11px] text-muted-foreground/50 tracking-widest uppercase mb-6">
+            <h3 className="font-mono-accent text-[11px] text-muted-foreground/75 tracking-widest uppercase mb-6">
               Quick Facts
             </h3>
             <div className="space-y-4">
               {quickFacts.map((fact) => (
                 <div key={fact.label}>
-                  <p className="font-mono-accent text-[10px] text-muted-foreground/40 uppercase tracking-wider">
+                  <p className="font-mono-accent text-[10px] text-muted-foreground/70 uppercase tracking-wider">
                     {fact.label}
                   </p>
                   <p className="text-sm font-medium mt-0.5">{fact.value}</p>
@@ -200,7 +205,7 @@ export default function AboutPage() {
             delay={0.2}
             viewport={{ once: true }}
           >
-            <span className="font-mono-accent text-[11px] text-muted-foreground/40 tracking-widest block mb-3">
+            <span className="font-mono-accent text-[11px] text-muted-foreground/70 tracking-widest block mb-3">
               RECOGNITION
             </span>
             <h2 className="text-3xl sm:text-5xl font-medium tracking-tight mb-10">
@@ -223,17 +228,17 @@ export default function AboutPage() {
                   transition={{ duration: 0.15 }}
                 >
                   <div className="flex items-center gap-4 flex-1 min-w-0">
-                    <span className="font-mono-accent text-[10px] text-muted-foreground/30 w-6 flex-shrink-0">
+                    <span className="font-mono-accent text-[10px] text-muted-foreground/85 w-6 flex-shrink-0">
                       {String(index + 1).padStart(2, "0")}
                     </span>
                     <div className="min-w-0">
                       <p className="text-sm sm:text-base font-medium truncate group-hover:text-muted-foreground transition-colors">
                         {award.title}
                       </p>
-                      <p className="text-xs text-muted-foreground/60 mt-0.5">{award.org}</p>
+                      <p className="text-xs text-muted-foreground/85 mt-0.5">{award.org}</p>
                     </div>
                   </div>
-                  <span className="font-mono-accent text-xs text-muted-foreground/40 flex-shrink-0 ml-4">
+                  <span className="font-mono-accent text-xs text-muted-foreground/70 flex-shrink-0 ml-4">
                     {award.year}
                   </span>
                 </motion.div>
@@ -246,7 +251,7 @@ export default function AboutPage() {
       <Section sectionNumber="AB.04" label="Certs">
         <div className="py-12 sm:py-16 px-4 sm:px-6">
           <div className="sticky top-16 z-20 bg-background/90 backdrop-blur-sm py-4 -mx-4 px-4 sm:-mx-6 sm:px-6 border-b border-border/20">
-            <span className="font-mono-accent text-[11px] text-muted-foreground/40 tracking-widest block mb-2">
+            <span className="font-mono-accent text-[11px] text-muted-foreground/70 tracking-widest block mb-2">
               CERTIFICATIONS
             </span>
             <h2 className="text-3xl sm:text-5xl font-medium tracking-tight">
@@ -270,23 +275,21 @@ export default function AboutPage() {
                   whileHover={{ y: -4 }}
                   transition={{ duration: 0.25 }}
                 >
-                  <div className="relative aspect-[3/2] overflow-hidden bg-muted rounded-sm">
+                  <div className="relative aspect-[3/2] overflow-hidden bg-muted/40 border border-border group-hover:border-muted-foreground/70 transition-colors">
                     <Image
                       src={cert.image}
                       alt={cert.title}
                       fill
-                      className="object-cover bw-hover group-hover:scale-105 transition-transform duration-500"
+                      sizes="(max-width: 640px) 50vw, 33vw"
+                      className="object-contain p-1.5 media-dim"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
-                      <span className="text-white text-xs font-medium">{cert.title}</span>
-                    </div>
                     {/* Corner tick */}
                     <div className="absolute top-2 right-2 w-2.5 h-2.5">
-                      <div className="absolute top-0 right-0 w-2.5 h-px bg-white/30" />
-                      <div className="absolute top-0 right-0 w-px h-2.5 bg-white/30" />
+                      <div className="absolute top-0 right-0 w-2.5 h-px bg-muted-foreground/70" />
+                      <div className="absolute top-0 right-0 w-px h-2.5 bg-muted-foreground/70" />
                     </div>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-2 group-hover:text-foreground transition-colors">
+                  <p className="text-xs text-muted-foreground mt-2 leading-snug group-hover:text-foreground transition-colors">
                     {cert.title}
                   </p>
                 </motion.div>
@@ -315,6 +318,7 @@ export default function AboutPage() {
             >
               <Image
                 src={certificates[selectedCert].image}
+                sizes="(max-width: 768px) 100vw, 768px"
                 alt={certificates[selectedCert].title}
                 fill
                 className="object-contain"

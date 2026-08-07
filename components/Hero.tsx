@@ -24,7 +24,7 @@ export default function Hero() {
               delay={0.1}
               viewport={{ once: true }}
             >
-              <span className="font-mono-accent text-[11px] text-muted-foreground/40 tracking-widest mb-6 block">
+              <span className="font-mono-accent text-[11px] text-muted-foreground/70 tracking-widest mb-6 block">
                 &lt;00.01&gt; PROFILE
               </span>
             </ViewAnimation>
@@ -38,7 +38,7 @@ export default function Hero() {
               <h1 className="text-5xl sm:text-7xl lg:text-8xl font-medium tracking-tighter leading-[0.95] mb-8">
                 Bintang
                 <br />
-                <span className="text-muted-foreground/30">Syafrian</span>
+                <span className="text-muted-foreground/85">Syafrian</span>
                 <br />
                 Rizal
               </h1>
@@ -67,7 +67,7 @@ export default function Hero() {
                   href="/about"
                   className="inline-flex items-center gap-2 text-sm font-medium text-foreground hover:text-muted-foreground transition-colors group"
                 >
-                  <span className="font-mono-accent text-[10px] text-muted-foreground/40">→</span>
+                  <span className="font-mono-accent text-[10px] text-muted-foreground/70">→</span>
                   Explore my work
                   <motion.span
                     className="inline-block"
@@ -135,13 +135,13 @@ export default function Hero() {
 
               {/* Corner tick marks — bottom-left */}
               <div className="absolute -bottom-2.5 -left-2.5 w-4 h-4">
-                <div className="absolute bottom-0 left-0 w-4 h-px bg-muted-foreground/40" />
-                <div className="absolute bottom-0 left-0 w-px h-4 bg-muted-foreground/40" />
+                <div className="absolute bottom-0 left-0 w-4 h-px bg-muted-foreground/70" />
+                <div className="absolute bottom-0 left-0 w-px h-4 bg-muted-foreground/70" />
               </div>
               {/* Corner tick marks — top-right */}
               <div className="absolute -top-2.5 -right-2.5 w-4 h-4">
-                <div className="absolute top-0 right-0 w-4 h-px bg-muted-foreground/40" />
-                <div className="absolute top-0 right-0 w-px h-4 bg-muted-foreground/40" />
+                <div className="absolute top-0 right-0 w-4 h-px bg-muted-foreground/70" />
+                <div className="absolute top-0 right-0 w-px h-4 bg-muted-foreground/70" />
               </div>
             </div>
           </ViewAnimation>

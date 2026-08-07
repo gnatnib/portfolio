@@ -25,3 +25,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# scratch build dir used to build while `next dev` holds .next
+/.next-verify/
+
+# local agent/editor config
+.claude/
+
+# Hover SFX extracted from lusion.co — third-party copyrighted audio.
+# Kept out of the public repo until replaced with a CC0-licensed equivalent
+# or cleared with the owner. Delete these two lines once that's resolved.
+/public/audio/focus_*.ogg

@@ -105,12 +105,12 @@ export default function ExperiencePage() {
               >
                 <div className="relative flex items-start gap-6 mb-12 sm:mb-16">
                   {/* Timeline dot */}
-                  <div className="absolute left-4 sm:left-1/2 top-2 w-2 h-2 rounded-full bg-muted-foreground/30 -translate-x-1/2 z-10" />
+                  <div className="absolute left-4 sm:left-1/2 top-2 w-2 h-2 rounded-full bg-muted-foreground/85 -translate-x-1/2 z-10" />
 
                   {/* Mobile: Single column layout */}
                   <div className="sm:hidden pl-10 w-full">
                     {/* Period marker */}
-                    <span className="font-mono-accent text-[10px] text-muted-foreground/40 tracking-wider block mb-2">
+                    <span className="font-mono-accent text-[10px] text-muted-foreground/70 tracking-wider block mb-2">
                       {exp.timeframe}
                     </span>
 
@@ -120,15 +120,17 @@ export default function ExperiencePage() {
                     {/* Image */}
                     <motion.div
                       className="relative aspect-[4/3] overflow-hidden bg-muted rounded-sm mb-4 cursor-pointer group"
+                      data-lens
                       onClick={() => setSelectedImage(index)}
                       whileHover={{ scale: 0.98 }}
                       transition={{ duration: 0.2 }}
                     >
                       <Image
                         src={exp.image}
+                        sizes="(max-width: 640px) 90vw, 400px"
                         alt={exp.company}
                         fill
-                        className="object-cover bw-hover group-hover:scale-105 transition-transform duration-500"
+                        className="object-cover lens-focus"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       <div className="absolute bottom-2 right-2 w-3 h-3">
@@ -146,7 +148,7 @@ export default function ExperiencePage() {
                         tag && (
                           <span
                             key={tag}
-                            className="font-mono-accent text-[10px] px-2 py-0.5 border border-border/40 rounded-sm text-muted-foreground/60"
+                            className="font-mono-accent text-[10px] px-2 py-0.5 border border-border/40 rounded-sm text-muted-foreground/85"
                           >
                             {tag}
                           </span>
@@ -162,6 +164,7 @@ export default function ExperiencePage() {
                       <div className="relative w-20 h-20 opacity-100 transition-opacity duration-300">
   <Image
     src={exp.logo}
+    sizes="48px"
     alt={`${exp.company} logo`}
     fill
     className="object-contain"
@@ -170,7 +173,7 @@ export default function ExperiencePage() {
                     ) : (
                       // Content on left side
                       <div className="text-right max-w-md">
-                        <span className="font-mono-accent text-[10px] text-muted-foreground/40 tracking-wider block mb-2">
+                        <span className="font-mono-accent text-[10px] text-muted-foreground/70 tracking-wider block mb-2">
                           {exp.timeframe}
                         </span>
                         <h3 className="text-base sm:text-lg font-medium mb-1">{exp.title}</h3>
@@ -178,15 +181,17 @@ export default function ExperiencePage() {
                         
                         <motion.div
                           className="relative aspect-[4/3] overflow-hidden bg-muted rounded-sm mb-4 cursor-pointer group ml-auto"
+                          data-lens
                           onClick={() => setSelectedImage(index)}
                           whileHover={{ scale: 0.98 }}
                           transition={{ duration: 0.2 }}
                         >
                           <Image
                             src={exp.image}
+                            sizes="(max-width: 640px) 90vw, 400px"
                             alt={exp.company}
                             fill
-                            className="object-cover bw-hover group-hover:scale-105 transition-transform duration-500"
+                            className="object-cover lens-focus"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                           <div className="absolute bottom-2 right-2 w-3 h-3">
@@ -204,7 +209,7 @@ export default function ExperiencePage() {
                             tag && (
                               <span
                                 key={tag}
-                                className="font-mono-accent text-[10px] px-2 py-0.5 border border-border/40 rounded-sm text-muted-foreground/60"
+                                className="font-mono-accent text-[10px] px-2 py-0.5 border border-border/40 rounded-sm text-muted-foreground/85"
                               >
                                 {tag}
                               </span>
@@ -223,7 +228,7 @@ export default function ExperiencePage() {
                     {exp.side === "right" ? (
                       // Content on right side
                       <div className="text-left max-w-md">
-                        <span className="font-mono-accent text-[10px] text-muted-foreground/40 tracking-wider block mb-2">
+                        <span className="font-mono-accent text-[10px] text-muted-foreground/70 tracking-wider block mb-2">
                           {exp.timeframe}
                         </span>
                         <h3 className="text-base sm:text-lg font-medium mb-1">{exp.title}</h3>
@@ -231,15 +236,17 @@ export default function ExperiencePage() {
                         
                         <motion.div
                           className="relative aspect-[4/3] overflow-hidden bg-muted rounded-sm mb-4 cursor-pointer group"
+                          data-lens
                           onClick={() => setSelectedImage(index)}
                           whileHover={{ scale: 0.98 }}
                           transition={{ duration: 0.2 }}
                         >
                           <Image
                             src={exp.image}
+                            sizes="(max-width: 640px) 90vw, 400px"
                             alt={exp.company}
                             fill
-                            className="object-cover bw-hover group-hover:scale-105 transition-transform duration-500"
+                            className="object-cover lens-focus"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                           <div className="absolute bottom-2 right-2 w-3 h-3">
@@ -257,7 +264,7 @@ export default function ExperiencePage() {
                             tag && (
                               <span
                                 key={tag}
-                                className="font-mono-accent text-[10px] px-2 py-0.5 border border-border/40 rounded-sm text-muted-foreground/60"
+                                className="font-mono-accent text-[10px] px-2 py-0.5 border border-border/40 rounded-sm text-muted-foreground/85"
                               >
                                 {tag}
                               </span>
@@ -270,6 +277,7 @@ export default function ExperiencePage() {
                       <div className="relative w-20 h-20 opacity-100 transition-opacity duration-300">
   <Image
     src={exp.logo}
+    sizes="48px"
     alt={`${exp.company} logo`}
     fill
     className="object-contain"
@@ -303,6 +311,7 @@ export default function ExperiencePage() {
             >
               <Image
                 src={experiences[selectedImage].image}
+                sizes="(max-width: 768px) 100vw, 768px"
                 alt={experiences[selectedImage].title}
                 fill
                 className="object-contain"

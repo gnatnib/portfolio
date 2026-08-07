@@ -24,7 +24,7 @@ export default function HeroSection({ title, description, sectionNumber }: HeroS
             viewport={{ once: true }}
           >
             {sectionNumber && (
-              <span className="font-mono-accent text-[11px] text-muted-foreground/40 tracking-widest block mb-4">
+              <span className="font-mono-accent text-[11px] text-muted-foreground/70 tracking-widest block mb-4">
                 &lt;{sectionNumber}&gt;
               </span>
             )}

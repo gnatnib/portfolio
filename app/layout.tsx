@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CursorGlow from "@/components/CursorGlow";
+import LensSfx from "@/components/LensSfx";
 
 export const metadata = {
   title: "Bintang Syafrian Rizal | Software Developer",
@@ -35,9 +36,10 @@ export default function RootLayout({
         style={{ fontFamily: "'Figtree', sans-serif" }}
       >
         <CursorGlow />
+        <LensSfx />
         <Header />
         {/* Header spacer */}
-        <div className="h-16" />
+        <div className="h-14" />
         <main className="flex-1 blueprint-grid">{children}</main>
         <Footer />
       </body>
