@@ -48,20 +48,29 @@ export const Section = ({
         </>
       )}
 
-      {/* Section number marker */}
+      {/* Section number marker — lives in the left gutter, outside the content.
+          Positioned with `right-full` rather than `left-0 -translate-x-full`:
+          ViewAnimation is a motion.div, and framer writes an inline `transform`
+          that silently overrode the Tailwind translate utility, leaving the
+          marker inside the container and sitting on top of the content.
+
+          Only shown once the gutter can actually hold it — the container caps
+          at max-w-5xl (1024px), so below xl there is no gutter at all and the
+          marker would overlap the first row. The label needs more room again,
+          so it waits for 2xl. */}
       {sectionNumber && (
         <ViewAnimation
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           delay={0.1}
           viewport={{ once: true }}
-          className="absolute -left-2 sm:left-0 top-4 sm:top-6 hidden sm:flex items-center gap-2 -translate-x-full pr-4"
+          className="absolute right-full top-4 sm:top-6 mr-4 hidden xl:flex items-center gap-2 whitespace-nowrap pointer-events-none"
         >
           <span className="font-mono-accent text-[10px] text-muted-foreground/75 tracking-wider">
             [{sectionNumber}]
           </span>
           {label && (
-            <span className="font-mono-accent text-[10px] text-muted-foreground/85 uppercase tracking-widest">
+            <span className="hidden 2xl:inline font-mono-accent text-[10px] text-muted-foreground/85 uppercase tracking-widest">
               {label}
             </span>
           )}
