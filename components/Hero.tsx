@@ -50,9 +50,9 @@ export default function Hero() {
               delay={0.5}
               viewport={{ once: true }}
             >
-              <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-10 max-w-sm">
-                Software developer crafting digital experiences
-                with precision and creative ambition.
+              <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-10 max-w-md">
+                Software developer building full-stack web applications,
+                with a focus on machine learning and cloud infrastructure.
               </p>
             </ViewAnimation>
 

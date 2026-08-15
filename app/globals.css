@@ -59,6 +59,53 @@ html {
   color-scheme: dark;
 }
 
+/* ========== INTRO ==========
+   Painted from the very first frame by the inline script's flag, before any
+   JS runs, so the portfolio never flashes behind the intro. React's overlay
+   mounts on top of this with the same colour and takes over seamlessly. */
+html[data-intro="1"],
+html[data-intro="live"] {
+  overflow: hidden;
+}
+/* Only painted in the pre-hydration window. Once React's overlay is up the
+   flag flips to "live" and this is dropped — leaving it in place meant the
+   overlay faded out onto a full-screen cream plate at exit, and the site then
+   appeared with no transition at all. */
+html[data-intro="1"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 190;
+  background: #f2efe7;
+  pointer-events: none;
+}
+
+/* The site settles into place as the card sweeps away, so the reveal is a
+   move rather than a dissolve. */
+html[data-intro-exit="1"] body > main,
+html[data-intro-exit="1"] body > header,
+html[data-intro-exit="1"] body > footer {
+  animation: intro-settle 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes intro-settle {
+  from {
+    transform: scale(1.035);
+    opacity: 0.55;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-intro-exit="1"] body > main,
+  html[data-intro-exit="1"] body > header,
+  html[data-intro-exit="1"] body > footer {
+    animation: none;
+  }
+}
+
 /* Honour the OS "reduce motion" setting across the whole site, including the
    CSS-driven marquee and smooth scrolling that framer-motion can't reach. */
 @media (prefers-reduced-motion: reduce) {
@@ -104,7 +151,7 @@ html {
 
 /* Monospace accent text */
 .font-mono-accent {
-  font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  font-family: var(--font-mono), 'SF Mono', 'Fira Code', 'Consolas', monospace;
 }
 
 /* Surface panel — the primary container in the dark system */
