@@ -84,7 +84,7 @@ export default function ExperienceCarousel() {
   );
 
   return (
-    <Section sectionNumber="02" label="Journey">
+    <Section sectionNumber="02" label="Background">
       <div className="py-12 sm:py-20 px-4 sm:px-6 overflow-hidden">
         {/* Header */}
         <ViewAnimation
@@ -99,7 +99,7 @@ export default function ExperienceCarousel() {
               EXPERIENCE
             </span>
             <h2 className="text-3xl sm:text-5xl font-medium tracking-tight">
-              My Journey
+              Background
             </h2>
           </div>
           <Link

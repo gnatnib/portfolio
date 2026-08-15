@@ -28,7 +28,7 @@ export const resumeFacts = [
 
 export const resumeHighlights = [
   {
-    period: "2024",
+    period: "2025",
     role: "Full Stack Developer Intern",
     org: "PT. Usaha Gedung Mandiri",
   },
