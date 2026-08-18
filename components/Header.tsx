@@ -14,6 +14,11 @@ const navItems = [
   { name: "Contact", href: "/contact" },
 ];
 
+/* The mobile menu gets an explicit Home entry. On desktop the logo is an
+   obvious way back, but once the nav collapses behind a hamburger there's
+   nothing telling anyone the mark in the corner is clickable. */
+const mobileNavItems = [{ name: "Home", href: "/" }, ...navItems];
+
 export default function Header() {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -190,7 +195,7 @@ export default function Header() {
             transition={{ duration: 0.2 }}
           >
             <div className="flex flex-col px-6 pt-8">
-              {navItems.map((item, i) => (
+              {mobileNavItems.map((item, i) => (
                 <motion.div
                   key={item.name}
                   initial={{ opacity: 0, x: -16 }}

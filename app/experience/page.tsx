@@ -164,7 +164,7 @@ export default function ExperiencePage() {
                       <div className="relative w-20 h-20 opacity-100 transition-opacity duration-300">
   <Image
     src={exp.logo}
-    sizes="48px"
+    sizes="80px"
     alt={`${exp.company} logo`}
     fill
     className="object-contain"
@@ -277,7 +277,7 @@ export default function ExperiencePage() {
                       <div className="relative w-20 h-20 opacity-100 transition-opacity duration-300">
   <Image
     src={exp.logo}
-    sizes="48px"
+    sizes="80px"
     alt={`${exp.company} logo`}
     fill
     className="object-contain"

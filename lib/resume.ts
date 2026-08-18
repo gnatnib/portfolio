@@ -26,20 +26,22 @@ export const resumeFacts = [
   { label: "Focus", value: "Software Engineering · Machine Learning" },
 ];
 
+/* Sorted on the way out rather than by hand, so the list can be edited in any
+   order without the years ending up jumbled on the page. */
 export const resumeHighlights = [
-  {
-    period: "2025",
-    role: "Full Stack Developer Intern",
-    org: "PT. Usaha Gedung Mandiri",
-  },
   {
     period: "2024",
     role: "Laboratory Teaching Assistant",
     org: "Computer Networks & Data Structures",
   },
   {
+    period: "2025",
+    role: "Full Stack Developer Intern",
+    org: "PT. Usaha Gedung Mandiri",
+  },
+  {
     period: "2026",
     role: "Thesis — Extractive Summarization with LLMs",
     org: "Indonesian palm oil regulatory documents",
   },
-];
+].sort((a, b) => Number(a.period) - Number(b.period));
