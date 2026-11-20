@@ -1,0 +1,340 @@
+---
+import { Image } from "astro:assets";
+import { bioSentences, SUMMARY_KEEP, facts, stack, awards } from "../data";
+import { textrank } from "../lib/textrank";
+import run from "../assets/run.jpg";
+
+const ranked = textrank(bioSentences, SUMMARY_KEEP);
+const countWords = (s: string) => s.split(/\s+/).filter(Boolean).length;
+const totalWords = ranked.reduce((n, r) => n + countWords(r.text), 0);
+const keptWords = ranked.filter((r) => r.kept).reduce((n, r) => n + countWords(r.text), 0);
+const compression = Math.round((1 - keptWords / totalWords) * 100);
+---
+
+<section id="about" class="sec wrap" data-tone="light" data-label="About" tabindex="-1">
+  <header class="sec-head">
+    <p class="sec-index mono">(01) About</p>
+    <h2 class="sec-title" data-reveal="lines">This bio, summarized</h2>
+  </header>
+
+  <div class="ex" data-extract data-total={totalWords} data-kept={keptWords} data-compression={compression}>
+    <aside class="ex-side">
+      <dl class="ex-stats mono">
+        <div><dt class="muted">Method</dt><dd>TextRank, unsupervised</dd></div>
+        <div><dt class="muted">Kept</dt><dd>{SUMMARY_KEEP} of {ranked.length} sentences</dd></div>
+        <div>
+          <dt class="muted">Words</dt>
+          <dd class="num"><span data-ex-words>{keptWords}</span> / {totalWords}</dd>
+        </div>
+        <div>
+          <dt class="muted">Compression</dt>
+          <dd class="num"><span data-ex-ratio>{compression}</span>%</dd>
+        </div>
+      </dl>
+      <div class="ex-bar" aria-hidden="true"><span data-ex-bar></span></div>
+      <p class="ex-note muted">
+        Each sentence is a node, shared words are edges, and PageRank scores the graph. Computed when the
+        site builds, from the text on the right.
+      </p>
+    </aside>
+
+    <p class="ex-text" data-ex-text>
+      {
+        ranked.map((r) => (
+          <span class:list={["s", r.kept ? "keep" : "drop"]} data-s>
+            <sup class="s-score mono num" data-score>
+              {r.score.toFixed(2)}
+            </sup>
+            <span class="s-body">{r.text}</span>{" "}
+          </span>
+        ))
+      }
+    </p>
+  </div>
+
+  <div class="about-more grid">
+    <figure class="about-photo" data-reveal="fade">
+      <div class="about-photo-frame">
+        <Image src={run} alt="Bintang running on a track" widths={[320, 480, 640]} sizes="(max-width: 860px) 60vw, 22vw" />
+      </div>
+      <figcaption class="mono muted">Track, 5K pace</figcaption>
+    </figure>
+
+    <div class="about-cols">
+      <dl class="facts">
+        {
+          facts.map((f) => (
+            <div class="fact">
+              <dt class="mono muted">{f.label}</dt>
+              <dd>{f.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <div class="stack">
+        {
+          Object.entries(stack).map(([group, items]) => (
+            <div>
+              <h3 class="mono muted">{group}</h3>
+              <ul>
+                {items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+        <div>
+          <h3 class="mono muted">Awards</h3>
+          <ul class="awards">
+            {
+              awards.map((a) => (
+                <li>
+                  <span class="num muted">{a.year}</span> {a.title}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ex {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    padding-top: clamp(32px, 4vw, 56px);
+  }
+  .ex-side {
+    grid-column: 1 / span 3;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 0.5em;
+  }
+  .ex-stats {
+    display: grid;
+    gap: 10px;
+  }
+  .ex-stats div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .ex-bar {
+    height: 2px;
+    background: var(--rule);
+  }
+  .ex-bar span {
+    display: block;
+    height: 100%;
+    width: calc(var(--p, 1) * 100%);
+    background: var(--accent);
+  }
+  .ex-note {
+    font-size: 13px;
+    line-height: 1.5;
+    max-width: 34ch;
+  }
+  .ex-text {
+    grid-column: 4 / span 9;
+    font-size: clamp(22px, 2.55vw, 40px);
+    line-height: 1.22;
+    letter-spacing: -0.022em;
+    font-weight: 450;
+  }
+  .s {
+    transition: none;
+  }
+  .s-score {
+    font-size: 11px;
+    letter-spacing: 0;
+    vertical-align: super;
+    margin-right: 0.35em;
+    padding: 1px 4px;
+    border: 1px solid var(--rule-strong);
+    border-radius: 3px;
+    position: relative;
+    top: -0.6em;
+    color: var(--muted);
+  }
+  .keep .s-score {
+    border-color: var(--accent);
+    color: var(--fg);
+  }
+  /* Final state: the summary is marked, the rest is struck and faded. */
+  .s-body {
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  .keep .s-body {
+    --hl: color-mix(in srgb, var(--accent) 40%, transparent);
+    background: linear-gradient(var(--hl), var(--hl)) 0 92% / calc(var(--mark, 1) * 100%) 0.42em no-repeat;
+  }
+  .drop .s-body {
+    opacity: calc(1 - var(--fade, 1) * 0.78);
+  }
+  /* SplitText wraps words in inline-blocks, which do not inherit a parent's
+     text-decoration, so the strike is set on both. */
+  .drop .s-body,
+  .drop .s-body > * {
+    text-decoration: line-through;
+    text-decoration-thickness: 0.06em;
+    text-decoration-color: color-mix(in srgb, var(--fg) calc(var(--fade, 1) * 70%), transparent);
+  }
+
+  .about-more {
+    padding-top: clamp(64px, 8vw, 120px);
+    row-gap: 40px;
+  }
+  .about-photo {
+    grid-column: 1 / span 3;
+  }
+  .about-photo-frame {
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+    background: var(--panel);
+  }
+  .about-photo-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .about-photo figcaption {
+    padding-top: 10px;
+  }
+  .about-cols {
+    grid-column: 4 / span 9;
+    display: grid;
+    gap: 48px;
+    align-content: start;
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--gap);
+  }
+  .fact {
+    border-top: 1px solid var(--rule-strong);
+    padding-top: 12px;
+  }
+  .fact dd {
+    margin-top: 8px;
+    font-size: 17px;
+    line-height: 1.35;
+  }
+  .stack {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--gap);
+  }
+  .stack h3 {
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 10px;
+    font-weight: 400;
+  }
+  .stack li {
+    font-size: 15px;
+    line-height: 1.75;
+  }
+  .awards li {
+    line-height: 1.45;
+    padding-bottom: 8px;
+  }
+
+  @media (max-width: 860px) {
+    .ex {
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 32px;
+      min-height: 0;
+    }
+    .about-photo {
+      grid-column: 1 / span 7;
+    }
+    .about-cols {
+      grid-column: 1 / -1;
+    }
+    .facts,
+    .stack {
+      grid-template-columns: 1fr 1fr;
+      row-gap: 28px;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, ScrollTrigger, SplitText, reduced } from "../scripts/motion";
+
+  const root = document.querySelector<HTMLElement>("[data-extract]");
+
+  if (root && !reduced) {
+    document.fonts.ready.then(() => {
+      const text = root.querySelector<HTMLElement>("[data-ex-text]")!;
+      const bodies = [...root.querySelectorAll<HTMLElement>(".s-body")];
+      const scores = [...root.querySelectorAll<HTMLElement>("[data-score]")];
+      const keep = [...root.querySelectorAll<HTMLElement>(".keep .s-body")];
+      const drop = [...root.querySelectorAll<HTMLElement>(".drop .s-body")];
+      const words = root.querySelector<HTMLElement>("[data-ex-words]")!;
+      const ratio = root.querySelector<HTMLElement>("[data-ex-ratio]")!;
+      const bar = root.querySelector<HTMLElement>("[data-ex-bar]")!;
+      const total = Number(root.dataset.total);
+      const kept = Number(root.dataset.kept);
+      const compression = Number(root.dataset.compression);
+
+      const split = SplitText.create(bodies, { type: "words", tag: "span" });
+      const counter = { words: total, ratio: 0 };
+      const paint = () => {
+        words.textContent = String(Math.round(counter.words));
+        ratio.textContent = String(Math.round(counter.ratio));
+        bar.style.setProperty("--p", String(counter.words / total));
+      };
+
+      gsap.set(split.words, { opacity: 0.12 });
+      gsap.set(scores, { opacity: 0, scale: 0.6 });
+      gsap.set([...keep, ...drop], { "--mark": 0, "--fade": 0 });
+      paint();
+
+      const tl = gsap.timeline({ defaults: { ease: "none" } });
+      tl.to(split.words, { opacity: 1, stagger: 0.02, duration: 0.3 })
+        .to(scores, { opacity: 1, scale: 1, stagger: 0.06, duration: 0.15, ease: "back.out(2)" }, "+=0.05")
+        .to(drop, { "--fade": 1, stagger: 0.08, duration: 0.3 }, "+=0.1")
+        .to(counter, { words: kept, ratio: compression, duration: 0.4, onUpdate: paint }, "<")
+        .to(keep, { "--mark": 1, stagger: 0.1, duration: 0.3 }, "<0.1")
+        .to({}, { duration: 0.25 });
+
+      const mm = gsap.matchMedia();
+      mm.add("(min-width: 861px)", () => {
+        ScrollTrigger.create({
+          trigger: root,
+          start: "top top+=64",
+          end: "+=200%",
+          pin: true,
+          // Pins above other triggers must measure first, or every trigger
+          // created earlier (tone, header label) keeps pre-pin positions.
+          refreshPriority: 2,
+          scrub: 0.6,
+          animation: tl,
+        });
+      });
+      mm.add("(max-width: 860px)", () => {
+        ScrollTrigger.create({
+          trigger: text,
+          start: "top 75%",
+          end: "bottom 35%",
+          scrub: 0.6,
+          animation: tl,
+        });
+      });
+      ScrollTrigger.sort();
+      ScrollTrigger.refresh();
+    });
+  }
+</script>

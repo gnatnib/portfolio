@@ -1,0 +1,157 @@
+---
+import { Image } from "astro:assets";
+import { experience } from "../data";
+---
+
+<section id="experience" class="sec wrap" data-tone="light" data-label="Experience" tabindex="-1">
+  <header class="sec-head">
+    <p class="sec-index mono">(03) Experience</p>
+    <h2 class="sec-title" data-reveal="lines">Where I've worked</h2>
+  </header>
+
+  <ol class="xp" data-peek-root>
+    {
+      experience.map((x, i) => (
+        <li class="xp-row" data-peek={i}>
+          <span class="xp-year num">{x.start}</span>
+          <span class="xp-logo">
+            <Image src={x.logo} alt="" width={56} height={56} densities={[1, 2]} loading="lazy" />
+          </span>
+          <div class="xp-main">
+            <h3 class="xp-role">{x.role}</h3>
+            <p class="muted">
+              {x.org}, {x.place}
+            </p>
+          </div>
+          <p class="xp-text">{x.text}</p>
+          <p class="xp-period mono muted">{x.period}</p>
+          <span class="xp-rule" data-reveal="rule" aria-hidden="true" />
+        </li>
+      ))
+    }
+    <li class="peek xp-peek" aria-hidden="true" data-peek-box>
+      {experience.map((x) => <Image src={x.photo} alt="" widths={[480]} sizes="320px" loading="lazy" />)}
+    </li>
+  </ol>
+</section>
+
+<style>
+  .xp {
+    position: relative;
+  }
+  .xp-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) 40px minmax(0, 4fr) minmax(0, 4fr) minmax(0, 2fr);
+    gap: var(--gap);
+    align-items: start;
+    padding-block: 28px;
+    transition: background-color 0.3s var(--ease);
+  }
+  .xp-rule {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--rule-strong);
+  }
+  .xp-year {
+    font-size: clamp(32px, 3.6vw, 60px);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    font-weight: 400;
+  }
+  .xp-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #fff;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--rule);
+  }
+  .xp-logo img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+  }
+  .xp-role {
+    font-size: clamp(19px, 1.6vw, 24px);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .xp-text {
+    max-width: 52ch;
+  }
+  .xp-period {
+    text-align: right;
+    padding-top: 4px;
+  }
+
+  .peek {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 260px;
+    aspect-ratio: 4 / 5;
+    pointer-events: none;
+    z-index: 30;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    clip-path: inset(50% 50% 50% 50%);
+    transition:
+      clip-path 0.45s var(--ease),
+      opacity 0.2s linear,
+      visibility 0s linear 0.45s;
+  }
+  .peek:global(.on) {
+    opacity: 1;
+    visibility: visible;
+    clip-path: inset(0 0 0 0);
+    transition:
+      clip-path 0.45s var(--ease),
+      opacity 0.2s linear;
+  }
+  .peek img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+  }
+  .peek img:global(.on) {
+    opacity: 1;
+  }
+  @media (hover: none), (max-width: 860px) {
+    .peek {
+      display: none;
+    }
+  }
+
+  @media (max-width: 860px) {
+    .xp-row {
+      grid-template-columns: 40px minmax(0, 1fr);
+      row-gap: 10px;
+    }
+    .xp-year {
+      grid-column: 1 / -1;
+      font-size: 40px;
+    }
+    .xp-text,
+    .xp-period {
+      grid-column: 2;
+      text-align: left;
+    }
+  }
+</style>
+
+<script>
+  import { mountPeek } from "../scripts/peek";
+  document.querySelectorAll<HTMLElement>("#experience [data-peek-root]").forEach(mountPeek);
+</script>

@@ -1,0 +1,373 @@
+---
+const stats = [
+  { key: "total", label: "Contributions" },
+  { key: "activeDays", label: "Active days" },
+  { key: "longest", label: "Longest streak, days" },
+  { key: "repos", label: "Public repositories" },
+];
+---
+
+<section id="activity" class="sec wrap" data-tone="light" data-label="Activity" tabindex="-1">
+  <header class="sec-head">
+    <p class="sec-index mono">(04) Activity</p>
+    <h2 class="sec-title" data-reveal="lines">The last twelve months</h2>
+  </header>
+
+  <div class="act" data-activity aria-busy="true">
+    <dl class="act-stats">
+      {
+        stats.map((s) => (
+          <div>
+            <dt class="mono muted">{s.label}</dt>
+            <dd class="num" data-stat={s.key}>
+              <span class="act-skel" />
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <div class="act-grid-wrap" data-scroll-end>
+      <svg class="act-grid" data-grid role="img" aria-label="GitHub contribution calendar, loading" viewBox="0 0 742 112"></svg>
+    </div>
+    <div class="act-foot mono">
+      <span class="muted" data-readout>Hover a day</span>
+      <span class="act-legend muted" aria-hidden="true">
+        Less <i data-l="0"></i><i data-l="1"></i><i data-l="2"></i><i data-l="3"></i><i data-l="4"></i> More
+      </span>
+    </div>
+
+    <div class="act-log">
+      <h3 class="mono muted">Recently pushed</h3>
+      <ol data-commits>
+        {Array.from({ length: 6 }, () => <li class="act-commit is-skel"><span class="act-skel" /></li>)}
+      </ol>
+      <a class="ul ul-on act-profile" href="https://github.com/gnatnib" target="_blank" rel="noopener">
+        github.com/gnatnib <span class="arrow">↗</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .act {
+    padding-top: clamp(32px, 4vw, 56px);
+    display: grid;
+    gap: 32px;
+  }
+  .act-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--gap);
+  }
+  .act-stats div {
+    border-top: 1px solid var(--rule-strong);
+    padding-top: 12px;
+  }
+  .act-stats dd {
+    font-size: clamp(44px, 6vw, 104px);
+    line-height: 1;
+    letter-spacing: -0.05em;
+    font-weight: 400;
+    margin-top: 12px;
+    min-height: 1em;
+  }
+  .act-skel {
+    display: inline-block;
+    width: 1.6em;
+    height: 0.7em;
+    background: var(--panel);
+    border-radius: 2px;
+  }
+  .act-grid-wrap {
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+  .act-grid {
+    width: 100%;
+    min-width: 720px;
+    height: auto;
+  }
+  .act-grid :global(rect) {
+    fill: var(--fg);
+  }
+  .act-grid :global(rect[data-l="0"]) {
+    fill: var(--rule);
+  }
+  .act-grid :global(rect[data-l="1"]) {
+    opacity: 0.3;
+  }
+  .act-grid :global(rect[data-l="2"]) {
+    opacity: 0.55;
+  }
+  .act-grid :global(rect[data-l="3"]) {
+    opacity: 0.8;
+  }
+  .act-grid :global(rect[data-l="4"]) {
+    fill: var(--accent);
+  }
+  .act-grid :global(rect:hover) {
+    stroke: var(--fg);
+    stroke-width: 1.5;
+  }
+  .act-grid :global(text) {
+    fill: var(--muted);
+    font-family: var(--mono);
+    font-size: 9px;
+  }
+  .act-foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: -16px;
+  }
+  .act-legend {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .act-legend i {
+    width: 10px;
+    height: 10px;
+    background: var(--fg);
+  }
+  .act-legend i[data-l="0"] {
+    background: var(--rule);
+  }
+  .act-legend i[data-l="1"] {
+    opacity: 0.3;
+  }
+  .act-legend i[data-l="2"] {
+    opacity: 0.55;
+  }
+  .act-legend i[data-l="3"] {
+    opacity: 0.8;
+  }
+  .act-legend i[data-l="4"] {
+    background: var(--accent);
+  }
+  .act-log {
+    display: grid;
+    gap: 12px;
+    max-width: 920px;
+  }
+  .act-log h3 {
+    font-weight: 400;
+  }
+  .act-log ol {
+    border-top: 1px solid var(--rule-strong);
+  }
+  .act-log :global(.act-commit) {
+    min-height: 48px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+  }
+  .act-log :global(.act-commit a) {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 3fr) 96px;
+    gap: var(--gap);
+    padding-block: 12px;
+    align-items: baseline;
+  }
+  .act-log :global(.act-commit a:hover .msg) {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .act-log :global(.act-commit .msg) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .act-log :global(.act-commit .when) {
+    text-align: right;
+  }
+  .act-commit.is-skel .act-skel {
+    width: 60%;
+    height: 12px;
+  }
+  .act-profile {
+    justify-self: start;
+    margin-top: 8px;
+  }
+  @media (max-width: 860px) {
+    .act-stats {
+      grid-template-columns: 1fr 1fr;
+      row-gap: 24px;
+    }
+    .act-log :global(.act-commit a) {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+    .act-log :global(.act-commit .msg) {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      white-space: normal;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, ScrollTrigger, reduced } from "../scripts/motion";
+
+  type Day = { date: string; count: number; level: number };
+  type Data = {
+    total: number;
+    activeDays: number;
+    longest: number;
+    current: number;
+    repos: number | null;
+    days: Day[];
+    recent: { name: string; description: string | null; language: string | null; url: string; at: string }[];
+    error?: string;
+  };
+
+  const root = document.querySelector<HTMLElement>("[data-activity]")!;
+  const svg = root.querySelector<SVGSVGElement>("[data-grid]")!;
+  const readout = root.querySelector<HTMLElement>("[data-readout]")!;
+  const list = root.querySelector<HTMLElement>("[data-commits]")!;
+  const NS = "http://www.w3.org/2000/svg";
+  const CELL = 11;
+  const GAP = 3;
+  const TOP = 14;
+  const LEFT = 0;
+  const dayFmt = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+  const monthFmt = new Intl.DateTimeFormat("en-GB", { month: "short", timeZone: "UTC" });
+
+  function ago(iso: string) {
+    const s = (Date.now() - new Date(iso).getTime()) / 1000;
+    if (s < 3600) return `${Math.max(1, Math.round(s / 60))}m ago`;
+    if (s < 86400) return `${Math.round(s / 3600)}h ago`;
+    if (s < 86400 * 30) return `${Math.round(s / 86400)}d ago`;
+    return `${Math.round(s / (86400 * 30))}mo ago`;
+  }
+
+  function drawGrid(days: Day[]) {
+    svg.replaceChildren();
+    const weeks = Math.ceil(days.length / 7);
+    svg.setAttribute("viewBox", `0 0 ${LEFT + weeks * (CELL + GAP)} ${TOP + 7 * (CELL + GAP)}`);
+    let lastMonth = -1;
+    const rects: SVGRectElement[] = [];
+    days.forEach((d, i) => {
+      const w = Math.floor(i / 7);
+      const dow = i % 7;
+      const date = new Date(`${d.date}T00:00:00Z`);
+      if (dow === 0 && date.getUTCMonth() !== lastMonth && date.getUTCDate() <= 7) {
+        lastMonth = date.getUTCMonth();
+        const t = document.createElementNS(NS, "text");
+        t.setAttribute("x", String(LEFT + w * (CELL + GAP)));
+        t.setAttribute("y", "9");
+        t.textContent = monthFmt.format(date);
+        svg.append(t);
+      }
+      const r = document.createElementNS(NS, "rect");
+      r.setAttribute("x", String(LEFT + w * (CELL + GAP)));
+      r.setAttribute("y", String(TOP + dow * (CELL + GAP)));
+      r.setAttribute("width", String(CELL));
+      r.setAttribute("height", String(CELL));
+      r.setAttribute("rx", "1.5");
+      r.dataset.l = String(d.level);
+      const label = `${dayFmt.format(date)}: ${d.count === 0 ? "no" : d.count} contribution${d.count === 1 ? "" : "s"}`;
+      r.dataset.label = label;
+      const title = document.createElementNS(NS, "title");
+      title.textContent = label;
+      r.append(title);
+      svg.append(r);
+      rects.push(r);
+    });
+    svg.setAttribute("aria-label", "GitHub contribution calendar for the last twelve months");
+    svg.addEventListener("pointerover", (e) => {
+      const label = (e.target as Element).getAttribute?.("data-label");
+      if (label) readout.textContent = label;
+    });
+    return rects;
+  }
+
+  function countUp(el: HTMLElement, value: number) {
+    if (reduced) {
+      el.textContent = value.toLocaleString("en-US");
+      return;
+    }
+    const o = { v: 0 };
+    gsap.to(o, {
+      v: value,
+      duration: 1.6,
+      ease: "expo.out",
+      onUpdate: () => (el.textContent = Math.round(o.v).toLocaleString("en-US")),
+    });
+  }
+
+  function render(data: Data) {
+    const rects = drawGrid(data.days);
+    const values: Record<string, number | null> = {
+      total: data.total,
+      activeDays: data.activeDays,
+      longest: data.longest,
+      repos: data.repos,
+    };
+    const wrap = root.querySelector<HTMLElement>("[data-scroll-end]")!;
+    wrap.scrollLeft = wrap.scrollWidth;
+
+    const io = new IntersectionObserver((entries) => {
+      if (!entries[0].isIntersecting) return;
+      io.disconnect();
+      root.querySelectorAll<HTMLElement>("[data-stat]").forEach((el) => {
+        const v = values[el.dataset.stat!];
+        if (v == null) el.textContent = "n/a";
+        else countUp(el, v);
+      });
+      if (!reduced) {
+        gsap.from(rects, {
+          opacity: 0,
+          scale: 0.2,
+          transformOrigin: "50% 50%",
+          duration: 0.5,
+          ease: "power2.out",
+          stagger: { each: 0.0025, from: "start" },
+        });
+      }
+    }, { threshold: 0.25 });
+    io.observe(root);
+
+    list.replaceChildren(
+      ...(data.recent.length
+        ? data.recent.map((r) => {
+            const li = document.createElement("li");
+            li.className = "act-commit";
+            const a = document.createElement("a");
+            a.href = r.url;
+            a.target = "_blank";
+            a.rel = "noopener";
+            const name = document.createElement("span");
+            name.className = "mono";
+            name.textContent = r.name;
+            const msg = document.createElement("span");
+            msg.className = "msg";
+            msg.textContent = [r.description, r.language].filter(Boolean).join(" · ") || "No description";
+            const when = document.createElement("span");
+            when.className = "when mono muted num";
+            when.textContent = ago(r.at);
+            a.append(name, msg, when);
+            li.append(a);
+            return li;
+          })
+        : [Object.assign(document.createElement("li"), { className: "act-commit muted", textContent: "No public repositories yet." })]),
+    );
+    root.setAttribute("aria-busy", "false");
+    // The list can differ in length from the skeleton; re-measure triggers below.
+    ScrollTrigger.refresh();
+  }
+
+  function fail() {
+    root.setAttribute("aria-busy", "false");
+    root.querySelectorAll<HTMLElement>("[data-stat]").forEach((el) => (el.textContent = "n/a"));
+    svg.setAttribute("aria-label", "GitHub contribution calendar could not be loaded");
+    readout.textContent = "GitHub did not answer. The full history is on the profile.";
+    list.replaceChildren();
+  }
+
+  fetch("/api/github")
+    .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+    .then((d: Data) => (d.error || !d.days?.length ? fail() : render(d)))
+    .catch(fail);
+</script>

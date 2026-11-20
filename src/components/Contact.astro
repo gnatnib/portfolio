@@ -1,0 +1,207 @@
+---
+import { person, socials, resumeUrl, resume } from "../data";
+const year = new Date().getFullYear();
+---
+
+<section id="contact" class="sec contact wrap" data-tone="dark" data-label="Contact" tabindex="-1">
+  <header class="sec-head">
+    <p class="sec-index mono">(06) Contact</p>
+    <h2 class="sec-title" data-reveal="lines">Have a project, a role, or a question?</h2>
+  </header>
+
+  <div class="ct">
+    <div class="ct-mail">
+      <p class="mono muted">Write to me</p>
+      <a href={`mailto:${person.email}`} class="ct-email" data-magnet>
+        <span>{person.email.split("@")[0]}</span><span class="muted">@{person.email.split("@")[1]}</span>
+      </a>
+      <button type="button" class="ct-copy mono" data-copy={person.email}>
+        <span data-copy-label>Copy address</span>
+      </button>
+    </div>
+
+    <dl class="ct-cols">
+      <div>
+        <dt class="mono muted">Elsewhere</dt>
+        <dd>
+          <ul>
+            {
+              socials.map((s) => (
+                <li>
+                  <a href={s.href} target="_blank" rel="noopener" class="ul">
+                    {s.label} <span class="arrow">↗</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </dd>
+      </div>
+      <div>
+        <dt class="mono muted">Resume</dt>
+        <dd>
+          <ul>
+            <li><a href="/resume" class="ul">Read online</a></li>
+            <li><a href={resumeUrl} download={resume.downloadName} class="ul">Download PDF</a></li>
+          </ul>
+        </dd>
+      </div>
+      <div>
+        <dt class="mono muted">Based in</dt>
+        <dd>{person.city}<br /><span class="muted">UTC+7</span></dd>
+      </div>
+    </dl>
+  </div>
+
+  <footer class="ft">
+    <p class="ft-mark" aria-hidden="true" data-mark>
+      {[..."gnatnib"].map((c) => <span data-mark-ch>{c}</span>)}
+    </p>
+    <div class="ft-bar mono muted">
+      <span>&copy; {year} {person.name}</span>
+      <span class="hide-sm">Built with Astro, set in Geist</span>
+      <a href="#main" class="ul">Back to top</a>
+    </div>
+  </footer>
+</section>
+
+<style>
+  .contact {
+    padding-bottom: 0;
+  }
+  html:not(.js) .contact {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .ct {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    row-gap: 64px;
+    padding-top: clamp(48px, 6vw, 96px);
+  }
+  .ct-mail {
+    grid-column: 1 / -1;
+    display: grid;
+    justify-items: start;
+    gap: 16px;
+  }
+  .ct-email {
+    display: inline-block;
+    font-size: clamp(34px, 7.4vw, 128px);
+    line-height: 1;
+    letter-spacing: -0.05em;
+    font-weight: 500;
+    word-break: break-word;
+    transition: color 0.3s var(--ease);
+  }
+  .ct-email:hover span:first-child {
+    color: var(--accent);
+  }
+  .ct-copy {
+    min-height: 40px;
+    padding-inline: 14px;
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    transition:
+      background-color 0.25s var(--ease),
+      color 0.25s var(--ease);
+  }
+  .ct-copy:hover {
+    background: var(--fg);
+    color: var(--bg);
+  }
+  .ct-cols {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gap);
+  }
+  .ct-cols > div {
+    border-top: 1px solid var(--rule-strong);
+    padding-top: 12px;
+  }
+  .ct-cols dd {
+    margin-top: 12px;
+    font-size: 17px;
+    line-height: 1.7;
+  }
+
+  .ft {
+    padding-top: clamp(96px, 12vw, 200px);
+  }
+  .ft-mark {
+    display: flex;
+    justify-content: space-between;
+    font-size: clamp(96px, 23.4vw, 420px);
+    line-height: 0.8;
+    letter-spacing: -0.06em;
+    font-weight: 600;
+    overflow: hidden;
+    padding-block: 0.04em 0.16em;
+    margin-inline: -0.03em;
+  }
+  .ft-mark span {
+    display: inline-block;
+  }
+  .ft-bar {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding-block: 20px;
+    border-top: 1px solid var(--rule);
+    margin-top: 12px;
+  }
+  @media (max-width: 860px) {
+    .ct-cols {
+      grid-template-columns: 1fr 1fr;
+      row-gap: 32px;
+    }
+    .hide-sm {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, reduced } from "../scripts/motion";
+
+  const copy = document.querySelector<HTMLButtonElement>("[data-copy]")!;
+  const label = copy.querySelector<HTMLElement>("[data-copy-label]")!;
+  copy.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(copy.dataset.copy!);
+      label.textContent = "Copied";
+    } catch {
+      label.textContent = "Press Ctrl+C";
+      getSelection()?.selectAllChildren(document.querySelector(".ct-email")!);
+    }
+    setTimeout(() => (label.textContent = "Copy address"), 2000);
+  });
+
+  if (!reduced) {
+    const chars = document.querySelectorAll<HTMLElement>("[data-mark-ch]");
+    gsap.from(chars, {
+      yPercent: 100,
+      ease: "none",
+      stagger: 0.08,
+      scrollTrigger: { trigger: "[data-mark]", start: "top bottom", end: "bottom bottom", scrub: 0.6 },
+    });
+
+    // The email leans toward the cursor a few pixels. Fine pointers only.
+    const mail = document.querySelector<HTMLElement>("[data-magnet]")!;
+    if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      const x = gsap.quickTo(mail, "x", { duration: 0.6, ease: "power3.out" });
+      const y = gsap.quickTo(mail, "y", { duration: 0.6, ease: "power3.out" });
+      mail.addEventListener("pointermove", (e) => {
+        const r = mail.getBoundingClientRect();
+        x((e.clientX - r.left - r.width / 2) * 0.06);
+        y((e.clientY - r.top - r.height / 2) * 0.12);
+      });
+      mail.addEventListener("pointerleave", () => {
+        x(0);
+        y(0);
+      });
+    }
+  }
+</script>

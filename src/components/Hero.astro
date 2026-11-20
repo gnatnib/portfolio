@@ -1,0 +1,216 @@
+---
+import AsciiPortrait from "./AsciiPortrait.astro";
+
+const nameLines = ["Bintang", "Syafrian", "Rizal"];
+---
+
+<section class="hero wrap" data-tone="light" data-label="Index" aria-label="Introduction">
+  <div class="hero-strip mono">
+    <span>Portfolio, 2026</span>
+    <span class="hide-sm">Software developer</span>
+    <span class="hide-sm">Full-stack web, machine learning</span>
+    <span class="hero-clock">Semarang <span class="num" data-clock>--:--</span> WIB</span>
+  </div>
+
+  <div class="hero-body">
+    <div class="hero-text">
+      <p class="hero-lead" data-reveal="lines">
+        I design and build web applications and machine learning systems. Interned at
+        PT Sinergi Asta Nusantara and PT Usaha Gedung Mandiri, studied at Universitas Diponegoro.
+      </p>
+      <div class="hero-cta" data-reveal="fade">
+        <a href="#work" class="ul ul-on">Selected work</a>
+        <a href="/resume" class="ul">Resume</a>
+        <a href="mailto:bintang.syafrian@gmail.com" class="ul">Email</a>
+      </div>
+
+      <h1 class="hero-name" aria-label="Bintang Syafrian Rizal" data-name>
+        {
+          nameLines.map((line) => (
+            <span class="hero-line" aria-hidden="true">
+              {[...line].map((ch) => (
+                <span class="ch" data-ch>
+                  {ch}
+                </span>
+              ))}
+            </span>
+          ))
+        }
+      </h1>
+    </div>
+
+    <div class="hero-portrait" data-parallax="-0.08">
+      <AsciiPortrait />
+    </div>
+  </div>
+
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    padding-top: var(--header-h);
+    display: flex;
+    flex-direction: column;
+  }
+  .hero-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gap);
+    padding-block: 12px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .hero-clock {
+    text-align: right;
+  }
+  .hero-body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    padding-top: clamp(24px, 4vw, 56px);
+    padding-bottom: clamp(24px, 3vw, 40px);
+  }
+  .hero-text {
+    grid-column: 1 / span 8;
+    display: flex;
+    flex-direction: column;
+  }
+  .hero-lead {
+    font-size: clamp(20px, 1.9vw, 28px);
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    max-width: 30ch;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 24px;
+    margin-top: 24px;
+    font-size: 15px;
+  }
+  .hero-name {
+    margin-top: auto;
+    padding-top: 40px;
+    font-size: clamp(76px, 11.2vw, 200px);
+    line-height: 0.84;
+    letter-spacing: -0.055em;
+    font-weight: 500;
+  }
+  .hero-line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.06em;
+    margin-bottom: -0.06em;
+  }
+  .ch {
+    display: inline-block;
+    font-variation-settings: "wght" var(--w, 500);
+    will-change: transform;
+  }
+  html.motion .ch {
+    transform: translateY(110%);
+  }
+  .hero-portrait {
+    grid-column: 9 / span 4;
+    align-self: end;
+  }
+  @media (max-width: 860px) {
+    .hero-strip {
+      grid-template-columns: 1fr 1fr;
+    }
+    .hide-sm {
+      display: none;
+    }
+    .hero-body {
+      display: flex;
+      flex-direction: column;
+    }
+    .hero-name {
+      order: -1;
+      padding-top: 8px;
+      margin-bottom: 28px;
+      font-size: clamp(64px, 21vw, 150px);
+    }
+    .hero-text {
+      display: contents;
+    }
+    .hero-lead {
+      order: 1;
+      margin-top: 24px;
+    }
+    .hero-cta {
+      order: 2;
+      margin-bottom: 8px;
+    }
+    .hero-portrait {
+      order: 0;
+      width: min(78%, 420px);
+      align-self: flex-end;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "../scripts/motion";
+
+  const clock = document.querySelector<HTMLElement>("[data-clock]")!;
+  const fmt = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" });
+  const tick = () => (clock.textContent = fmt.format(new Date()));
+  tick();
+  setInterval(tick, 15_000);
+
+  const name = document.querySelector<HTMLElement>("[data-name]")!;
+  const chars = [...name.querySelectorAll<HTMLElement>("[data-ch]")];
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!reduced) {
+    gsap.fromTo(chars, { yPercent: 110, y: 0 }, {
+      yPercent: 0,
+      duration: 1.1,
+      ease: "expo.out",
+      stagger: { each: 0.035, from: "start" },
+      delay: 0.1,
+    });
+  }
+
+  /* Letters thicken toward the cursor. Geist is a variable font, so this is a
+     weight change, not a scale: the line keeps its rhythm. */
+  if (!reduced && matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    let mx = -9999;
+    let my = -9999;
+    let frame = 0;
+    const weights = chars.map(() => 500);
+
+    const step = () => {
+      frame = 0;
+      let moving = false;
+      // Read every rect before writing any style, so the loop costs one layout.
+      const rects = chars.map((el) => el.getBoundingClientRect());
+      chars.forEach((el, i) => {
+        const r = rects[i];
+        const d = Math.hypot(r.left + r.width / 2 - mx, r.top + r.height / 2 - my);
+        // Thin far away, heavy under the cursor; back to 500 when it leaves.
+        const target = mx < -9000 ? 500 : 300 + 600 * Math.max(0, 1 - d / 420);
+        weights[i] += (target - weights[i]) * 0.18;
+        if (Math.abs(target - weights[i]) > 0.5) moving = true;
+        el.style.setProperty("--w", weights[i].toFixed(0));
+      });
+      if (moving) frame = requestAnimationFrame(step);
+    };
+    const kick = () => {
+      if (!frame) frame = requestAnimationFrame(step);
+    };
+
+    window.addEventListener("pointermove", (e) => {
+      mx = e.clientX;
+      my = e.clientY;
+      kick();
+    }, { passive: true });
+    document.addEventListener("pointerleave", () => {
+      mx = my = -9999;
+      kick();
+    });
+  }
+</script>

@@ -1,0 +1,27 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Not found, gnatnib">
+  <section class="wrap nf" data-tone="light">
+    <p class="mono muted">Error 404</p>
+    <h1>Nothing at this address.</h1>
+    <p><a href="/" class="ul ul-on">Back to the index</a></p>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    min-height: 100svh;
+    display: grid;
+    align-content: center;
+    gap: 24px;
+  }
+  h1 {
+    font-size: clamp(48px, 9vw, 152px);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    font-weight: 500;
+    max-width: 12ch;
+  }
+</style>

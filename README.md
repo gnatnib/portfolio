@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# gnatnib.site
 
-## Getting Started
+Personal site of Bintang Syafrian Rizal. Astro 6, static HTML with one on-demand route, deployed on Vercel.
 
-First, run the development server:
+## Run
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:4321
+npm run build    # output in .vercel/output
+npm run check    # astro check (types)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Node 22.12 or newer.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Layout
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Path | What |
+|---|---|
+| `src/data.ts` | All content: projects, experience, certificates, bio sentences, links. Edit here first. |
+| `src/pages/index.astro` | Home: hero, about, work, experience, activity, credentials, contact. |
+| `src/pages/resume.astro` | CV rendered as page images, plus the PDF download. |
+| `src/pages/api/github.ts` | Live GitHub calendar and recent repos. Cached at the edge for an hour. |
+| `src/scripts/motion.ts` | Lenis smooth scroll, GSAP ScrollTrigger wiring, section tone, line reveals. |
+| `src/scripts/ascii.ts` | The ASCII portrait: glyph grid, cursor lens, click to develop. |
+| `src/lib/textrank.ts` | TextRank used by the About section, run at build time. |
 
-## Learn More
+## Content notes
 
-To learn more about Next.js, take a look at the following resources:
+- **About section.** `bioSentences` in `src/data.ts` is ranked with TextRank when the site builds. The top `SUMMARY_KEEP` sentences stay highlighted; the scores on the page are the real output.
+- **Portrait.** `src/assets/portrait-photo.jpg` is the photo, `portrait-cutout.png` the same crop with the background removed (made with `rembg`). The canvas samples the cutout; the photo sits underneath.
+- **CV.** `python scripts/render-cv.py path/to/CV.pdf` copies the PDF to `public/` and renders `src/assets/cv/page-N.png`. Then bump `resume.version` in `src/data.ts`.
+- **Old URLs.** `/about`, `/work`, `/experience`, `/contact` redirect to the matching section on `/`. See `astro.config.mjs`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Environment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Optional, set in Vercel:
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `GITHUB_TOKEN`: raises the GitHub API rate limit. The route works without it.
+- `GITHUB_USERNAME`: defaults to `gnatnib`.

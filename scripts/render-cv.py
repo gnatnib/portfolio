@@ -9,8 +9,9 @@ Usage:
     pip install pymupdf
     python scripts/render-cv.py path/to/CV.pdf
 
-Copies the PDF to public/ for the download button, writes public/cv/page-N.png,
-then prints the `resumePages` array to paste into lib/resume.ts.
+Copies the PDF to public/ for the download button and writes
+src/assets/cv/page-N.png, which the resume page picks up on the next build.
+Bump `resume.version` in src/data.ts afterwards.
 """
 
 import os
@@ -24,7 +25,7 @@ except ImportError:
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PUBLIC = os.path.join(ROOT, "public")
-PAGES_DIR = os.path.join(PUBLIC, "cv")
+PAGES_DIR = os.path.join(ROOT, "src", "assets", "cv")
 PDF_NAME = "CV_Bintang_Syafrian_Rizal.pdf"
 # 2.4x ≈ 173 DPI — crisp on HiDPI screens without bloating the payload.
 SCALE = 2.4
@@ -48,19 +49,14 @@ def main() -> None:
             os.remove(os.path.join(PAGES_DIR, stale))
 
     doc = fitz.open(target_pdf)
-    entries = []
     for index, page in enumerate(doc, start=1):
         pix = page.get_pixmap(matrix=fitz.Matrix(SCALE, SCALE), alpha=False)
         name = f"page-{index}.png"
         pix.save(os.path.join(PAGES_DIR, name))
         size_kb = os.path.getsize(os.path.join(PAGES_DIR, name)) // 1024
-        print(f"public/cv/{name}  {pix.width}x{pix.height}  {size_kb}KB")
-        entries.append(f'  {{ src: "/cv/{name}", width: {pix.width}, height: {pix.height} }},')
+        print(f"src/assets/cv/{name}  {pix.width}x{pix.height}  {size_kb}KB")
 
-    print("\nPaste into lib/resume.ts and bump RESUME_VERSION:\n")
-    print("export const resumePages = [")
-    print("\n".join(entries))
-    print("];")
+    print("\nNow bump resume.version in src/data.ts.")
 
 
 if __name__ == "__main__":

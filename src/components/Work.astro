@@ -1,0 +1,510 @@
+---
+import { Image } from "astro:assets";
+import { projects } from "../data";
+
+const featured = projects.filter((p) => p.featured);
+const pad = (n: number) => String(n).padStart(2, "0");
+const hostOf = (url: string) => new URL(url).host.replace(/^www\./, "");
+---
+
+<section id="work" class="sec work" data-tone="dark" data-label="Work" tabindex="-1">
+  <header class="sec-head wrap">
+    <p class="sec-index mono">(02) Work</p>
+    <h2 class="sec-title" data-reveal="lines">Selected work<sup>({pad(featured.length)})</sup></h2>
+  </header>
+
+  <div class="hz" data-hz>
+    <div class="hz-track" data-hz-track>
+      {
+        featured.map((p, i) => (
+          <article class="pj" aria-labelledby={`pj-${p.slug}`}>
+            <a
+              class="pj-media"
+              href={p.live ?? p.repo}
+              target="_blank"
+              rel="noopener"
+              aria-label={`Open ${p.title}`}
+              data-pj-media
+            >
+              <Image
+                src={p.image}
+                alt={`${p.title} screenshot`}
+                widths={[640, 960, 1280, 1600]}
+                sizes="(max-width: 860px) 92vw, 56vw"
+                loading={i === 0 ? "eager" : "lazy"}
+                data-pj-img
+              />
+            </a>
+            <div class="pj-meta">
+              <p class="mono muted num">
+                {pad(i + 1)} / {pad(featured.length)}
+              </p>
+              <h3 id={`pj-${p.slug}`} class="pj-title">
+                {p.title}
+              </h3>
+              <p class="pj-summary">{p.summary}</p>
+              <p class="pj-detail muted">{p.detail}</p>
+              <dl class="pj-dl">
+                <div>
+                  <dt class="mono muted">For</dt>
+                  <dd>{p.client}</dd>
+                </div>
+                <div>
+                  <dt class="mono muted">Year</dt>
+                  <dd class="num">{p.year}</dd>
+                </div>
+                <div>
+                  <dt class="mono muted">Stack</dt>
+                  <dd>{p.stack.join(", ")}</dd>
+                </div>
+              </dl>
+              <p class="pj-links">
+                {p.live && (
+                  <a href={p.live} target="_blank" rel="noopener" class="ul ul-on">
+                    {hostOf(p.live)} <span class="arrow">↗</span>
+                  </a>
+                )}
+                {p.repo && (
+                  <a href={p.repo} target="_blank" rel="noopener" class="ul">
+                    Source <span class="arrow">↗</span>
+                  </a>
+                )}
+              </p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+    <div class="hz-progress wrap mono" aria-hidden="true">
+      <span class="num" data-hz-count>01 / {pad(featured.length)}</span>
+      <span class="hz-bar"><span data-hz-bar></span></span>
+      <span>Scroll</span>
+    </div>
+  </div>
+
+  <div class="idx wrap" data-peek-root>
+    <div class="idx-head">
+      <h3 class="idx-title">Index</h3>
+      <p class="mono muted">{projects.length} projects, newest first</p>
+    </div>
+    <div class="idx-cols mono muted" aria-hidden="true">
+      <span>No.</span><span>Project</span><span>Type</span><span>For</span><span>Stack</span><span>Year</span>
+    </div>
+    {
+      projects.map((p, i) => (
+        <details class="row" data-peek={i}>
+          <summary>
+            <span class="mono muted num">{pad(i + 1)}</span>
+            <span class="row-title">{p.title}</span>
+            <span class="row-kind muted">{p.kind}</span>
+            <span class="row-client muted">{p.client}</span>
+            <span class="row-stack muted">{p.stack.slice(0, 3).join(", ")}</span>
+            <span class="num row-year">{p.year}</span>
+            <span class="row-plus" aria-hidden="true" />
+          </summary>
+          <div class="row-body">
+            <div class="row-thumb">
+              <Image src={p.image} alt="" widths={[480, 720]} sizes="(max-width: 860px) 92vw, 30vw" loading="lazy" />
+            </div>
+            <div class="row-text">
+              <p>{p.detail ?? p.summary}</p>
+              <p class="muted">{p.stack.join(", ")}</p>
+              <p class="pj-links">
+                {p.live && (
+                  <a href={p.live} target="_blank" rel="noopener" class="ul ul-on">
+                    {hostOf(p.live)} <span class="arrow">↗</span>
+                  </a>
+                )}
+                {p.repo && (
+                  <a href={p.repo} target="_blank" rel="noopener" class="ul">
+                    Source <span class="arrow">↗</span>
+                  </a>
+                )}
+              </p>
+            </div>
+          </div>
+        </details>
+      ))
+    }
+    <div class="peek" aria-hidden="true" data-peek-box>
+      {
+        projects.map((p) => (
+          <Image src={p.image} alt="" widths={[480]} sizes="320px" loading="lazy" data-peek-img />
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .work {
+    padding-bottom: clamp(96px, 12vw, 180px);
+  }
+  html:not(.js) .work {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  /* Horizontal track. Without JS (or on narrow screens) it is a plain column. */
+  .hz {
+    padding-top: clamp(32px, 4vw, 56px);
+  }
+  .hz-track {
+    display: grid;
+    gap: 72px;
+    padding-inline: var(--pad);
+  }
+  .pj {
+    display: grid;
+    gap: 20px;
+  }
+  .pj-media {
+    display: block;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--panel);
+  }
+  .pj-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.12);
+    transition: filter 0.5s var(--ease);
+  }
+  .pj-media:hover img {
+    filter: brightness(1.06);
+  }
+  .pj-meta {
+    display: grid;
+    gap: 12px;
+    align-content: start;
+  }
+  .pj-title {
+    font-size: clamp(36px, 4.4vw, 72px);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    font-weight: 500;
+  }
+  .pj-summary {
+    font-size: 19px;
+    line-height: 1.35;
+    max-width: 36ch;
+  }
+  .pj-detail {
+    font-size: 15px;
+    max-width: 52ch;
+  }
+  .pj-dl {
+    display: grid;
+    gap: 6px;
+    padding-top: 8px;
+  }
+  .pj-dl div {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 12px;
+    padding-block: 8px;
+    border-top: 1px solid var(--rule);
+    font-size: 14px;
+  }
+  .pj-dl dt {
+    padding-top: 2px;
+  }
+  .pj-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-top: 6px;
+    font-size: 15px;
+  }
+  .hz-progress {
+    display: none;
+  }
+
+  @media (min-width: 861px) {
+    html.motion .hz {
+      height: calc(100svh - 0px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+      padding-top: var(--header-h);
+    }
+    html.motion .hz-track {
+      display: flex;
+      gap: clamp(48px, 6vw, 120px);
+      width: max-content;
+      padding-right: 20vw;
+    }
+    html.motion .pj {
+      width: clamp(760px, 80vw, 1440px);
+      grid-template-columns: minmax(0, 2.3fr) minmax(0, 1fr);
+      gap: clamp(24px, 2.4vw, 40px);
+      align-items: end;
+    }
+    html.motion .pj-media {
+      max-height: calc(100svh - 220px);
+    }
+    html.motion .hz-progress {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding-top: 28px;
+    }
+    .hz-bar {
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+    }
+    .hz-bar span {
+      display: block;
+      height: 100%;
+      width: 100%;
+      background: var(--fg);
+      transform-origin: 0 50%;
+      transform: scaleX(0);
+    }
+    html:not(.motion) .hz-track {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* Index */
+  .idx {
+    position: relative;
+    padding-top: clamp(96px, 10vw, 160px);
+  }
+  .idx-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 20px;
+  }
+  .idx-title {
+    font-size: clamp(32px, 3.4vw, 56px);
+    letter-spacing: -0.035em;
+    font-weight: 500;
+  }
+  .idx-cols,
+  .row summary {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 2.2fr) minmax(0, 1.2fr) minmax(0, 1.5fr) minmax(0, 2fr) 56px 24px;
+    gap: var(--gap);
+    align-items: baseline;
+  }
+  .idx-cols {
+    padding-block: 10px;
+    border-bottom: 1px solid var(--rule-strong);
+  }
+  .row {
+    border-bottom: 1px solid var(--rule);
+  }
+  .row summary {
+    list-style: none;
+    cursor: pointer;
+    padding-block: 18px;
+    transition:
+      padding 0.4s var(--ease),
+      color 0.3s var(--ease);
+  }
+  .row summary::-webkit-details-marker {
+    display: none;
+  }
+  .row-title {
+    font-size: clamp(18px, 1.6vw, 24px);
+    letter-spacing: -0.02em;
+    font-weight: 500;
+  }
+  .row-year {
+    text-align: right;
+  }
+  .row-plus {
+    position: relative;
+    width: 12px;
+    height: 12px;
+    justify-self: end;
+    align-self: center;
+  }
+  .row-plus::before,
+  .row-plus::after {
+    content: "";
+    position: absolute;
+    inset: 50% 0 auto;
+    height: 1px;
+    background: currentColor;
+    transition: transform 0.35s var(--ease);
+  }
+  .row-plus::after {
+    transform: rotate(90deg);
+  }
+  .row[open] .row-plus::after {
+    transform: rotate(0);
+  }
+  @media (hover: hover) {
+    .idx:hover .row summary {
+      color: var(--muted);
+    }
+    .idx .row summary:hover {
+      color: var(--fg);
+      padding-inline-start: 12px;
+    }
+  }
+  .row-body {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: var(--gap);
+    padding-bottom: 28px;
+  }
+  .row-thumb {
+    grid-column: 2;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--panel);
+  }
+  .row-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .row-text {
+    display: grid;
+    gap: 12px;
+    align-content: start;
+    max-width: 56ch;
+  }
+
+  .peek {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 300px;
+    aspect-ratio: 4 / 3;
+    pointer-events: none;
+    z-index: 30;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    clip-path: inset(50% 50% 50% 50%);
+    transition:
+      clip-path 0.45s var(--ease),
+      opacity 0.2s linear,
+      visibility 0s linear 0.45s;
+  }
+  .peek.on {
+    opacity: 1;
+    visibility: visible;
+    clip-path: inset(0 0 0 0);
+    transition:
+      clip-path 0.45s var(--ease),
+      opacity 0.2s linear;
+  }
+  .peek img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+  }
+  .peek img.on {
+    opacity: 1;
+  }
+  @media (hover: none), (max-width: 860px) {
+    .peek {
+      display: none;
+    }
+  }
+
+  @media (max-width: 860px) {
+    .idx-cols {
+      display: none;
+    }
+    .row summary {
+      grid-template-columns: 32px minmax(0, 1fr) auto 16px;
+      row-gap: 4px;
+    }
+    .row-kind,
+    .row-client,
+    .row-stack {
+      display: none;
+    }
+    .row-body {
+      grid-template-columns: 1fr;
+    }
+    .row-thumb {
+      grid-column: 1;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, ScrollTrigger, reduced } from "../scripts/motion";
+  import { mountPeek } from "../scripts/peek";
+
+  document.querySelectorAll<HTMLElement>("#work [data-peek-root]").forEach(mountPeek);
+
+  const hz = document.querySelector<HTMLElement>("[data-hz]");
+  if (hz && !reduced) {
+    const track = hz.querySelector<HTMLElement>("[data-hz-track]")!;
+    const bar = hz.querySelector<HTMLElement>("[data-hz-bar]")!;
+    const count = hz.querySelector<HTMLElement>("[data-hz-count]")!;
+    const panels = [...track.querySelectorAll<HTMLElement>(".pj")];
+    const total = String(panels.length).padStart(2, "0");
+
+    const mm = gsap.matchMedia();
+    mm.add("(min-width: 861px)", () => {
+      const distance = () => track.scrollWidth - window.innerWidth;
+      const tween = gsap.to(track, {
+        x: () => -distance(),
+        ease: "none",
+        scrollTrigger: {
+          trigger: hz,
+          start: "top top",
+          end: () => `+=${distance()}`,
+          pin: true,
+          refreshPriority: 1,
+          scrub: 0.8,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            bar.style.transform = `scaleX(${self.progress})`;
+            const i = Math.round(self.progress * (panels.length - 1)) + 1;
+            count.textContent = `${String(i).padStart(2, "0")} / ${total}`;
+          },
+        },
+      });
+
+      // Each screenshot drifts inside its frame against the scroll direction.
+      panels.forEach((panel) => {
+        const img = panel.querySelector("[data-pj-img]");
+        gsap.fromTo(
+          img,
+          { xPercent: 5 },
+          {
+            xPercent: -5,
+            ease: "none",
+            scrollTrigger: {
+              trigger: panel,
+              containerAnimation: tween,
+              start: "left right",
+              end: "right left",
+              scrub: true,
+            },
+          },
+        );
+      });
+    });
+
+    mm.add("(max-width: 860px)", () => {
+      panels.forEach((panel) => {
+        const img = panel.querySelector("[data-pj-img]");
+        gsap.fromTo(
+          img,
+          { yPercent: -5 },
+          { yPercent: 5, ease: "none", scrollTrigger: { trigger: panel, start: "top bottom", end: "bottom top", scrub: true } },
+        );
+      });
+    });
+
+    window.addEventListener("load", () => ScrollTrigger.refresh());
+  }
+</script>

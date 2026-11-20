@@ -1,0 +1,109 @@
+---
+import { Image, getImage } from "astro:assets";
+import photo from "../assets/portrait-photo.jpg";
+import cutout from "../assets/portrait-cutout.png";
+
+// Small alpha cutout the canvas samples into the character grid. 240px wide
+// is more detail than the densest grid (96 columns) can show.
+const mask = await getImage({ src: cutout, width: 240, format: "png" });
+---
+
+<figure class="ap" data-ascii data-mask={mask.src}>
+  <div class="ap-frame" data-ascii-frame>
+    <Image
+      src={photo}
+      alt="Bintang Syafrian Rizal in a batik shirt, standing on a street in Jakarta"
+      widths={[360, 540, 720, 900]}
+      sizes="(max-width: 860px) 92vw, 34vw"
+      loading="eager"
+      fetchpriority="high"
+      class="ap-photo"
+    />
+    <canvas class="ap-canvas" aria-hidden="true" data-ascii-canvas></canvas>
+    <span class="ap-tick tl" aria-hidden="true"></span>
+    <span class="ap-tick br" aria-hidden="true"></span>
+  </div>
+  <figcaption class="ap-cap">
+    <span class="mono muted" data-ascii-hint>Move across it. Click to develop.</span>
+    <button class="mono ap-btn" type="button" data-ascii-toggle aria-pressed="false">Show photo</button>
+  </figcaption>
+</figure>
+
+<style>
+  .ap {
+    position: relative;
+  }
+  .ap-frame {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: var(--panel);
+    cursor: crosshair;
+    touch-action: pan-y;
+  }
+  .ap-photo,
+  .ap-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  html.js .ap-photo {
+    visibility: hidden;
+  }
+  html.js .ap.is-live .ap-photo {
+    visibility: visible;
+  }
+  .ap-tick {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 0 solid var(--fg);
+    pointer-events: none;
+    z-index: 2;
+  }
+  .ap-tick.tl {
+    top: 8px;
+    left: 8px;
+    border-width: 1px 0 0 1px;
+  }
+  .ap-tick.br {
+    right: 8px;
+    bottom: 8px;
+    border-width: 0 1px 1px 0;
+  }
+  .ap-cap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding-top: 10px;
+  }
+  .ap-btn {
+    min-height: 36px;
+    padding: 0 12px;
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    transition:
+      background-color 0.25s var(--ease),
+      color 0.25s var(--ease);
+  }
+  .ap-btn:hover {
+    background: var(--fg);
+    color: var(--bg);
+  }
+  html:not(.js) .ap-cap {
+    display: none;
+  }
+  @media (hover: none) {
+    .ap-cap [data-ascii-hint] {
+      visibility: hidden;
+    }
+  }
+</style>
+
+<script>
+  import { mountAsciiPortrait } from "../scripts/ascii";
+  document.querySelectorAll<HTMLElement>("[data-ascii]").forEach(mountAsciiPortrait);
+</script>

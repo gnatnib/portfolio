@@ -1,38 +1,14 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+node_modules/
+dist/
+.astro/
+.vercel/
+.output/
 
-# dependencies
-/node_modules
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# debug
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
+*.log
 
-# env files
 .env*
+!.env.example
 
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# scratch build dir used to build while `next dev` holds .next
-/.next-verify/
-
-# local agent/editor config
 .claude/
-
-# Hover SFX extracted from lusion.co — third-party copyrighted audio.
-# Kept out of the public repo until replaced with a CC0-licensed equivalent
-# or cleared with the owner. Delete these two lines once that's resolved.
-/public/audio/focus_*.ogg
+.DS_Store
