@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 
-/* Listening activity for the Spotify strip in the footer. Rendered on demand and cached at
+/* Listening activity for the Spotify strip in About. Rendered on demand and cached at
    the edge for 30 seconds (stale for 5 minutes), so Spotify sees a few calls a
    minute at most however many people have the page open.
 

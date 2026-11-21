@@ -3,6 +3,7 @@ import { Image } from "astro:assets";
 import * as icons from "simple-icons";
 import { stack, projects, certificateGroups } from "../data";
 import run from "../assets/run.jpg";
+import Spotify from "./Spotify.astro";
 
 type SimpleIcon = { path: string; hex: string };
 const iconSet = icons as unknown as Record<string, SimpleIcon>;
@@ -86,6 +87,7 @@ const numbers = [
         <span class="mono muted">Tennis</span>
         <span>POPDA men's tennis: 1st sub-district 2015 and 2016, 3rd Semarang city 2016.</span>
       </p>
+      <Spotify />
     </div>
   </div>
 

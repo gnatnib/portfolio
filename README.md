@@ -39,4 +39,4 @@ Optional, set in Vercel:
 
 - `GITHUB_TOKEN`: raises the GitHub API rate limit. The route works without it.
 - `GITHUB_USERNAME`: defaults to `gnatnib`.
-- `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `SPOTIFY_REFRESH_TOKEN`: the "last played / on repeat" strip in the Contact footer. The refresh token needs the scopes `user-read-currently-playing user-read-recently-played user-top-read` (get one with `npm run spotify:token`). Without working credentials the strip hides itself.
+- `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `SPOTIFY_REFRESH_TOKEN`: the "last played / on repeat" strip in the About section. The refresh token needs the scopes `user-read-currently-playing user-read-recently-played user-top-read` (get one with `npm run spotify:token`). Without working credentials the strip hides itself.
