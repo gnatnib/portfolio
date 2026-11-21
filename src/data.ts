@@ -22,6 +22,8 @@ import photoLabDs from "./assets/experience/lab-ds.png";
 import photoLabNet from "./assets/experience/lab-net.png";
 import photoIcicos from "./assets/experience/icicos.png";
 import photoSma from "./assets/experience/sma.jpg";
+import photoCimb1 from "./assets/experience/cimb-1.png";
+import photoCimb2 from "./assets/experience/cimb-2.jpg";
 
 export const person = {
   name: "Bintang Syafrian Rizal",
@@ -203,8 +205,35 @@ export const projects: Project[] = [
   },
 ];
 
-/* `from`/`to` are YYYY-MM and drive the timeline. Equal values draw a point. */
-export const experience = [
+/* `from`/`to` are YYYY-MM and drive the timeline. Equal values draw a point;
+   `to: null` means ongoing. `logo: null` falls back to `mark` as a lettermark.
+   `photos` can hold several; the detail panel scrolls through them. */
+export type Experience = {
+  role: string;
+  org: string;
+  kind: "Work" | "Teaching" | "Event" | "Study";
+  from: string;
+  to: string | null;
+  period: string;
+  text: string;
+  logo: ImageMetadata | null;
+  mark?: string;
+  photos: ImageMetadata[];
+};
+
+export const experience: Experience[] = [
+  {
+    role: "Software Engineer",
+    org: "CIMB Niaga, CIPTA Data Analyst",
+    kind: "Work",
+    from: "2026-09",
+    to: null,
+    period: "Sep 2026 to now",
+    text: "Building internal tools for the bank, starting with a no-code platform HR teams use to assemble their own forms, approvals and reports.",
+    logo: null,
+    mark: "CIMB",
+    photos: [photoCimb1, photoCimb2],
+  },
   {
     role: "Fullstack Developer Intern",
     org: "PT Sinergi Asta Nusantara",
@@ -214,7 +243,7 @@ export const experience = [
     period: "Feb to Apr 2026",
     text: "HR system for 150+ employees: attendance, payroll, self-service.",
     logo: logoSan,
-    photo: photoSan,
+    photos: [photoSan],
   },
   {
     role: "Fullstack Developer Intern",
@@ -225,7 +254,7 @@ export const experience = [
     period: "Jan to Feb 2025",
     text: "Shipped Rumeet and SiPP in one month, four-person team.",
     logo: logoUgm,
-    photo: photoUgm,
+    photos: [photoUgm],
   },
   {
     role: "Teaching Assistant, Data Structures",
@@ -236,7 +265,7 @@ export const experience = [
     period: "Sep to Dec 2024",
     text: "Tutorials on lists, trees and graphs; grading and office hours.",
     logo: logoUndip,
-    photo: photoLabDs,
+    photos: [photoLabDs],
   },
   {
     role: "Liaison Officer, ICICoS 2024",
@@ -247,7 +276,7 @@ export const experience = [
     period: "Jul 2024",
     text: "Point of contact for international speakers at the conference.",
     logo: logoIeee,
-    photo: photoIcicos,
+    photos: [photoIcicos],
   },
   {
     role: "Teaching Assistant, Computer Networks",
@@ -258,7 +287,7 @@ export const experience = [
     period: "Feb to May 2024",
     text: "Networking labs with Cisco Packet Tracer.",
     logo: logoUndip,
-    photo: photoLabNet,
+    photos: [photoLabNet],
   },
   {
     role: "B.Sc. Computer Science",
@@ -269,6 +298,7 @@ export const experience = [
     period: "Aug 2022 to Jun 2026",
     text: "GPA 3.65. Thesis on LLM extractive summarization.",
     logo: logoUndip,
+    photos: [],
   },
   {
     role: "Graduated high school",
@@ -279,7 +309,7 @@ export const experience = [
     period: "Jul 2022",
     text: "Science track.",
     logo: logoSma,
-    photo: photoSma,
+    photos: [photoSma],
   },
 ];
 

@@ -10,14 +10,14 @@ const links = [
 
 <header class="hdr" data-header>
   <a href="/" class="hdr-mark" aria-label="Bintang Syafrian Rizal, home">
-    <Logo size={24} class="hdr-logo" />gnatnib
+    <Logo size={30} class="hdr-logo" />gnatnib
   </a>
   <p class="hdr-now mono" aria-live="off">
     <span data-section-label>Index</span>
   </p>
   <nav class="hdr-nav" aria-label="Main">
     {links.map((l) => <a href={l.href} class="ul">{l.label}</a>)}
-    <a href="/resume" class="ul">Resume</a>
+    <a href="/#resume" class="ul">Resume</a>
   </nav>
   <button class="hdr-menu mono" aria-expanded="false" aria-controls="menu" data-menu-toggle>
     <span data-menu-label>Menu</span>
@@ -28,7 +28,7 @@ const links = [
   <nav aria-label="Mobile">
     <ol>
       {
-        [...links, { href: "/resume", label: "Resume" }].map((l, i) => (
+        [...links, { href: "/#resume", label: "Resume" }].map((l, i) => (
           <li>
             <a href={l.href} data-menu-link>
               <span class="mono muted">{String(i + 1).padStart(2, "0")}</span>
@@ -75,11 +75,8 @@ const links = [
     letter-spacing: -0.01em;
     justify-self: start;
   }
-  .hdr-mark :global(.hdr-logo) {
-    transition: transform 0.5s var(--ease);
-  }
   .hdr-mark:hover :global(.hdr-logo) {
-    transform: rotate(-8deg) scale(1.08);
+    border-color: var(--fg);
   }
   .hdr-now {
     min-width: 12ch;

@@ -1,1 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path fill="#131311" fill-rule="evenodd" d="M0 0h32v32H0Z M8 6h9.6a4.9 4.9 0 0 1 3.3 8.5 5.1 5.1 0 0 1-2.6 9.5H8Z M12.2 9.6h5a1.8 1.8 0 0 1 0 3.6h-5Z M12.2 16.7h5.7a2.05 2.05 0 0 1 0 4.1h-5.7Z"/><rect x="23" y="20.6" width="3.4" height="3.4" fill="#ff4a1c"/></svg>
+<svg viewBox="0 0 360 226" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .fg { fill: black; }
+    @media (prefers-color-scheme: dark) {
+      .fg { fill: white; }
+    }
+  </style>
+  <mask id="cutmask">
+    <rect width="360" height="226" fill="white" />
+    <path d="M135 170L200 50H250L185 170H135Z" fill="black" />
+    <path d="M80 170L110 110H140L110 170H80Z" fill="black" />
+  </mask>
+  <path class="fg" d="M40 200L120 20H320L240 200H40Z" mask="url(#cutmask)"/>
+</svg>

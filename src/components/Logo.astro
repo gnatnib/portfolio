@@ -1,23 +1,32 @@
 ---
+// The gnatnib mark from the previous site: a slanted slab with two cuts.
 interface Props {
   size?: number;
   class?: string;
 }
-const { size = 22, class: className } = Astro.props;
+const { size = 30, class: className } = Astro.props;
 ---
 
-<svg
-  class={className}
-  width={size}
-  height={size}
-  viewBox="0 0 32 32"
-  aria-hidden="true"
-  focusable="false"
->
-  <path
-    fill="currentColor"
-    fill-rule="evenodd"
-    d="M0 0h32v32H0Z M8 6h9.6a4.9 4.9 0 0 1 3.3 8.5 5.1 5.1 0 0 1-2.6 9.5H8Z M12.2 9.6h5a1.8 1.8 0 0 1 0 3.6h-5Z M12.2 16.7h5.7a2.05 2.05 0 0 1 0 4.1h-5.7Z"
-  ></path>
-  <rect x="23" y="20.6" width="3.4" height="3.4" fill="#ff4a1c"></rect>
-</svg>
+<span class:list={["logo", className]} style={`--s:${size}px`} aria-hidden="true">
+  <svg viewBox="0 0 360 226" fill="none">
+    <path d="M40 200L120 20H320L240 200H40Z" fill="currentColor"></path>
+    <path d="M135 170L200 50H250L185 170H135Z" fill="var(--bg)"></path>
+    <path d="M80 170L110 110H140L110 170H80Z" fill="var(--bg)"></path>
+  </svg>
+</span>
+
+<style>
+  .logo {
+    width: var(--s);
+    height: var(--s);
+    display: inline-grid;
+    place-items: center;
+    border: 1px solid var(--rule-strong);
+    flex: none;
+    transition: border-color 0.25s var(--ease);
+  }
+  .logo svg {
+    width: calc(var(--s) - 10px);
+    height: auto;
+  }
+</style>

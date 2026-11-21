@@ -51,6 +51,7 @@ const pages = Object.entries(
               widths={[640, 960, 1280, 1429]}
               sizes="(max-width: 860px) 92vw, 62vw"
               loading={i === 0 ? "eager" : "lazy"}
+              id={`page-${i + 1}`}
               data-reveal="fade"
             />
           ))

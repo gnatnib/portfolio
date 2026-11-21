@@ -201,12 +201,27 @@ export function mountAsciiPortrait(root: HTMLElement) {
     if (!raf) raf = requestAnimationFrame(frameTick);
   }
 
+  let zoomTimer = 0;
   function setDevelop(on: boolean, x = width / 2, y = height / 2) {
-    origin.x = x;
-    origin.y = y;
-    developTarget = on ? 1 : 0;
+    clearTimeout(zoomTimer);
     toggle.textContent = on ? "Show ASCII" : "Show photo";
     toggle.setAttribute("aria-pressed", String(on));
+    if (on) {
+      // Reveal first at the ASCII's framing, then pull back to the full photo.
+      origin.x = x;
+      origin.y = y;
+      developTarget = 1;
+      zoomTimer = window.setTimeout(() => root.classList.add("is-developed"), reduced ? 0 : 450);
+    } else {
+      // Zoom back in to where the characters sit, then let the ASCII close over it.
+      root.classList.remove("is-developed");
+      zoomTimer = window.setTimeout(() => {
+        origin.x = x;
+        origin.y = y;
+        developTarget = 0;
+        kick();
+      }, reduced ? 0 : 900);
+    }
     kick();
   }
 
@@ -224,9 +239,9 @@ export function mountAsciiPortrait(root: HTMLElement) {
   });
   frame.addEventListener("click", (e) => {
     const rect = frame.getBoundingClientRect();
-    setDevelop(developTarget === 0, e.clientX - rect.left, e.clientY - rect.top);
+    setDevelop(toggle.getAttribute("aria-pressed") !== "true", e.clientX - rect.left, e.clientY - rect.top);
   });
-  toggle.addEventListener("click", () => setDevelop(developTarget === 0));
+  toggle.addEventListener("click", () => setDevelop(toggle.getAttribute("aria-pressed") !== "true"));
 
   // Repaint glyphs in the new ink colour when the page tone flips.
   new MutationObserver(() => {

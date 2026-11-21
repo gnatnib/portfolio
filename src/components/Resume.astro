@@ -1,0 +1,130 @@
+---
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+import { resumeUrl, resume } from "../data";
+
+// Same page images as /resume; scripts/render-cv.py writes them.
+const pages = Object.entries(
+  import.meta.glob<{ default: ImageMetadata }>("../assets/cv/page-*.png", { eager: true }),
+)
+  .sort(([a], [b]) => a.localeCompare(b, "en", { numeric: true }))
+  .map(([, mod]) => mod.default);
+---
+
+<section id="resume" class="sec wrap" data-tone="light" data-label="Resume" tabindex="-1">
+  <header class="sec-head">
+    <p class="sec-index mono">(06) Resume</p>
+    <h2 class="sec-title" data-reveal="lines">The paper version</h2>
+  </header>
+
+  <div class="rv">
+    <div class="rv-pages" data-rv>
+      {
+        pages.map((p, i) => (
+          <a href={`/resume#page-${i + 1}`} class="rv-page" data-rv-page aria-label={`Open resume page ${i + 1}`}>
+            <Image
+              src={p}
+              alt={`Resume, page ${i + 1} of ${pages.length}`}
+              widths={[600, 900, 1200, 1429]}
+              sizes="(max-width: 860px) 88vw, 42vw"
+              quality={90}
+              loading="lazy"
+            />
+            <span class="rv-num mono">
+              {String(i + 1).padStart(2, "0")} / {String(pages.length).padStart(2, "0")}
+            </span>
+          </a>
+        ))
+      }
+    </div>
+    <div class="rv-actions">
+      <a href={resumeUrl} download={resume.downloadName} class="rv-btn mono">Download PDF</a>
+      <a href="/resume" class="ul">Read full screen</a>
+      <span class="mono muted">Version {resume.version}</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .rv {
+    padding-top: clamp(32px, 4vw, 56px);
+  }
+  .rv-pages {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(16px, 2.4vw, 40px);
+    perspective: 1600px;
+  }
+  .rv-page {
+    position: relative;
+    display: block;
+    background: #fff;
+    border: 1px solid var(--rule);
+    box-shadow: 0 24px 60px -30px rgb(19 19 17 / 0.35);
+    transition: transform 0.5s var(--ease);
+  }
+  .rv-page:hover {
+    transform: translateY(-6px);
+  }
+  .rv-page img {
+    width: 100%;
+    height: auto;
+  }
+  .rv-num {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    padding: 4px 8px;
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .rv-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding-top: 28px;
+  }
+  .rv-btn {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 20px;
+    background: var(--fg);
+    color: var(--bg);
+    border-radius: 999px;
+    transition: background-color 0.25s var(--ease);
+  }
+  .rv-btn:hover {
+    background: var(--accent);
+    color: var(--ink);
+  }
+  @media (max-width: 860px) {
+    .rv-pages {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      margin-inline: calc(-1 * var(--pad));
+      padding-inline: var(--pad);
+      scrollbar-width: none;
+    }
+    .rv-page {
+      flex: 0 0 86%;
+      scroll-snap-align: center;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, reduced } from "../scripts/motion";
+
+  /* The two pages come in fanned out, like they were dropped on a desk, and
+     square up as the section scrolls into place. */
+  if (!reduced && matchMedia("(min-width: 861px)").matches) {
+    const [a, b] = document.querySelectorAll<HTMLElement>("[data-rv-page]");
+    const rv = document.querySelector<HTMLElement>("[data-rv]")!;
+    const tl = gsap.timeline({ scrollTrigger: { trigger: rv, start: "top 95%", end: "top 30%", scrub: 0.6 } });
+    if (a) tl.fromTo(a, { rotate: -7, xPercent: 14, yPercent: 10 }, { rotate: 0, xPercent: 0, yPercent: 0, ease: "none" }, 0);
+    if (b) tl.fromTo(b, { rotate: 6, xPercent: -14, yPercent: 18 }, { rotate: 0, xPercent: 0, yPercent: 0, ease: "none" }, 0);
+  }
+</script>
