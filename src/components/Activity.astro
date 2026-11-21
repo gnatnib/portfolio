@@ -1,4 +1,6 @@
 ---
+import { siGithub } from "simple-icons";
+
 const stats = [
   { key: "total", label: "Contributions" },
   { key: "activeDays", label: "Active days" },
@@ -7,13 +9,21 @@ const stats = [
 ];
 ---
 
-<section id="activity" class="sec wrap" data-tone="light" data-label="Activity" tabindex="-1">
+<section id="activity" class="sec wrap" data-tone="light" data-label="GitHub" tabindex="-1">
   <header class="sec-head">
-    <p class="sec-index mono">(04) Activity</p>
-    <h2 class="sec-title" data-reveal="lines">The last twelve months</h2>
+    <p class="sec-index mono">(04) GitHub</p>
+    <h2 class="sec-title" data-reveal="lines">GitHub contributions</h2>
   </header>
 
   <div class="act" data-activity aria-busy="true">
+    <div class="act-id">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siGithub.path}></path></svg>
+      <span class="act-id-name">@gnatnib</span>
+      <span class="mono muted">GitHub contributions, last 12 months</span>
+      <a class="ul ul-on act-profile" href="https://github.com/gnatnib" target="_blank" rel="noopener">
+        View profile on GitHub <span class="arrow">↗</span>
+      </a>
+    </div>
     <dl class="act-stats">
       {
         stats.map((s) => (
@@ -42,9 +52,6 @@ const stats = [
       <ol data-commits>
         {Array.from({ length: 6 }, () => <li class="act-commit is-skel"><span class="act-skel" /></li>)}
       </ol>
-      <a class="ul ul-on act-profile" href="https://github.com/gnatnib" target="_blank" rel="noopener">
-        github.com/gnatnib <span class="arrow">↗</span>
-      </a>
     </div>
   </div>
 </section>
@@ -88,23 +95,28 @@ const stats = [
     min-width: 720px;
     height: auto;
   }
-  .act-grid :global(rect) {
-    fill: var(--fg);
+  /* GitHub's own contribution greens, so the calendar reads as GitHub at a glance. */
+  .act {
+    --gh-0: #e4e1da;
+    --gh-1: #9be9a8;
+    --gh-2: #40c463;
+    --gh-3: #30a14e;
+    --gh-4: #216e39;
   }
-  .act-grid :global(rect[data-l="0"]) {
-    fill: var(--rule);
+  .act-grid :global(rect) {
+    fill: var(--gh-0);
   }
   .act-grid :global(rect[data-l="1"]) {
-    opacity: 0.3;
+    fill: var(--gh-1);
   }
   .act-grid :global(rect[data-l="2"]) {
-    opacity: 0.55;
+    fill: var(--gh-2);
   }
   .act-grid :global(rect[data-l="3"]) {
-    opacity: 0.8;
+    fill: var(--gh-3);
   }
   .act-grid :global(rect[data-l="4"]) {
-    fill: var(--accent);
+    fill: var(--gh-4);
   }
   .act-grid :global(rect:hover) {
     stroke: var(--fg);
@@ -129,22 +141,41 @@ const stats = [
   .act-legend i {
     width: 10px;
     height: 10px;
-    background: var(--fg);
-  }
-  .act-legend i[data-l="0"] {
-    background: var(--rule);
+    border-radius: 2px;
+    background: var(--gh-0);
   }
   .act-legend i[data-l="1"] {
-    opacity: 0.3;
+    background: var(--gh-1);
   }
   .act-legend i[data-l="2"] {
-    opacity: 0.55;
+    background: var(--gh-2);
   }
   .act-legend i[data-l="3"] {
-    opacity: 0.8;
+    background: var(--gh-3);
   }
   .act-legend i[data-l="4"] {
-    background: var(--accent);
+    background: var(--gh-4);
+  }
+
+  .act-id {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding-block: 14px;
+    border-block: 1px solid var(--rule-strong);
+  }
+  .act-id svg {
+    width: 28px;
+    height: 28px;
+    fill: var(--fg);
+  }
+  .act-id-name {
+    font-size: 18px;
+    font-weight: 500;
+  }
+  .act-id .act-profile {
+    margin: 0 0 0 auto;
   }
   .act-log {
     display: grid;
@@ -186,10 +217,6 @@ const stats = [
   .act-commit.is-skel .act-skel {
     width: 60%;
     height: 12px;
-  }
-  .act-profile {
-    justify-self: start;
-    margin-top: 8px;
   }
   @media (max-width: 860px) {
     .act-stats {
