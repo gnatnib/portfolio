@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* Copies the Spotify (and GitHub) values from .env to the linked Vercel
-   project, replacing old values, for Production and Preview.
+   project, replacing old values, for Production, Preview and Development.
 
    Needs the Vercel CLI logged in and linked once:
      npx vercel login
@@ -21,8 +21,10 @@ for (const key of KEYS) {
     console.log(`skip ${key}: empty in .env`);
     continue;
   }
-  for (const target of ["production", "preview"]) {
-    vercel(["env", "rm", key, target, "--yes"]);
+  // One existing entry can span several environments, so remove it everywhere
+  // first, then add one entry per environment.
+  vercel(["env", "rm", key, "--yes", "--confirm-name", key]);
+  for (const target of ["production", "preview", "development"]) {
     const added = vercel(["env", "add", key, target], value);
     console.log(`${added.status === 0 ? "set " : "FAILED"} ${key} (${target})${added.status === 0 ? "" : `: ${added.stderr.trim()}`}`);
   }

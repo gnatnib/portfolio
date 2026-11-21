@@ -1,0 +1,8 @@
+# Never upload local secrets or build output from a CLI deploy.
+.env
+.env.*
+!.env.example
+node_modules
+dist
+.astro
+.vercel/output

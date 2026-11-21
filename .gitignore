@@ -12,3 +12,4 @@ npm-debug.log*
 
 .claude/
 .DS_Store
+.vercel
