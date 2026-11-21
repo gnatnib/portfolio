@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 
-/* Listening activity for the Spotify section. Rendered on demand and cached at
+/* Listening activity for the Spotify strip in the footer. Rendered on demand and cached at
    the edge for 30 seconds (stale for 5 minutes), so Spotify sees a few calls a
    minute at most however many people have the page open.
 
@@ -12,13 +12,11 @@ export const prerender = false;
 const API = "https://api.spotify.com/v1/me";
 
 type Image = { url: string; width: number | null };
-type Artist = { name: string; external_urls: { spotify: string }; images?: Image[]; genres?: string[] };
 type Track = {
   name: string;
-  artists: Artist[];
+  artists: { name: string }[];
   album: { name: string; images: Image[] };
   external_urls: { spotify: string };
-  duration_ms: number;
 };
 
 // Spotify lists covers largest first; pick the smallest one at least `min` px wide.
@@ -29,7 +27,7 @@ const track = (t: Track) => ({
   title: t.name,
   artist: t.artists.map((a) => a.name).join(", "),
   album: t.album.name,
-  image: cover(t.album.images, 300),
+  image: cover(t.album.images, 128),
   url: t.external_urls.spotify,
 });
 
@@ -67,28 +65,17 @@ export const GET: APIRoute = async () => {
   try {
     const token = await accessToken();
     // Now playing is the core; the lists are extras that may fail on their own.
-    const [now, recent, topTracks, topArtists] = await Promise.all([
-      get<{ is_playing: boolean; item: Track | null; progress_ms: number }>("/player/currently-playing", token),
-      get<{ items: { track: Track; played_at: string }[] }>("/player/recently-played?limit=10", token).catch(() => null),
-      get<{ items: Track[] }>("/top/tracks?limit=10&time_range=short_term", token).catch(() => null),
-      get<{ items: Artist[] }>("/top/artists?limit=6&time_range=short_term", token).catch(() => null),
+    const [now, recent, topTracks] = await Promise.all([
+      get<{ is_playing: boolean; item: Track | null }>("/player/currently-playing", token),
+      get<{ items: { track: Track; played_at: string }[] }>("/player/recently-played?limit=1", token).catch(() => null),
+      get<{ items: Track[] }>("/top/tracks?limit=8&time_range=short_term", token).catch(() => null),
     ]);
 
     const last = recent?.items[0];
     const body = {
       playing: Boolean(now?.is_playing && now.item),
-      current: now?.item
-        ? { ...track(now.item), progress: now.progress_ms, duration: now.item.duration_ms }
-        : last
-          ? { ...track(last.track), playedAt: last.played_at }
-          : null,
+      current: now?.item ? track(now.item) : last ? { ...track(last.track), playedAt: last.played_at } : null,
       topTracks: (topTracks?.items ?? []).map(track),
-      topArtists: (topArtists?.items ?? []).map((a) => ({
-        name: a.name,
-        image: cover(a.images, 160),
-        url: a.external_urls.spotify,
-        genre: a.genres?.[0] ?? null,
-      })),
     };
     return new Response(JSON.stringify(body), {
       headers: {

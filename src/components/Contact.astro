@@ -1,11 +1,12 @@
 ---
 import { person, socials, resumeUrl, resume } from "../data";
+import Spotify from "./Spotify.astro";
 const year = new Date().getFullYear();
 ---
 
 <section id="contact" class="sec contact wrap" data-tone="dark" data-label="Contact" tabindex="-1">
   <header class="sec-head">
-    <p class="sec-index mono">(08) Contact</p>
+    <p class="sec-index mono">(07) Contact</p>
     <h2 class="sec-title" data-reveal="lines">Have a project, a role, or a question?</h2>
   </header>
 
@@ -52,6 +53,8 @@ const year = new Date().getFullYear();
       </div>
     </dl>
   </div>
+
+  <Spotify />
 
   <footer class="ft">
     <p class="ft-mark" aria-hidden="true" data-mark>
