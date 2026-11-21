@@ -101,7 +101,8 @@ export const GET: APIRoute = async () => {
     const [days, user, recent] = await Promise.all([
       contributions(),
       githubJson<{ public_repos?: number }>(`https://api.github.com/users/${USER}`).catch(() => ({})),
-      recentRepos().catch(() => []),
+      // null, not [], so the page can tell "GitHub didn't answer" from "no repos".
+      recentRepos().catch(() => null),
     ]);
     const body = {
       user: USER,

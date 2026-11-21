@@ -245,7 +245,7 @@ const stats = [
     current: number;
     repos: number | null;
     days: Day[];
-    recent: { name: string; description: string | null; language: string | null; url: string; at: string }[];
+    recent: { name: string; description: string | null; language: string | null; url: string; at: string }[] | null;
     error?: string;
   };
 
@@ -356,9 +356,13 @@ const stats = [
     }, { threshold: 0.25 });
     io.observe(root);
 
+    // recent is null when GitHub refused (rate limit); hide the list rather
+    // than claim there are no repositories.
+    list.closest<HTMLElement>(".act-log")!.hidden = data.recent === null;
+    const recent = data.recent ?? [];
     list.replaceChildren(
-      ...(data.recent.length
-        ? data.recent.map((r) => {
+      ...(recent.length
+        ? recent.map((r) => {
             const li = document.createElement("li");
             li.className = "act-commit";
             const a = document.createElement("a");

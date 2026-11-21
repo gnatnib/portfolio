@@ -24,7 +24,18 @@
   color-scheme: light;
 }
 
-html[data-tone="dark"] {
+/* Tone is set per element. Sections carry data-tone and paint themselves;
+   the header gets the tone of whatever section is under it (scripts/motion.ts). */
+[data-tone="light"] {
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --muted: #5d5b55;
+  --rule: rgb(19 19 17 / 0.14);
+  --rule-strong: rgb(19 19 17 / 0.32);
+  --panel: #e2dfd7;
+  color-scheme: light;
+}
+[data-tone="dark"] {
   --bg: var(--ink);
   --fg: var(--paper);
   --muted: #9b988f;
@@ -32,6 +43,10 @@ html[data-tone="dark"] {
   --rule-strong: rgb(236 234 228 / 0.34);
   --panel: #1d1d1a;
   color-scheme: dark;
+}
+section[data-tone] {
+  background: var(--bg);
+  color: var(--fg);
 }
 
 *,
@@ -66,9 +81,10 @@ body {
   font-feature-settings: "ss01", "cv11";
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  transition:
-    background-color 0.6s var(--ease),
-    color 0.6s var(--ease);
+  /* No colour transition here: each section paints its own tone (see the
+     [data-tone] rules above), so dark and light meet at a hard edge that
+     simply scrolls. Fading the whole page's colours repainted every element
+     for the length of the fade. */
   overflow-x: clip;
 }
 

@@ -7,7 +7,6 @@ import Lenis from "lenis";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
-const root = document.documentElement;
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 export const lenis = reduced ? null : new Lenis({ lerp: 0.11, wheelMultiplier: 0.95 });
@@ -34,18 +33,21 @@ document.addEventListener("click", (e) => {
   target.focus({ preventScroll: true });
 });
 
-// Page tone follows whichever section owns the middle of the viewport.
-document.querySelectorAll<HTMLElement>("[data-tone]").forEach((section) => {
-  if (section === root) return;
-  ScrollTrigger.create({
-    trigger: section,
-    start: "top 55%",
-    end: "bottom 55%",
-    onToggle: (self) => {
-      if (self.isActive) root.dataset.tone = section.dataset.tone;
-    },
+// The header takes the tone of the section passing underneath it. Only the
+// header recolours; sections paint themselves.
+const header = document.querySelector<HTMLElement>("[data-header]");
+if (header) {
+  document.querySelectorAll<HTMLElement>("section[data-tone]").forEach((section) => {
+    ScrollTrigger.create({
+      trigger: section,
+      start: "top top+=32",
+      end: "bottom top+=32",
+      onToggle: (self) => {
+        if (self.isActive) header.dataset.tone = section.dataset.tone;
+      },
+    });
   });
-});
+}
 
 // Header shows the current section name.
 const label = document.querySelector<HTMLElement>("[data-section-label]");

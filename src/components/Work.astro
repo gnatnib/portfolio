@@ -134,10 +134,6 @@ const hostOf = (url: string) => new URL(url).host.replace(/^www\./, "");
   .work {
     padding-bottom: clamp(96px, 12vw, 180px);
   }
-  html:not(.js) .work {
-    background: var(--ink);
-    color: var(--paper);
-  }
 
   /* Horizontal track. Without JS (or on narrow screens) it is a plain column. */
   .hz {

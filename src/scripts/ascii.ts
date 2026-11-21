@@ -50,8 +50,9 @@ export function mountAsciiPortrait(root: HTMLElement) {
   mask.decoding = "async";
   mask.src = root.dataset.mask!;
 
+  // Read from the portrait itself: tone variables live on its section.
   function color(name: string) {
-    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    return getComputedStyle(root).getPropertyValue(name).trim();
   }
 
   function buildAtlas(fill: string) {
@@ -275,15 +276,6 @@ export function mountAsciiPortrait(root: HTMLElement) {
     setDevelop(toggle.getAttribute("aria-pressed") !== "true", e.clientX - rect.left, e.clientY - rect.top);
   });
   toggle.addEventListener("click", () => setDevelop(toggle.getAttribute("aria-pressed") !== "true"));
-
-  // Repaint glyphs in the new ink colour when the page tone flips.
-  new MutationObserver(() => {
-    if (!cells.length) return;
-    atlasInk = buildAtlas(color("--fg"));
-    atlasAccent = buildAtlas(color("--accent"));
-    panel = color("--panel");
-    kick();
-  }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-tone"] });
 
   let resizeTimer = 0;
   new ResizeObserver(() => {
