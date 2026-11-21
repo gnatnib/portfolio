@@ -25,10 +25,21 @@ export function mountAsciiPortrait(root: HTMLElement) {
   let cells: Cell[] = [];
   let atlasInk: HTMLCanvasElement | null = null;
   let atlasAccent: HTMLCanvasElement | null = null;
+  let panel = "";
   let introStart = 0;
   let raf = 0;
 
-  const pointer = { x: 0, y: 0, inside: false };
+  const pointer = { x: 0, y: 0, inside: false, moved: 0 };
+  // Scrolling moves the frame out from under a still cursor without a pointerleave.
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (!pointer.inside) return;
+      pointer.inside = false;
+      kick();
+    },
+    { passive: true },
+  );
   let lens = 0;
   // develop: 0 = all ASCII, 1 = all photo. Animated toward `developTarget`.
   let develop = 0;
@@ -74,13 +85,29 @@ export function mountAsciiPortrait(root: HTMLElement) {
     cellH = cellW / 0.62;
     rows = Math.ceil(height / cellH);
 
+    /* One geometry for both layers. The photo is cover-fitted into the frame,
+       then zoomed so the cutout's region fills the frame; the mask is drawn
+       into exactly that region, so characters and photo line up at any frame
+       shape. Developing drops the zoom and the full photo shows. */
+    const [cx, cy, cw, ch] = root.dataset.crop!.split(",").map(Number);
+    const ratio = Number(root.dataset.photoRatio);
+    const fit = Math.max(width / ratio, height);
+    const pw = fit * ratio;
+    const ph = fit;
+    const rx = (width - pw) / 2 + cx * pw;
+    const ry = (height - ph) / 2 + cy * ph;
+    const rw = cw * pw;
+    const rh = ch * ph;
+    const zoom = Math.max(width / rw, height / rh);
+    const tx = width / 2 - zoom * (rx + rw / 2);
+    const ty = height / 2 - zoom * (ry + rh / 2);
+    root.style.setProperty("--zoom-t", `translate(${tx}px, ${ty}px) scale(${zoom})`);
+
     const sample = document.createElement("canvas");
     sample.width = cols;
     sample.height = rows;
     const s = sample.getContext("2d", { willReadFrequently: true })!;
-    // Frame and cutout are both 3:4; the grid's last row can overhang the
-    // frame, so the mask is drawn to the exact height the frame covers.
-    s.drawImage(mask, 0, 0, cols, height / cellH);
+    s.drawImage(mask, (zoom * rx + tx) / cellW, (zoom * ry + ty) / cellH, (zoom * rw) / cellW, (zoom * rh) / cellH);
     const px = s.getImageData(0, 0, cols, rows).data;
     const lum = new Uint8ClampedArray(cols * rows);
 
@@ -111,6 +138,8 @@ export function mountAsciiPortrait(root: HTMLElement) {
 
     atlasInk = buildAtlas(color("--fg"));
     atlasAccent = buildAtlas(color("--accent"));
+    // getComputedStyle forces a style pass; read it here, not every frame.
+    panel = color("--panel");
     kick();
   }
 
@@ -128,7 +157,7 @@ export function mountAsciiPortrait(root: HTMLElement) {
     else develop = developTarget;
 
     ctx.globalCompositeOperation = "source-over";
-    ctx.fillStyle = color("--panel");
+    ctx.fillStyle = panel;
     ctx.fillRect(0, 0, width, height);
 
     const elapsed = reduced ? Infinity : now - introStart;
@@ -194,7 +223,10 @@ export function mountAsciiPortrait(root: HTMLElement) {
       ctx.fill();
     }
 
-    if (busy || pointer.inside) kick();
+    // Keep drawing only while something moves: the intro, the lens easing, or
+    // a pointer that moved in the last half second. A resting cursor or a page
+    // being scrolled past costs nothing.
+    if (busy || (pointer.inside && now - pointer.moved < 500)) kick();
   }
 
   function kick() {
@@ -231,6 +263,7 @@ export function mountAsciiPortrait(root: HTMLElement) {
     pointer.x = e.clientX - rect.left;
     pointer.y = e.clientY - rect.top;
     pointer.inside = true;
+    pointer.moved = performance.now();
     kick();
   });
   frame.addEventListener("pointerleave", () => {
@@ -248,6 +281,7 @@ export function mountAsciiPortrait(root: HTMLElement) {
     if (!cells.length) return;
     atlasInk = buildAtlas(color("--fg"));
     atlasAccent = buildAtlas(color("--accent"));
+    panel = color("--panel");
     kick();
   }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-tone"] });
 

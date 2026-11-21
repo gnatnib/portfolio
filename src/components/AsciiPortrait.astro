@@ -6,9 +6,14 @@ import cutout from "../assets/portrait-cutout.png";
 // Small alpha cutout the canvas samples into the character grid. 240px wide
 // is more detail than the densest grid (96 columns) can show.
 const mask = await getImage({ src: cutout, width: 240, format: "png" });
+
+// Where the cutout sits inside the photo, as fractions of the photo. Both were
+// cut from the same 2268x4032 original: the photo is x 0..2268, y 900..3924;
+// the cutout is x 642..1992, y 1350..3150.
+const crop = [642 / 2268, (1350 - 900) / 3024, 1350 / 2268, 1800 / 3024].map((n) => n.toFixed(4)).join(",");
 ---
 
-<figure class="ap" data-ascii data-mask={mask.src}>
+<figure class="ap" data-ascii data-mask={mask.src} data-crop={crop} data-photo-ratio={photo.width / photo.height}>
   <div class="ap-frame" data-ascii-frame>
     <Image
       src={photo}
@@ -55,17 +60,16 @@ const mask = await getImage({ src: cutout, width: 240, format: "png" });
   html.js .ap.is-live .ap-photo {
     visibility: visible;
   }
-  /* The photo is the full-width shot. While it hides under the ASCII it is
-     scaled onto the crop the characters were sampled from (x 28.3%, y 14.9%,
-     59.5% of the frame); developing it zooms back out to the whole picture.
-     Origin = offset / (1 - span) for each axis. */
+  /* --zoom-t is set by scripts/ascii.ts from the same geometry the characters
+     are sampled with, so the photo under the lens matches them exactly.
+     Developing clears it and the full photo shows. */
   html.js .ap-photo {
-    transform-origin: 69.9% 36.8%;
-    transform: scale(1.68);
+    transform-origin: 0 0;
+    transform: var(--zoom-t, none);
     transition: transform 1.3s var(--ease);
   }
   html.js .ap.is-developed .ap-photo {
-    transform: scale(1);
+    transform: translate(0, 0) scale(1);
   }
   .ap-tick {
     position: absolute;
