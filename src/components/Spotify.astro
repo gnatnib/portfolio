@@ -372,7 +372,7 @@ import { siSpotify } from "simple-icons";
     }
 
     tracks.replaceChildren(...d.topTracks.map((t, i) => row(t.url, t.image, t.title, t.artist, i + 1)));
-    artists.replaceChildren(...d.topArtists.map((a) => row(a.url, a.image, a.name, a.genre ?? "Artist")));
+    artists.replaceChildren(...d.topArtists.map((a) => row(a.url, a.image, a.name, a.genre ?? "")));
   }
 
   let visible = false;

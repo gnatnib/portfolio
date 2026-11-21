@@ -10,7 +10,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "spotify:token": "node scripts/spotify-token.mjs",
+    "env:push": "node scripts/push-env.mjs"
   },
   "dependencies": {
     "@astrojs/vercel": "^10.0.8",
