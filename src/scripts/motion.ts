@@ -19,19 +19,41 @@ if (lenis) {
   window.addEventListener("lenis:start", () => lenis.start());
 }
 
-// In-page anchors go through Lenis so they glide instead of jumping.
+/* In-page navigation. A section starts with a tall padding band, so jumping to
+   its top left the title mid-screen with the previous section showing above.
+   Jumps land on the section's heading instead, just under the header, and the
+   header is told to stay put while the page glides there. */
+const HEADER_GAP = 72;
+function jumpTo(id: string, smooth: boolean) {
+  const section = document.getElementById(id);
+  if (!section) return false;
+  const landing = section.querySelector<HTMLElement>(":scope > .sec-head") ?? section;
+  const offset = landing === section ? 0 : -HEADER_GAP;
+  window.dispatchEvent(new CustomEvent("nav:jump", { detail: { duration: smooth ? 1400 : 0 } }));
+  if (lenis) lenis.scrollTo(landing, { offset, duration: smooth ? 1.4 : 0, immediate: !smooth });
+  else window.scrollTo({ top: landing.getBoundingClientRect().top + scrollY + offset });
+  section.focus({ preventScroll: true });
+  return true;
+}
+
 document.addEventListener("click", (e) => {
   const a = (e.target as Element).closest<HTMLAnchorElement>('a[href^="#"], a[href^="/#"]');
   if (!a || (a.pathname !== location.pathname && a.getAttribute("href")!.startsWith("/"))) return;
   const id = a.hash.slice(1);
-  const target = id ? document.getElementById(id) : null;
-  if (!target) return;
+  if (!id || !jumpTo(id, !reduced)) return;
   e.preventDefault();
   history.pushState(null, "", `#${id}`);
-  if (lenis) lenis.scrollTo(target, { offset: 0, duration: 1.4 });
-  else target.scrollIntoView();
-  target.focus({ preventScroll: true });
 });
+
+// Arriving with a hash (old /about style links redirect to /#about): the
+// browser jumps before fonts and pinned sections settle, so redo it after.
+if (location.hash.length > 1) {
+  history.scrollRestoration = "manual";
+  window.addEventListener("load", () => {
+    ScrollTrigger.refresh();
+    requestAnimationFrame(() => jumpTo(location.hash.slice(1), false));
+  });
+}
 
 // The header takes the tone of the section passing underneath it. Only the
 // header recolours; sections paint themselves.
@@ -40,8 +62,10 @@ if (header) {
   document.querySelectorAll<HTMLElement>("section[data-tone]").forEach((section) => {
     ScrollTrigger.create({
       trigger: section,
-      start: "top top+=32",
-      end: "bottom top+=32",
+      // Measured at the header's bottom edge (64px) so a section that starts
+      // right under the header already owns its colour.
+      start: "top top+=66",
+      end: "bottom top+=66",
       onToggle: (self) => {
         if (self.isActive) header.dataset.tone = section.dataset.tone;
       },

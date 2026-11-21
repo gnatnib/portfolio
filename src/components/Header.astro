@@ -157,13 +157,21 @@ const links = [
   toggle.addEventListener("click", () => setOpen(menu.hasAttribute("hidden")));
   menu.querySelectorAll("[data-menu-link]").forEach((a) => a.addEventListener("click", () => setOpen(false)));
   // Out of the way while reading down, back as soon as the reader scrolls up.
+  // A menu jump scrolls down too, but the reader asked to go there: keep it shown.
   let lastY = scrollY;
+  let pinnedUntil = 0;
+  window.addEventListener("nav:jump", (e) => {
+    const duration = e instanceof CustomEvent && typeof e.detail?.duration === "number" ? e.detail.duration : 1400;
+    pinnedUntil = performance.now() + duration + 300;
+    header.classList.remove("is-hidden");
+  });
   window.addEventListener(
     "scroll",
     () => {
       const y = scrollY;
       if (Math.abs(y - lastY) < 6) return;
-      header.classList.toggle("is-hidden", y > lastY && y > 120 && menu.hasAttribute("hidden"));
+      const hide = y > lastY && y > 120 && menu.hasAttribute("hidden") && performance.now() > pinnedUntil;
+      header.classList.toggle("is-hidden", hide);
       lastY = y;
     },
     { passive: true },

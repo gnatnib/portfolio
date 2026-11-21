@@ -188,7 +188,7 @@ ol {
 /* Section head: index, title, aside. Used by every section. */
 .sec {
   position: relative;
-  padding-block: clamp(96px, 14vw, 200px) 0;
+  padding-block: clamp(72px, 9vw, 136px) 0;
 }
 .sec-head {
   display: grid;
