@@ -39,3 +39,4 @@ Optional, set in Vercel:
 
 - `GITHUB_TOKEN`: raises the GitHub API rate limit. The route works without it.
 - `GITHUB_USERNAME`: defaults to `gnatnib`.
+- `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `SPOTIFY_REFRESH_TOKEN`: the Spotify section. The refresh token needs the scopes `user-read-currently-playing user-read-recently-played user-top-read`. Without working credentials the section hides itself.
