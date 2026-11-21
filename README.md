@@ -23,11 +23,12 @@ Node 22.12 or newer.
 | `src/pages/api/github.ts` | Live GitHub calendar and recent repos. Cached at the edge for an hour. |
 | `src/scripts/motion.ts` | Lenis smooth scroll, GSAP ScrollTrigger wiring, section tone, line reveals. |
 | `src/scripts/ascii.ts` | The ASCII portrait: glyph grid, cursor lens, click to develop. |
-| `src/lib/textrank.ts` | TextRank used by the About section, run at build time. |
+| `src/scripts/stackpit.ts` | The Stack section: Matter.js physics on DOM pills, loaded only when the section is near. |
 
 ## Content notes
 
-- **About section.** `bioSentences` in `src/data.ts` is ranked with TextRank when the site builds. The top `SUMMARY_KEEP` sentences stay highlighted; the scores on the page are the real output.
+- **Stack.** `stack` in `src/data.ts`; each `icon` is a [simple-icons](https://simpleicons.org) slug, rendered at build time. Touch devices flick tiles on tap instead of dragging, so the page still scrolls.
+- **Timeline.** `experience` entries carry `from`/`to` as `YYYY-MM`; equal values draw a point.
 - **Portrait.** `src/assets/portrait-photo.jpg` is the photo, `portrait-cutout.png` the same crop with the background removed (made with `rembg`). The canvas samples the cutout; the photo sits underneath.
 - **CV.** `python scripts/render-cv.py path/to/CV.pdf` copies the PDF to `public/` and renders `src/assets/cv/page-N.png`. Then bump `resume.version` in `src/data.ts`.
 - **Old URLs.** `/about`, `/work`, `/experience`, `/contact` redirect to the matching section on `/`. See `astro.config.mjs`.

@@ -1,4 +1,5 @@
 ---
+import Logo from "./Logo.astro";
 const links = [
   { href: "/#work", label: "Work" },
   { href: "/#about", label: "About" },
@@ -9,7 +10,7 @@ const links = [
 
 <header class="hdr" data-header>
   <a href="/" class="hdr-mark" aria-label="Bintang Syafrian Rizal, home">
-    <span class="hdr-sq" aria-hidden="true"></span>gnatnib
+    <Logo size={24} class="hdr-logo" />gnatnib
   </a>
   <p class="hdr-now mono" aria-live="off">
     <span data-section-label>Index</span>
@@ -51,9 +52,20 @@ const links = [
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
     padding-inline: var(--pad);
-    color: #fff;
-    mix-blend-mode: difference;
+    color: var(--fg);
+    background: var(--bg);
     font-size: 14px;
+    transition:
+      color 0.6s var(--ease),
+      background-color 0.6s var(--ease),
+      transform 0.45s var(--ease);
+  }
+  .hdr.is-hidden {
+    transform: translateY(-100%);
+  }
+  .hdr.is-menu {
+    background: var(--ink);
+    color: var(--paper);
   }
   .hdr-mark {
     display: inline-flex;
@@ -63,14 +75,11 @@ const links = [
     letter-spacing: -0.01em;
     justify-self: start;
   }
-  .hdr-sq {
-    width: 10px;
-    height: 10px;
-    background: currentColor;
+  .hdr-mark :global(.hdr-logo) {
     transition: transform 0.5s var(--ease);
   }
-  .hdr-mark:hover .hdr-sq {
-    transform: rotate(90deg) scale(0.7);
+  .hdr-mark:hover :global(.hdr-logo) {
+    transform: rotate(-8deg) scale(1.08);
   }
   .hdr-now {
     min-width: 12ch;
@@ -137,17 +146,32 @@ const links = [
   const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]")!;
   const menu = document.querySelector<HTMLElement>("[data-menu]")!;
   const label = document.querySelector<HTMLElement>("[data-menu-label]")!;
+  const header = document.querySelector<HTMLElement>("[data-header]")!;
 
   const setOpen = (open: boolean) => {
     menu.hidden = !open;
     toggle.setAttribute("aria-expanded", String(open));
     label.textContent = open ? "Close" : "Menu";
     document.documentElement.style.overflow = open ? "hidden" : "";
+    header.classList.toggle("is-menu", open);
     window.dispatchEvent(new CustomEvent(open ? "lenis:stop" : "lenis:start"));
   };
 
   toggle.addEventListener("click", () => setOpen(menu.hasAttribute("hidden")));
   menu.querySelectorAll("[data-menu-link]").forEach((a) => a.addEventListener("click", () => setOpen(false)));
+  // Out of the way while reading down, back as soon as the reader scrolls up.
+  let lastY = scrollY;
+  window.addEventListener(
+    "scroll",
+    () => {
+      const y = scrollY;
+      if (Math.abs(y - lastY) < 6) return;
+      header.classList.toggle("is-hidden", y > lastY && y > 120 && menu.hasAttribute("hidden"));
+      lastY = y;
+    },
+    { passive: true },
+  );
+
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && !menu.hidden) {
       setOpen(false);

@@ -1,340 +1,388 @@
 ---
 import { Image } from "astro:assets";
-import { bioSentences, SUMMARY_KEEP, facts, stack, awards } from "../data";
-import { textrank } from "../lib/textrank";
+import * as icons from "simple-icons";
+import { stack, projects, certificateGroups } from "../data";
 import run from "../assets/run.jpg";
 
-const ranked = textrank(bioSentences, SUMMARY_KEEP);
-const countWords = (s: string) => s.split(/\s+/).filter(Boolean).length;
-const totalWords = ranked.reduce((n, r) => n + countWords(r.text), 0);
-const keptWords = ranked.filter((r) => r.kept).reduce((n, r) => n + countWords(r.text), 0);
-const compression = Math.round((1 - keptWords / totalWords) * 100);
+type SimpleIcon = { path: string; hex: string };
+const iconSet = icons as unknown as Record<string, SimpleIcon>;
+
+const tiles = stack.map((s) => {
+  const icon = s.icon ? iconSet[`si${s.icon[0].toUpperCase()}${s.icon.slice(1)}`] : null;
+  if (s.icon && !icon) throw new Error(`simple-icons has no "${s.icon}"`);
+  return { ...s, path: icon?.path ?? null, color: icon ? `#${icon.hex}` : "var(--fg)" };
+});
+const groups = ["Web", "Data", "Infra"] as const;
+
+const certCount = certificateGroups.reduce((n, g) => n + g.items.length, 0);
+const numbers = [
+  { value: 3.65, decimals: 2, label: "GPA, Computer Science" },
+  { value: projects.length, decimals: 0, label: "Projects built" },
+  { value: 2, decimals: 0, label: "Internships" },
+  { value: certCount, decimals: 0, label: "Certificates" },
+];
 ---
 
 <section id="about" class="sec wrap" data-tone="light" data-label="About" tabindex="-1">
   <header class="sec-head">
     <p class="sec-index mono">(01) About</p>
-    <h2 class="sec-title" data-reveal="lines">This bio, summarized</h2>
+    <h2 class="sec-title" data-reveal="lines">Hi, I'm Bintang</h2>
   </header>
 
-  <div class="ex" data-extract data-total={totalWords} data-kept={keptWords} data-compression={compression}>
-    <aside class="ex-side">
-      <dl class="ex-stats mono">
-        <div><dt class="muted">Method</dt><dd>TextRank, unsupervised</dd></div>
-        <div><dt class="muted">Kept</dt><dd>{SUMMARY_KEEP} of {ranked.length} sentences</dd></div>
-        <div>
-          <dt class="muted">Words</dt>
-          <dd class="num"><span data-ex-words>{keptWords}</span> / {totalWords}</dd>
-        </div>
-        <div>
-          <dt class="muted">Compression</dt>
-          <dd class="num"><span data-ex-ratio>{compression}</span>%</dd>
-        </div>
-      </dl>
-      <div class="ex-bar" aria-hidden="true"><span data-ex-bar></span></div>
-      <p class="ex-note muted">
-        Each sentence is a node, shared words are edges, and PageRank scores the graph. Computed when the
-        site builds, from the text on the right.
-      </p>
-    </aside>
-
-    <p class="ex-text" data-ex-text>
-      {
-        ranked.map((r) => (
-          <span class:list={["s", r.kept ? "keep" : "drop"]} data-s>
-            <sup class="s-score mono num" data-score>
-              {r.score.toFixed(2)}
-            </sup>
-            <span class="s-body">{r.text}</span>{" "}
-          </span>
-        ))
-      }
-    </p>
-  </div>
-
-  <div class="about-more grid">
-    <figure class="about-photo" data-reveal="fade">
-      <div class="about-photo-frame">
-        <Image src={run} alt="Bintang running on a track" widths={[320, 480, 640]} sizes="(max-width: 860px) 60vw, 22vw" />
+  <div class="ab">
+    <figure class="ab-photo">
+      <div class="ab-photo-frame" data-clip>
+        <Image
+          src={run}
+          alt="Bintang running on a track"
+          widths={[360, 540, 720]}
+          sizes="(max-width: 860px) 70vw, 30vw"
+          data-parallax-img
+        />
       </div>
-      <figcaption class="mono muted">Track, 5K pace</figcaption>
+      <figcaption class="mono muted">Off the keyboard: tennis, 5K, mountains</figcaption>
     </figure>
 
-    <div class="about-cols">
-      <dl class="facts">
+    <div class="ab-body">
+      <p class="ab-statement" data-reveal="lines">
+        Computer Science graduate from Universitas Diponegoro. I build web apps end to end, and train a
+        model when the problem needs one.
+      </p>
+
+      <dl class="ab-nums">
         {
-          facts.map((f) => (
-            <div class="fact">
-              <dt class="mono muted">{f.label}</dt>
-              <dd>{f.value}</dd>
+          numbers.map((n) => (
+            <div>
+              <dd class="num" data-count={n.value} data-decimals={n.decimals}>
+                {n.value.toFixed(n.decimals)}
+              </dd>
+              <dt class="mono muted">{n.label}</dt>
             </div>
           ))
         }
       </dl>
 
-      <div class="stack">
+      <p class="ab-thesis">
+        <span class="mono muted">Thesis</span>
+        <span>LLM extractive summarization of Indonesian palm oil regulations.</span>
+        <a href="https://lexpalm.streamlit.app" target="_blank" rel="noopener" class="ul ul-on"
+          >LexPalm <span class="arrow">↗</span></a
+        >
+      </p>
+      <p class="ab-thesis">
+        <span class="mono muted">Tennis</span>
+        <span>POPDA men's tennis: 1st sub-district 2015 and 2016, 3rd Semarang city 2016.</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="pit-wrap">
+    <div class="pit-head">
+      <h3 class="pit-title">Stack<sup class="mono">({tiles.length})</sup></h3>
+      <div class="pit-filter" role="group" aria-label="Highlight a group">
+        <button type="button" class="mono pit-chip is-on" data-group="all" aria-pressed="true">All</button>
         {
-          Object.entries(stack).map(([group, items]) => (
-            <div>
-              <h3 class="mono muted">{group}</h3>
-              <ul>
-                {items.map((item) => (
-                  <li>{item}</li>
-                ))}
-              </ul>
-            </div>
+          groups.map((g) => (
+            <button type="button" class="mono pit-chip" data-group={g} aria-pressed="false">
+              {g}
+            </button>
           ))
         }
-        <div>
-          <h3 class="mono muted">Awards</h3>
-          <ul class="awards">
-            {
-              awards.map((a) => (
-                <li>
-                  <span class="num muted">{a.year}</span> {a.title}
-                </li>
-              ))
-            }
-          </ul>
-        </div>
       </div>
+    </div>
+    <div class="pit" data-pit data-group-active="all">
+      <p class="pit-hint mono muted" aria-hidden="true">Grab one. Throw it.</p>
+      <ul class="pit-tiles" data-pit-tiles>
+        {
+          tiles.map((t) => (
+            <li class="tile" data-tile data-group={t.group} style={`--brand:${t.color}`}>
+              {t.path ? (
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d={t.path} />
+                </svg>
+              ) : (
+                <span class="tile-mono mono" aria-hidden="true">
+                  {t.name.slice(0, 3)}
+                </span>
+              )}
+              <span>{t.name}</span>
+            </li>
+          ))
+        }
+      </ul>
     </div>
   </div>
 </section>
 
 <style>
-  .ex {
+  .ab {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
     column-gap: var(--gap);
-    padding-top: clamp(32px, 4vw, 56px);
-  }
-  .ex-side {
-    grid-column: 1 / span 3;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding-top: 0.5em;
-  }
-  .ex-stats {
-    display: grid;
-    gap: 10px;
-  }
-  .ex-stats div {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--rule);
-  }
-  .ex-bar {
-    height: 2px;
-    background: var(--rule);
-  }
-  .ex-bar span {
-    display: block;
-    height: 100%;
-    width: calc(var(--p, 1) * 100%);
-    background: var(--accent);
-  }
-  .ex-note {
-    font-size: 13px;
-    line-height: 1.5;
-    max-width: 34ch;
-  }
-  .ex-text {
-    grid-column: 4 / span 9;
-    font-size: clamp(22px, 2.55vw, 40px);
-    line-height: 1.22;
-    letter-spacing: -0.022em;
-    font-weight: 450;
-  }
-  .s {
-    transition: none;
-  }
-  .s-score {
-    font-size: 11px;
-    letter-spacing: 0;
-    vertical-align: super;
-    margin-right: 0.35em;
-    padding: 1px 4px;
-    border: 1px solid var(--rule-strong);
-    border-radius: 3px;
-    position: relative;
-    top: -0.6em;
-    color: var(--muted);
-  }
-  .keep .s-score {
-    border-color: var(--accent);
-    color: var(--fg);
-  }
-  /* Final state: the summary is marked, the rest is struck and faded. */
-  .s-body {
-    box-decoration-break: clone;
-    -webkit-box-decoration-break: clone;
-  }
-  .keep .s-body {
-    --hl: color-mix(in srgb, var(--accent) 40%, transparent);
-    background: linear-gradient(var(--hl), var(--hl)) 0 92% / calc(var(--mark, 1) * 100%) 0.42em no-repeat;
-  }
-  .drop .s-body {
-    opacity: calc(1 - var(--fade, 1) * 0.78);
-  }
-  /* SplitText wraps words in inline-blocks, which do not inherit a parent's
-     text-decoration, so the strike is set on both. */
-  .drop .s-body,
-  .drop .s-body > * {
-    text-decoration: line-through;
-    text-decoration-thickness: 0.06em;
-    text-decoration-color: color-mix(in srgb, var(--fg) calc(var(--fade, 1) * 70%), transparent);
-  }
-
-  .about-more {
-    padding-top: clamp(64px, 8vw, 120px);
     row-gap: 40px;
+    padding-top: clamp(40px, 5vw, 72px);
+    align-items: start;
   }
-  .about-photo {
-    grid-column: 1 / span 3;
+  .ab-photo {
+    grid-column: 1 / span 4;
   }
-  .about-photo-frame {
-    aspect-ratio: 2 / 3;
+  .ab-photo-frame {
+    aspect-ratio: 4 / 5;
     overflow: hidden;
     background: var(--panel);
   }
-  .about-photo-frame img {
+  .ab-photo-frame img {
     width: 100%;
-    height: 100%;
+    height: 118%;
     object-fit: cover;
   }
-  .about-photo figcaption {
+  .ab-photo figcaption {
     padding-top: 10px;
   }
-  .about-cols {
-    grid-column: 4 / span 9;
+  .ab-body {
+    grid-column: 6 / span 7;
     display: grid;
-    gap: 48px;
-    align-content: start;
+    gap: clamp(40px, 5vw, 72px);
   }
-  .facts {
+  .ab-statement {
+    font-size: clamp(26px, 2.8vw, 44px);
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    font-weight: 450;
+    max-width: 22ch;
+  }
+  .ab-nums {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: var(--gap);
   }
-  .fact {
+  .ab-nums div {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 10px;
     border-top: 1px solid var(--rule-strong);
-    padding-top: 12px;
+    padding-top: 14px;
   }
-  .fact dd {
-    margin-top: 8px;
-    font-size: 17px;
-    line-height: 1.35;
-  }
-  .stack {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: var(--gap);
-  }
-  .stack h3 {
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--rule);
-    margin-bottom: 10px;
+  .ab-nums dd {
+    font-size: clamp(40px, 4.6vw, 76px);
+    line-height: 0.95;
+    letter-spacing: -0.05em;
     font-weight: 400;
   }
-  .stack li {
-    font-size: 15px;
-    line-height: 1.75;
+  .ab-thesis {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 16px;
+    font-size: 16px;
   }
-  .awards li {
-    line-height: 1.45;
-    padding-bottom: 8px;
+
+  .pit-wrap {
+    padding-top: clamp(80px, 10vw, 140px);
+  }
+  .pit-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-bottom: 16px;
+  }
+  .pit-title {
+    font-size: clamp(32px, 3.4vw, 56px);
+    letter-spacing: -0.035em;
+    font-weight: 500;
+    line-height: 1;
+  }
+  .pit-title sup {
+    font-size: 12px;
+    letter-spacing: 0;
+    vertical-align: top;
+    margin-left: 6px;
+    font-weight: 400;
+  }
+  .pit-filter {
+    display: flex;
+    gap: 8px;
+  }
+  .pit-chip {
+    min-height: 36px;
+    padding: 0 14px;
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    transition:
+      background-color 0.25s var(--ease),
+      color 0.25s var(--ease);
+  }
+  .pit-chip.is-on {
+    background: var(--fg);
+    color: var(--bg);
+    border-color: var(--fg);
+  }
+
+  .pit {
+    position: relative;
+    border: 1px solid var(--rule-strong);
+    border-radius: 28px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 1px 1px, var(--rule) 1px, transparent 0) 0 0 / 22px 22px;
+  }
+  .pit-hint {
+    position: absolute;
+    left: 20px;
+    top: 16px;
+    pointer-events: none;
+  }
+  /* Without physics the tiles are a plain wrapped row. */
+  .pit-tiles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 56px 20px 20px;
+  }
+  .tile {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 56px;
+    padding: 0 20px 0 14px;
+    border-radius: 999px;
+    background: #f8f7f3;
+    border: 1px solid var(--rule-strong);
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    user-select: none;
+    transition:
+      opacity 0.3s var(--ease),
+      filter 0.3s var(--ease);
+    color: var(--ink);
+  }
+  .tile svg {
+    width: 26px;
+    height: 26px;
+    fill: var(--brand);
+    flex: none;
+  }
+  .tile-mono {
+    width: 26px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+    border-radius: 6px;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 9px;
+  }
+  .pit[data-group-active="Web"] .tile:not([data-group="Web"]),
+  .pit[data-group-active="Data"] .tile:not([data-group="Data"]),
+  .pit[data-group-active="Infra"] .tile:not([data-group="Infra"]) {
+    opacity: 0.22;
+    filter: grayscale(1);
+  }
+
+  .pit.is-physics {
+    height: clamp(380px, 50svh, 500px);
+    touch-action: pan-y;
+  }
+  .pit.is-physics .pit-tiles {
+    display: block;
+    padding: 0;
+    position: absolute;
+    inset: 0;
+  }
+  .pit.is-physics .tile {
+    position: absolute;
+    left: 0;
+    top: 0;
+    cursor: grab;
+    will-change: transform;
+  }
+  .pit.is-physics.is-grabbing .tile {
+    cursor: grabbing;
   }
 
   @media (max-width: 860px) {
-    .ex {
-      display: flex;
-      flex-direction: column-reverse;
-      gap: 32px;
-      min-height: 0;
+    .ab-photo {
+      grid-column: 1 / span 8;
     }
-    .about-photo {
-      grid-column: 1 / span 7;
-    }
-    .about-cols {
+    .ab-body {
       grid-column: 1 / -1;
     }
-    .facts,
-    .stack {
+    .ab-nums {
       grid-template-columns: 1fr 1fr;
       row-gap: 28px;
+    }
+    .tile {
+      height: 46px;
+      font-size: 14px;
+      padding: 0 16px 0 10px;
+    }
+    .tile svg {
+      width: 22px;
+      height: 22px;
     }
   }
 </style>
 
 <script>
-  import { gsap, ScrollTrigger, SplitText, reduced } from "../scripts/motion";
+  import { gsap, ScrollTrigger, reduced } from "../scripts/motion";
 
-  const root = document.querySelector<HTMLElement>("[data-extract]");
-
-  if (root && !reduced) {
-    document.fonts.ready.then(() => {
-      const text = root.querySelector<HTMLElement>("[data-ex-text]")!;
-      const bodies = [...root.querySelectorAll<HTMLElement>(".s-body")];
-      const scores = [...root.querySelectorAll<HTMLElement>("[data-score]")];
-      const keep = [...root.querySelectorAll<HTMLElement>(".keep .s-body")];
-      const drop = [...root.querySelectorAll<HTMLElement>(".drop .s-body")];
-      const words = root.querySelector<HTMLElement>("[data-ex-words]")!;
-      const ratio = root.querySelector<HTMLElement>("[data-ex-ratio]")!;
-      const bar = root.querySelector<HTMLElement>("[data-ex-bar]")!;
-      const total = Number(root.dataset.total);
-      const kept = Number(root.dataset.kept);
-      const compression = Number(root.dataset.compression);
-
-      const split = SplitText.create(bodies, { type: "words", tag: "span" });
-      const counter = { words: total, ratio: 0 };
-      const paint = () => {
-        words.textContent = String(Math.round(counter.words));
-        ratio.textContent = String(Math.round(counter.ratio));
-        bar.style.setProperty("--p", String(counter.words / total));
-      };
-
-      gsap.set(split.words, { opacity: 0.12 });
-      gsap.set(scores, { opacity: 0, scale: 0.6 });
-      gsap.set([...keep, ...drop], { "--mark": 0, "--fade": 0 });
-      paint();
-
-      const tl = gsap.timeline({ defaults: { ease: "none" } });
-      tl.to(split.words, { opacity: 1, stagger: 0.02, duration: 0.3 })
-        .to(scores, { opacity: 1, scale: 1, stagger: 0.06, duration: 0.15, ease: "back.out(2)" }, "+=0.05")
-        .to(drop, { "--fade": 1, stagger: 0.08, duration: 0.3 }, "+=0.1")
-        .to(counter, { words: kept, ratio: compression, duration: 0.4, onUpdate: paint }, "<")
-        .to(keep, { "--mark": 1, stagger: 0.1, duration: 0.3 }, "<0.1")
-        .to({}, { duration: 0.25 });
-
-      const mm = gsap.matchMedia();
-      mm.add("(min-width: 861px)", () => {
-        ScrollTrigger.create({
-          trigger: root,
-          start: "top top+=64",
-          end: "+=200%",
-          pin: true,
-          // Pins above other triggers must measure first, or every trigger
-          // created earlier (tone, header label) keeps pre-pin positions.
-          refreshPriority: 2,
-          scrub: 0.6,
-          animation: tl,
-        });
+  const pit = document.querySelector<HTMLElement>("[data-pit]")!;
+  const chips = [...document.querySelectorAll<HTMLButtonElement>(".pit-chip")];
+  chips.forEach((chip) =>
+    chip.addEventListener("click", () => {
+      pit.dataset.groupActive = chip.dataset.group;
+      chips.forEach((c) => {
+        c.classList.toggle("is-on", c === chip);
+        c.setAttribute("aria-pressed", String(c === chip));
       });
-      mm.add("(max-width: 860px)", () => {
-        ScrollTrigger.create({
-          trigger: text,
-          start: "top 75%",
-          end: "bottom 35%",
-          scrub: 0.6,
-          animation: tl,
-        });
+    }),
+  );
+
+  if (!reduced) {
+    // Numbers count up once they scroll in.
+    document.querySelectorAll<HTMLElement>("[data-count]").forEach((el) => {
+      const value = Number(el.dataset.count);
+      const decimals = Number(el.dataset.decimals);
+      const o = { v: 0 };
+      el.textContent = (0).toFixed(decimals);
+      gsap.to(o, {
+        v: value,
+        duration: 1.8,
+        ease: "expo.out",
+        onUpdate: () => (el.textContent = o.v.toFixed(decimals)),
+        scrollTrigger: { trigger: el, start: "top 85%", once: true },
       });
-      ScrollTrigger.sort();
-      ScrollTrigger.refresh();
+    });
+
+    // Photo opens from the bottom and drifts inside its frame.
+    const frame = document.querySelector<HTMLElement>("[data-clip]")!;
+    gsap.fromTo(
+      frame,
+      { clipPath: "inset(100% 0 0 0)" },
+      {
+        clipPath: "inset(0% 0 0 0)",
+        duration: 1.4,
+        ease: "expo.inOut",
+        scrollTrigger: { trigger: frame, start: "top 85%", once: true },
+      },
+    );
+    gsap.fromTo(
+      "[data-parallax-img]",
+      { yPercent: -12 },
+      { yPercent: 0, ease: "none", scrollTrigger: { trigger: frame, start: "top bottom", end: "bottom top", scrub: true } },
+    );
+
+    // Physics loads only when the pit is close, so it costs nothing above the fold.
+    ScrollTrigger.create({
+      trigger: pit,
+      start: "top 120%",
+      once: true,
+      onEnter: () => import("../scripts/stackpit").then((m) => m.mountStackPit(pit)),
     });
   }
 </script>

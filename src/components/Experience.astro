@@ -1,157 +1,370 @@
 ---
 import { Image } from "astro:assets";
 import { experience } from "../data";
+
+const START = { y: 2022, m: 1 };
+const END = { y: 2026, m: 12 };
+const index = (ym: string) => {
+  const [y, m] = ym.split("-").map(Number);
+  return (y - START.y) * 12 + (m - START.m);
+};
+const total = index(`${END.y}-${END.m}`) + 1;
+const years = Array.from({ length: END.y - START.y + 1 }, (_, i) => START.y + i);
+
+const rows = experience.map((x) => ({
+  ...x,
+  left: (index(x.from) / total) * 100,
+  width: ((index(x.to) - index(x.from) + 1) / total) * 100,
+  point: x.from === x.to,
+}));
 ---
 
 <section id="experience" class="sec wrap" data-tone="light" data-label="Experience" tabindex="-1">
   <header class="sec-head">
     <p class="sec-index mono">(03) Experience</p>
-    <h2 class="sec-title" data-reveal="lines">Where I've worked</h2>
+    <h2 class="sec-title" data-reveal="lines">Timeline</h2>
   </header>
 
-  <ol class="xp" data-peek-root>
-    {
-      experience.map((x, i) => (
-        <li class="xp-row" data-peek={i}>
-          <span class="xp-year num">{x.start}</span>
-          <span class="xp-logo">
-            <Image src={x.logo} alt="" width={56} height={56} densities={[1, 2]} loading="lazy" />
-          </span>
-          <div class="xp-main">
-            <h3 class="xp-role">{x.role}</h3>
-            <p class="muted">
-              {x.org}, {x.place}
+  <div class="tl" data-tl data-start={`${START.y}-${START.m}`} data-total={total}>
+    <div class="tl-chart">
+      <div class="tl-legend mono muted" aria-hidden="true">
+        <span><i class="k-work"></i>Work</span>
+        <span><i class="k-teaching"></i>Teaching</span>
+        <span><i class="k-event"></i>Event</span>
+        <span><i class="k-study"></i>Study</span>
+      </div>
+
+      <div class="tl-axis mono muted" aria-hidden="true">
+        <span class="tl-axis-label"></span>
+        <span class="tl-years">
+          {years.map((y, i) => <span style={`left:${((i * 12) / total) * 100}%`}>{y}</span>)}
+        </span>
+      </div>
+
+      <ol class="tl-rows">
+        {
+          rows.map((r, i) => (
+            <li>
+              <button
+                type="button"
+                class:list={["tl-row", { "is-on": i === 0 }]}
+                data-tl-row={i}
+                aria-pressed={i === 0 ? "true" : "false"}
+              >
+                <span class="tl-label">
+                  <Image src={r.logo} alt="" width={28} height={28} densities={[1, 2]} class="tl-logo" />
+                  <span class="tl-text">
+                    <span class="tl-role">{r.role}</span>
+                    <span class="tl-org muted">{r.org}</span>
+                  </span>
+                </span>
+                <span class="tl-track">
+                  {years.map((_, y) => (
+                    <span class="tl-grid" style={`left:${((y * 12) / total) * 100}%`} />
+                  ))}
+                  <span
+                    class:list={["tl-bar", `k-${r.kind.toLowerCase()}`, { "is-point": r.point }]}
+                    style={`left:${r.left}%;width:${r.width}%`}
+                    data-tl-bar
+                  />
+                </span>
+              </button>
+            </li>
+          ))
+        }
+      </ol>
+      <span class="tl-now mono" data-tl-now aria-hidden="true"><span>Now</span></span>
+    </div>
+
+    <aside class="tl-detail" aria-live="polite">
+      {
+        rows.map((r, i) => (
+          <article class:list={["tl-card", { "is-on": i === 0 }]} data-tl-card={i} hidden={i !== 0}>
+            <div class="tl-photo">
+              {r.photo ? (
+                <Image src={r.photo} alt={`${r.role}, ${r.org}`} widths={[400, 640]} sizes="(max-width: 860px) 90vw, 26vw" loading="lazy" />
+              ) : (
+                <Image src={r.logo} alt="" width={120} height={120} class="tl-photo-logo" />
+              )}
+            </div>
+            <p class="mono muted">
+              {r.kind} · {r.period}
             </p>
-          </div>
-          <p class="xp-text">{x.text}</p>
-          <p class="xp-period mono muted">{x.period}</p>
-          <span class="xp-rule" data-reveal="rule" aria-hidden="true" />
-        </li>
-      ))
-    }
-    <li class="peek xp-peek" aria-hidden="true" data-peek-box>
-      {experience.map((x) => <Image src={x.photo} alt="" widths={[480]} sizes="320px" loading="lazy" />)}
-    </li>
-  </ol>
+            <h3 class="tl-card-role">{r.role}</h3>
+            <p class="muted">{r.org}</p>
+            <p>{r.text}</p>
+          </article>
+        ))
+      }
+    </aside>
+  </div>
 </section>
 
 <style>
-  .xp {
-    position: relative;
-  }
-  .xp-row {
-    position: relative;
+  .tl {
     display: grid;
-    grid-template-columns: minmax(0, 2fr) 40px minmax(0, 4fr) minmax(0, 4fr) minmax(0, 2fr);
-    gap: var(--gap);
-    align-items: start;
-    padding-block: 28px;
-    transition: background-color 0.3s var(--ease);
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    row-gap: 32px;
+    padding-top: clamp(32px, 4vw, 56px);
+    --label-w: clamp(200px, 22vw, 320px);
   }
-  .xp-rule {
+  .tl-chart {
+    grid-column: 1 / span 8;
+    position: relative;
+  }
+  .tl-legend {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .tl-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tl-legend i {
+    width: 18px;
+    height: 8px;
+    border-radius: 4px;
+  }
+  .tl-axis,
+  .tl-row {
+    display: grid;
+    grid-template-columns: var(--label-w) 1fr;
+    gap: 16px;
+    align-items: center;
+  }
+  .tl-axis {
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule-strong);
+  }
+  .tl-years {
+    position: relative;
+    height: 1em;
+  }
+  .tl-years span {
     position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 1px;
-    background: var(--rule-strong);
+    top: 0;
   }
-  .xp-year {
-    font-size: clamp(32px, 3.6vw, 60px);
-    line-height: 0.9;
-    letter-spacing: -0.04em;
-    font-weight: 400;
+  .tl-row {
+    width: 100%;
+    text-align: left;
+    padding-block: 10px;
+    border-bottom: 1px solid var(--rule);
+    transition: background-color 0.25s var(--ease);
   }
-  .xp-logo {
-    width: 40px;
-    height: 40px;
-    border-radius: 6px;
-    overflow: hidden;
-    background: #fff;
-    display: grid;
-    place-items: center;
-    border: 1px solid var(--rule);
+  .tl-row:hover,
+  .tl-row.is-on {
+    background: var(--panel);
   }
-  .xp-logo img {
-    width: 32px;
-    height: 32px;
+  .tl-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    padding-left: 8px;
+  }
+  .tl-label :global(.tl-logo) {
+    width: 28px;
+    height: 28px;
     object-fit: contain;
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid var(--rule);
+    flex: none;
   }
-  .xp-role {
-    font-size: clamp(19px, 1.6vw, 24px);
-    line-height: 1.2;
-    letter-spacing: -0.02em;
+  .tl-text {
+    display: grid;
+    min-width: 0;
+  }
+  .tl-role {
     font-weight: 500;
-    margin-bottom: 4px;
+    font-size: 15px;
+    line-height: 1.25;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
-  .xp-text {
-    max-width: 52ch;
+  .tl-org {
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
-  .xp-period {
-    text-align: right;
-    padding-top: 4px;
+  .tl-track {
+    position: relative;
+    height: 28px;
+  }
+  .tl-grid {
+    position: absolute;
+    top: -10px;
+    bottom: -10px;
+    width: 1px;
+    background: var(--rule);
+  }
+  .tl-bar {
+    position: absolute;
+    top: 6px;
+    height: 16px;
+    min-width: 10px;
+    border-radius: 8px;
+    transform-origin: 0 50%;
+  }
+  .tl-bar.is-point {
+    width: 16px !important;
+    margin-left: -4px;
+  }
+  .k-work {
+    background: var(--accent);
+  }
+  .k-teaching {
+    background: var(--fg);
+  }
+  .k-event {
+    background: var(--muted);
+  }
+  .k-study {
+    background: transparent;
+    border: 1.5px solid var(--fg);
+  }
+  .tl-row.is-on .tl-bar {
+    box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--fg);
+  }
+  .tl-now {
+    position: absolute;
+    bottom: 0;
+    width: 1px;
+    background: var(--accent);
+    pointer-events: none;
+    display: none;
+  }
+  .tl-now span {
+    position: absolute;
+    top: -2px;
+    left: 6px;
+    color: var(--accent);
   }
 
-  .peek {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 260px;
-    aspect-ratio: 4 / 5;
-    pointer-events: none;
-    z-index: 30;
+  .tl-detail {
+    grid-column: 9 / span 4;
+    position: sticky;
+    top: calc(var(--header-h) + 16px);
+    align-self: start;
+  }
+  .tl-card {
+    display: grid;
+    gap: 8px;
+  }
+  .tl-card[hidden] {
+    display: none;
+  }
+  .tl-photo {
+    aspect-ratio: 4 / 3;
     overflow: hidden;
-    opacity: 0;
-    visibility: hidden;
-    clip-path: inset(50% 50% 50% 50%);
-    transition:
-      clip-path 0.45s var(--ease),
-      opacity 0.2s linear,
-      visibility 0s linear 0.45s;
+    background: var(--panel);
+    margin-bottom: 8px;
+    display: grid;
+    place-items: center;
   }
-  .peek:global(.on) {
-    opacity: 1;
-    visibility: visible;
-    clip-path: inset(0 0 0 0);
-    transition:
-      clip-path 0.45s var(--ease),
-      opacity 0.2s linear;
-  }
-  .peek img {
-    position: absolute;
-    inset: 0;
+  .tl-photo :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0;
   }
-  .peek img:global(.on) {
-    opacity: 1;
+  .tl-photo :global(.tl-photo-logo) {
+    width: 96px;
+    height: 96px;
+    object-fit: contain;
   }
-  @media (hover: none), (max-width: 860px) {
-    .peek {
-      display: none;
-    }
+  .tl-card-role {
+    font-size: clamp(22px, 2vw, 30px);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    font-weight: 500;
   }
 
+  /* Phones: label above its bar so role names are not truncated. */
   @media (max-width: 860px) {
-    .xp-row {
-      grid-template-columns: 40px minmax(0, 1fr);
-      row-gap: 10px;
-    }
-    .xp-year {
+    .tl-chart {
       grid-column: 1 / -1;
-      font-size: 40px;
     }
-    .xp-text,
-    .xp-period {
-      grid-column: 2;
-      text-align: left;
+    .tl-detail {
+      grid-column: 1 / -1;
+      position: static;
+    }
+    .tl-axis,
+    .tl-row {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .tl-axis-label {
+      display: none;
+    }
+    .tl-label {
+      padding-left: 0;
+    }
+    .tl-role,
+    .tl-org {
+      white-space: normal;
+    }
+    .tl-row {
+      padding-inline: 8px;
+    }
+    .tl-track {
+      height: 20px;
+    }
+    .tl-bar {
+      top: 2px;
     }
   }
 </style>
 
 <script>
-  import { mountPeek } from "../scripts/peek";
-  document.querySelectorAll<HTMLElement>("#experience [data-peek-root]").forEach(mountPeek);
+  import { gsap, reduced } from "../scripts/motion";
+
+  const tl = document.querySelector<HTMLElement>("[data-tl]")!;
+  const rows = [...tl.querySelectorAll<HTMLButtonElement>("[data-tl-row]")];
+  const cards = [...tl.querySelectorAll<HTMLElement>("[data-tl-card]")];
+
+  const select = (i: number) => {
+    rows.forEach((r, j) => {
+      r.classList.toggle("is-on", i === j);
+      r.setAttribute("aria-pressed", String(i === j));
+    });
+    cards.forEach((c, j) => (c.hidden = i !== j));
+  };
+  rows.forEach((row, i) => {
+    row.addEventListener("click", () => select(i));
+    row.addEventListener("mouseenter", () => select(i));
+    row.addEventListener("focus", () => select(i));
+  });
+
+  // Today's marker, placed on the same scale as the bars.
+  const [sy, sm] = tl.dataset.start!.split("-").map(Number);
+  const total = Number(tl.dataset.total);
+  const now = new Date();
+  const months = (now.getFullYear() - sy) * 12 + (now.getMonth() + 1 - sm) + now.getDate() / 31;
+  const marker = tl.querySelector<HTMLElement>("[data-tl-now]")!;
+  const track = rows[0].querySelector<HTMLElement>(".tl-track")!;
+  const place = () => {
+    const chart = marker.parentElement!.getBoundingClientRect();
+    const t = track.getBoundingClientRect();
+    marker.style.left = `${t.left - chart.left + (t.width * months) / total}px`;
+    marker.style.top = `${t.top - chart.top - 12}px`;
+    marker.style.display = months >= 0 && months <= total ? "block" : "none";
+  };
+  place();
+  new ResizeObserver(place).observe(tl);
+
+  if (!reduced) {
+    gsap.from(tl.querySelectorAll("[data-tl-bar]"), {
+      scaleX: 0,
+      duration: 1.2,
+      ease: "expo.out",
+      stagger: 0.08,
+      scrollTrigger: { trigger: tl, start: "top 75%", once: true },
+    });
+  }
 </script>

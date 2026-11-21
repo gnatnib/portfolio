@@ -56,20 +56,6 @@ export const facts = [
   { label: "Focus", value: "Full-stack web, machine learning" },
 ];
 
-/* The About section ranks these sentences with TextRank at build time and
-   keeps the top SUMMARY_KEEP, a small version of what the thesis did with
-   LLMs. Edit freely: the scores on the page follow the text. */
-export const SUMMARY_KEEP = 3;
-export const bioSentences = [
-  "I'm Bintang, a software developer in Semarang who builds web applications and machine learning systems.",
-  "I studied Computer Science at Universitas Diponegoro from 2022 to 2026 and finished with a 3.65 GPA.",
-  "I build web applications end to end, from the database schema to the last screen a user taps.",
-  "Most of these applications were built for real users: a room booking system for 50+ employees, a procurement system, an HR system for 150+ staff.",
-  "At Diponegoro I taught the Data Structures and Computer Networks labs as a teaching assistant.",
-  "My thesis used large language models to extract the key sentences from Indonesian palm oil regulations, a machine learning problem this section now runs on my bio.",
-  "Away from the keyboard I play tennis, run 5K, and hike mountains.",
-];
-
 export type Project = {
   slug: string;
   title: string;
@@ -217,63 +203,80 @@ export const projects: Project[] = [
   },
 ];
 
+/* `from`/`to` are YYYY-MM and drive the timeline. Equal values draw a point. */
 export const experience = [
   {
     role: "Fullstack Developer Intern",
     org: "PT Sinergi Asta Nusantara",
-    place: "Jakarta, hybrid",
-    period: "Feb 2026 to Apr 2026",
-    start: "2026",
-    text: "Built a Human Resource Management System for 150+ employees: attendance, payroll and employee self-service. Vite on the frontend, Laravel on the backend.",
+    kind: "Work",
+    from: "2026-02",
+    to: "2026-04",
+    period: "Feb to Apr 2026",
+    text: "HR system for 150+ employees: attendance, payroll, self-service.",
     logo: logoSan,
     photo: photoSan,
   },
   {
     role: "Fullstack Developer Intern",
     org: "PT Usaha Gedung Mandiri",
-    place: "Jakarta, hybrid",
-    period: "Jan 2025 to Feb 2025",
-    start: "2025",
-    text: "Shipped Rumeet and SiPP in Laravel within a one-month deadline, in a four-person Agile team.",
+    kind: "Work",
+    from: "2025-01",
+    to: "2025-02",
+    period: "Jan to Feb 2025",
+    text: "Shipped Rumeet and SiPP in one month, four-person team.",
     logo: logoUgm,
     photo: photoUgm,
   },
   {
-    role: "Teaching Assistant, Data Structures Lab",
+    role: "Teaching Assistant, Data Structures",
     org: "Universitas Diponegoro",
-    place: "Semarang",
-    period: "Sep 2024 to Dec 2024",
-    start: "2024",
-    text: "Ran tutorials and workshops on linked lists, trees, graphs and algorithms. Prepared problem sets, graded assignments, held office hours.",
+    kind: "Teaching",
+    from: "2024-09",
+    to: "2024-12",
+    period: "Sep to Dec 2024",
+    text: "Tutorials on lists, trees and graphs; grading and office hours.",
     logo: logoUndip,
     photo: photoLabDs,
   },
   {
     role: "Liaison Officer, ICICoS 2024",
-    org: "Universitas Diponegoro, IEEE Indonesia Section",
-    place: "Semarang",
+    org: "Undip with IEEE Indonesia Section",
+    kind: "Event",
+    from: "2024-07",
+    to: "2024-07",
     period: "Jul 2024",
-    start: "2024",
-    text: "Coordinated between international speakers, participants and the organizing committee during the conference.",
+    text: "Point of contact for international speakers at the conference.",
     logo: logoIeee,
     photo: photoIcicos,
   },
   {
-    role: "Teaching Assistant, Computer Networks Lab",
+    role: "Teaching Assistant, Computer Networks",
     org: "Universitas Diponegoro",
-    place: "Semarang",
-    period: "Feb 2024 to May 2024",
-    start: "2024",
-    text: "Guided students through networking fundamentals with Cisco Packet Tracer.",
+    kind: "Teaching",
+    from: "2024-02",
+    to: "2024-05",
+    period: "Feb to May 2024",
+    text: "Networking labs with Cisco Packet Tracer.",
     logo: logoUndip,
     photo: photoLabNet,
   },
   {
+    role: "B.Sc. Computer Science",
+    org: "Universitas Diponegoro",
+    kind: "Study",
+    from: "2022-08",
+    to: "2026-06",
+    period: "Aug 2022 to Jun 2026",
+    text: "GPA 3.65. Thesis on LLM extractive summarization.",
+    logo: logoUndip,
+  },
+  {
     role: "Graduated high school",
     org: "SMA Negeri 4 Semarang",
-    place: "Semarang",
+    kind: "Study",
+    from: "2022-07",
+    to: "2022-07",
     period: "Jul 2022",
-    start: "2022",
     text: "Science track.",
     logo: logoSma,
     photo: photoSma,
@@ -355,14 +358,35 @@ export const certificateGroups = [
   },
 ];
 
-export const awards = [
-  { title: "Third place, men's tennis, POPDA city level, Semarang", year: "2016" },
-  { title: "First place, men's tennis, POPDA sub-district level", year: "2016" },
-  { title: "First place, men's tennis, POPDA sub-district level", year: "2015" },
-];
-
-export const stack = {
-  Web: ["TypeScript", "JavaScript", "React", "Next.js", "Astro", "Node.js", "Laravel", "PHP", "Tailwind CSS"],
-  Data: ["Python", "pandas", "NumPy", "PyTorch", "YOLO", "Streamlit", "Jupyter"],
-  Infra: ["PostgreSQL", "MySQL", "Supabase", "Prisma", "Docker", "AWS", "Git", "Linux"],
-};
+/* `icon` is a simple-icons slug; items without one render as a lettermark
+   (simple-icons has no AWS entry). */
+export const stack = [
+  { name: "TypeScript", icon: "typescript", group: "Web" },
+  { name: "JavaScript", icon: "javascript", group: "Web" },
+  { name: "React", icon: "react", group: "Web" },
+  { name: "Next.js", icon: "nextdotjs", group: "Web" },
+  { name: "Astro", icon: "astro", group: "Web" },
+  { name: "Node.js", icon: "nodedotjs", group: "Web" },
+  { name: "Laravel", icon: "laravel", group: "Web" },
+  { name: "PHP", icon: "php", group: "Web" },
+  { name: "Tailwind CSS", icon: "tailwindcss", group: "Web" },
+  { name: "Python", icon: "python", group: "Data" },
+  { name: "pandas", icon: "pandas", group: "Data" },
+  { name: "NumPy", icon: "numpy", group: "Data" },
+  { name: "PyTorch", icon: "pytorch", group: "Data" },
+  { name: "YOLO", icon: "ultralytics", group: "Data" },
+  { name: "OpenCV", icon: "opencv", group: "Data" },
+  { name: "Streamlit", icon: "streamlit", group: "Data" },
+  { name: "Jupyter", icon: "jupyter", group: "Data" },
+  { name: "Gemini", icon: "googlegemini", group: "Data" },
+  { name: "PostgreSQL", icon: "postgresql", group: "Infra" },
+  { name: "MySQL", icon: "mysql", group: "Infra" },
+  { name: "Supabase", icon: "supabase", group: "Infra" },
+  { name: "Prisma", icon: "prisma", group: "Infra" },
+  { name: "Firebase", icon: "firebase", group: "Infra" },
+  { name: "Docker", icon: "docker", group: "Infra" },
+  { name: "AWS", icon: null, group: "Infra" },
+  { name: "Vercel", icon: "vercel", group: "Infra" },
+  { name: "Git", icon: "git", group: "Infra" },
+  { name: "Linux", icon: "linux", group: "Infra" },
+] as const;
