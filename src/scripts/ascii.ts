@@ -85,29 +85,21 @@ export function mountAsciiPortrait(root: HTMLElement) {
     cellH = cellW / 0.62;
     rows = Math.ceil(height / cellH);
 
-    /* One geometry for both layers. The photo is cover-fitted into the frame,
-       then zoomed so the cutout's region fills the frame; the mask is drawn
-       into exactly that region, so characters and photo line up at any frame
-       shape. Developing drops the zoom and the full photo shows. */
-    const [cx, cy, cw, ch] = root.dataset.crop!.split(",").map(Number);
+    /* The photo is cover-fitted into the frame (object-fit: cover); the mask is
+       drawn into the same rect, so each character sits on the pixel it came
+       from at any frame shape. */
     const ratio = Number(root.dataset.photoRatio);
     const fit = Math.max(width / ratio, height);
     const pw = fit * ratio;
     const ph = fit;
-    const rx = (width - pw) / 2 + cx * pw;
-    const ry = (height - ph) / 2 + cy * ph;
-    const rw = cw * pw;
-    const rh = ch * ph;
-    const zoom = Math.max(width / rw, height / rh);
-    const tx = width / 2 - zoom * (rx + rw / 2);
-    const ty = height / 2 - zoom * (ry + rh / 2);
-    root.style.setProperty("--zoom-t", `translate(${tx}px, ${ty}px) scale(${zoom})`);
+    const px0 = (width - pw) / 2;
+    const py0 = (height - ph) / 2;
 
     const sample = document.createElement("canvas");
     sample.width = cols;
     sample.height = rows;
     const s = sample.getContext("2d", { willReadFrequently: true })!;
-    s.drawImage(mask, (zoom * rx + tx) / cellW, (zoom * ry + ty) / cellH, (zoom * rw) / cellW, (zoom * rh) / cellH);
+    s.drawImage(mask, px0 / cellW, py0 / cellH, pw / cellW, ph / cellH);
     const px = s.getImageData(0, 0, cols, rows).data;
     const lum = new Uint8ClampedArray(cols * rows);
 
@@ -233,27 +225,12 @@ export function mountAsciiPortrait(root: HTMLElement) {
     if (!raf) raf = requestAnimationFrame(frameTick);
   }
 
-  let zoomTimer = 0;
   function setDevelop(on: boolean, x = width / 2, y = height / 2) {
-    clearTimeout(zoomTimer);
+    origin.x = x;
+    origin.y = y;
+    developTarget = on ? 1 : 0;
     toggle.textContent = on ? "Show ASCII" : "Show photo";
     toggle.setAttribute("aria-pressed", String(on));
-    if (on) {
-      // Reveal first at the ASCII's framing, then pull back to the full photo.
-      origin.x = x;
-      origin.y = y;
-      developTarget = 1;
-      zoomTimer = window.setTimeout(() => root.classList.add("is-developed"), reduced ? 0 : 450);
-    } else {
-      // Zoom back in to where the characters sit, then let the ASCII close over it.
-      root.classList.remove("is-developed");
-      zoomTimer = window.setTimeout(() => {
-        origin.x = x;
-        origin.y = y;
-        developTarget = 0;
-        kick();
-      }, reduced ? 0 : 900);
-    }
     kick();
   }
 

@@ -12,6 +12,7 @@ import financipal from "./assets/projects/financipal.png";
 import sumanto from "./assets/projects/sumanto.png";
 
 import logoSan from "./assets/experience/logo/san.png";
+import logoCimb from "./assets/experience/logo/cimb.png";
 import logoUgm from "./assets/experience/logo/ugmandiri.png";
 import logoUndip from "./assets/experience/logo/undipexp.png";
 import logoIeee from "./assets/experience/logo/IEEEIS.png";
@@ -206,8 +207,8 @@ export const projects: Project[] = [
 ];
 
 /* `from`/`to` are YYYY-MM and drive the timeline. Equal values draw a point;
-   `to: null` means ongoing. `logo: null` falls back to `mark` as a lettermark.
-   `photos` can hold several; the detail panel scrolls through them. */
+   `to: null` means ongoing. `photos` can hold several; the detail panel
+   scrolls through them. */
 export type Experience = {
   role: string;
   org: string;
@@ -216,8 +217,7 @@ export type Experience = {
   to: string | null;
   period: string;
   text: string;
-  logo: ImageMetadata | null;
-  mark?: string;
+  logo: ImageMetadata;
   photos: ImageMetadata[];
 };
 
@@ -230,8 +230,7 @@ export const experience: Experience[] = [
     to: null,
     period: "Sep 2026 to now",
     text: "Building internal tools for the bank, starting with a no-code platform HR teams use to assemble their own forms, approvals and reports.",
-    logo: null,
-    mark: "CIMB",
+    logo: logoCimb,
     photos: [photoCimb1, photoCimb2],
   },
   {

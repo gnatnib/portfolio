@@ -59,11 +59,7 @@ const rows = experience.map((x) => {
                 aria-pressed={i === 0 ? "true" : "false"}
               >
                 <span class="tl-label">
-                  {r.logo ? (
-                    <Image src={r.logo} alt="" width={28} height={28} densities={[1, 2]} class="tl-logo" />
-                  ) : (
-                    <span class="tl-mark mono">{r.mark}</span>
-                  )}
+                  <Image src={r.logo} alt="" width={28} height={28} densities={[1, 2]} class="tl-logo" />
                   <span class="tl-text">
                     <span class="tl-role">{r.role}</span>
                     <span class="tl-org muted">{r.org}</span>
@@ -109,7 +105,7 @@ const rows = experience.map((x) => {
                 </ul>
               ) : (
                 <div class="tl-photo-empty">
-                  {r.logo && <Image src={r.logo} alt="" width={120} height={120} class="tl-photo-logo" />}
+                  <Image src={r.logo} alt="" width={120} height={120} class="tl-photo-logo" />
                 </div>
               )}
               {r.photos.length > 1 && (
@@ -359,18 +355,6 @@ const rows = experience.map((x) => {
   .tl-strip-nav button:hover {
     background: var(--fg);
     color: var(--bg);
-  }
-  .tl-mark {
-    display: grid;
-    place-items: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
-    background: var(--ink);
-    color: var(--paper);
-    font-size: 7.5px;
-    letter-spacing: 0;
-    flex: none;
   }
   .tl-bar.is-ongoing {
     border-radius: 8px 0 0 8px;
