@@ -29,7 +29,7 @@ Node 22.12 or newer.
 - **Stack.** `stack` in `src/data.ts`; each `icon` is a [simple-icons](https://simpleicons.org) slug, rendered at build time. The bar next to each tool counts the projects in `projects` whose `stack` lists it.
 - **Experience photos.** `photos` takes several images; the timeline's detail panel turns them into a swipeable strip.
 - **Timeline.** `experience` entries carry `from`/`to` as `YYYY-MM`; equal values draw a point.
-- **Portrait.** `src/assets/portrait-photo.jpg` is the photo, `portrait-mask.png` the same image with the background removed (made with `rembg`). The canvas samples the mask with the photo's own cover-fit, so characters and photo line up; regenerate both together.
+- **Portrait.** `src/assets/portrait-photo.jpg` is the full photo; `portrait-closeup.png` is a head-and-shoulders crop of the same original with the background removed (made with `rembg`). The ASCII is drawn from the close-up, the photo underneath is zoomed onto that crop, and developing zooms out to the full photo. The crop rectangle lives in `src/components/AsciiPortrait.astro`; change it together with the close-up image.
 - **CV.** `python scripts/render-cv.py path/to/CV.pdf` copies the PDF to `public/` and renders `src/assets/cv/page-N.png`. Then bump `resume.version` in `src/data.ts`.
 - **Old URLs.** `/about`, `/work`, `/experience`, `/contact` redirect to the matching section on `/`. See `astro.config.mjs`.
 

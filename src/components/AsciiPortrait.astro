@@ -1,15 +1,21 @@
 ---
 import { Image, getImage } from "astro:assets";
 import photo from "../assets/portrait-photo.jpg";
-import cutout from "../assets/portrait-mask.png";
+import closeup from "../assets/portrait-closeup.png";
 
-// Alpha cutout of the photo itself (same crop, same size, background removed),
-// so the characters and the photo share one frame. 240px wide is more detail
-// than the densest grid (96 columns) can show.
-const mask = await getImage({ src: cutout, width: 240, format: "png" });
+// The ASCII is drawn from a close-up (head and shoulders, background removed)
+// so the face reads in characters. 240px wide is more detail than the densest
+// grid (96 columns) can show.
+const mask = await getImage({ src: closeup, width: 240, format: "png" });
+
+// Where the close-up sits inside the photo, as fractions of the photo. Both
+// were cut from the same 2268x4032 original: the photo is x 0..2268,
+// y 900..3924; the close-up is x 835..1735, y 1400..2600. Until developed, the
+// photo is zoomed onto this region; developing zooms out to the whole photo.
+const crop = [835 / 2268, (1400 - 900) / 3024, 900 / 2268, 1200 / 3024].map((n) => n.toFixed(4)).join(",");
 ---
 
-<figure class="ap" data-ascii data-mask={mask.src} data-photo-ratio={photo.width / photo.height}>
+<figure class="ap" data-ascii data-mask={mask.src} data-crop={crop} data-photo-ratio={photo.width / photo.height}>
   <div class="ap-frame" data-ascii-frame>
     <Image
       src={photo}
@@ -55,6 +61,17 @@ const mask = await getImage({ src: cutout, width: 240, format: "png" });
   }
   html.js .ap.is-live .ap-photo {
     visibility: visible;
+  }
+  /* --zoom-t is set by scripts/ascii.ts from the same geometry the characters
+     are sampled with, so the photo under the lens matches them exactly.
+     Developing clears it and the full photo shows. */
+  html.js .ap-photo {
+    transform-origin: 0 0;
+    transform: var(--zoom-t, none);
+    transition: transform 1.3s var(--ease);
+  }
+  html.js .ap.is-developed .ap-photo {
+    transform: translate(0, 0) scale(1);
   }
   .ap-tick {
     position: absolute;
