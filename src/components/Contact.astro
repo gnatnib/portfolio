@@ -54,9 +54,12 @@ const year = new Date().getFullYear();
   </div>
 
   <footer class="ft">
-    <p class="ft-mark" aria-hidden="true" data-mark>
-      {[..."gnatnib"].map((c) => <span data-mark-ch>{c}</span>)}
-    </p>
+    <div class="ft-play" data-doodle>
+      <p class="ft-mark" aria-hidden="true">gnatnib</p>
+      <p class="ft-hint mono muted">Draw on it. Click for ripples. Mind the cat.</p>
+      <canvas class="ft-canvas" data-doodle-canvas aria-hidden="true"></canvas>
+      <p class="sr-only" aria-live="polite" data-doodle-say></p>
+    </div>
     <div class="ft-bar mono muted">
       <span>&copy; {year} {person.name}</span>
       <span class="hide-sm">Built with Astro, set in Geist</span>
@@ -126,19 +129,46 @@ const year = new Date().getFullYear();
   .ft {
     padding-top: clamp(96px, 12vw, 200px);
   }
+  /* Without JS the plain wordmark shows; with it, the ASCII canvas takes its place. */
+  .ft-play {
+    position: relative;
+  }
   .ft-mark {
-    display: flex;
-    justify-content: space-between;
     font-size: clamp(96px, 23.4vw, 420px);
     line-height: 0.8;
     letter-spacing: -0.06em;
     font-weight: 600;
-    overflow: hidden;
     padding-block: 0.04em 0.16em;
-    margin-inline: -0.03em;
   }
-  .ft-mark span {
-    display: inline-block;
+  .ft-canvas,
+  .ft-hint {
+    display: none;
+  }
+  html.js .ft-mark {
+    display: none;
+  }
+  html.js .ft-canvas {
+    display: block;
+    width: 100%;
+    height: clamp(220px, 34vw, 560px);
+    touch-action: pan-y;
+    cursor: crosshair;
+  }
+  html.js .ft-hint {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 11px;
+  }
+  @media (max-width: 860px) {
+    html.js .ft-canvas {
+      height: clamp(180px, 52vw, 320px);
+    }
+    html.js .ft-hint {
+      position: static;
+      padding-bottom: 8px;
+    }
   }
   .ft-bar {
     display: flex;
@@ -161,6 +191,7 @@ const year = new Date().getFullYear();
 
 <script>
   import { gsap, reduced } from "../scripts/motion";
+  import { mountDoodle } from "../scripts/doodle";
 
   const copy = document.querySelector<HTMLButtonElement>("[data-copy]")!;
   const label = copy.querySelector<HTMLElement>("[data-copy-label]")!;
@@ -175,15 +206,10 @@ const year = new Date().getFullYear();
     setTimeout(() => (label.textContent = "Copy address"), 2000);
   });
 
-  if (!reduced) {
-    const chars = document.querySelectorAll<HTMLElement>("[data-mark-ch]");
-    gsap.from(chars, {
-      yPercent: 100,
-      ease: "none",
-      stagger: 0.08,
-      scrollTrigger: { trigger: "[data-mark]", start: "top bottom", end: "bottom bottom", scrub: 0.6 },
-    });
+  const play = document.querySelector<HTMLElement>("[data-doodle]");
+  if (play) mountDoodle(play, "gnatnib", reduced);
 
+  if (!reduced) {
     // The email leans toward the cursor a few pixels. Fine pointers only.
     const mail = document.querySelector<HTMLElement>("[data-magnet]")!;
     if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
