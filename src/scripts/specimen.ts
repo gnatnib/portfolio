@@ -1004,6 +1004,45 @@ export const euc: SceneFactory = (api) => {
   let runs = 0;
   let pos = { x: STEPS[0].x, y: STEPS[0].y };
 
+  /* Finale: when Notify has sent, the document becomes a large check mark in
+     the gap between the rows, ASCII confetti bursts out of it, and the six
+     boxes light up one after another. Then the next request starts. */
+  const FINALE = 3.2;
+  let finale = -1;
+  const check = sample(W, H, 4, (g, tag) => {
+    g.strokeStyle = tag(20);
+    g.lineWidth = 9;
+    g.lineCap = "round";
+    g.lineJoin = "round";
+    g.beginPath();
+    g.moveTo(132, 150);
+    g.lineTo(150, 168);
+    g.lineTo(184, 130);
+    g.stroke();
+  }).map((p) => ({ ...p, tag: 70, id: 100000 + p.id }));
+  // The document's own dots lead the way into the check.
+  check.slice(0, 9).forEach((p, k) => (p.id = 30000 + k));
+
+  type Bit = { x: number; y: number; vx: number; vy: number; ch: string; ink: "fg" | "accent" | "muted"; life: number };
+  let confetti: Bit[] = [];
+  const BITS = "*+o~'x^.%";
+  const burst = () => {
+    confetti = Array.from({ length: 90 }, () => {
+      const a = -Math.PI / 2 + (Math.random() - 0.5) * 2.6;
+      const v = 90 + Math.random() * 170;
+      const r = Math.random();
+      return {
+        x: 158 + (Math.random() - 0.5) * 30,
+        y: 150,
+        vx: Math.cos(a) * v,
+        vy: Math.sin(a) * v,
+        ch: BITS[(Math.random() * BITS.length) | 0],
+        ink: r < 0.5 ? "accent" : r < 0.8 ? "fg" : "muted",
+        life: 1.6 + Math.random() * 1.2,
+      };
+    });
+  };
+
   const arrive = (i: number) => {
     at = i;
     dwell = i === 2 ? 0 : 0.9;
@@ -1028,10 +1067,14 @@ export const euc: SceneFactory = (api) => {
     start: () => api.status(STEPS[at].say),
     points() {
       const pts = frame.slice();
-      // The document: a small block of dots that rides the line.
-      let k = 0;
-      // Rides the lower part of each box, under the engine name and note.
-      for (let dy = -4; dy <= 4; dy += 4) for (let dx = -4; dx <= 4; dx += 4) pts.push({ x: pos.x + dx, y: pos.y + 13 + dy, tag: 40, id: 30000 + k++ });
+      if (finale >= 0) {
+        // Only the first frames of the finale keep the check; it dissolves before the restart.
+        if (finale < FINALE - 0.5) pts.push(...check);
+      } else {
+        // The document: a small block of dots that rides the lower part of each box.
+        let k = 0;
+        for (let dy = -4; dy <= 4; dy += 4) for (let dx = -4; dx <= 4; dx += 4) pts.push({ x: pos.x + dx, y: pos.y + 13 + dy, tag: 40, id: 30000 + k++ });
+      }
       // Rows the Table step has saved so far.
       const t = STEPS[3];
       for (let r = 0; r < rows; r++) {
@@ -1041,6 +1084,27 @@ export const euc: SceneFactory = (api) => {
     },
     tick(dt) {
       if (api.reduced) return false;
+      if (finale >= 0) {
+        const before = finale;
+        finale += dt;
+        for (const b of confetti) {
+          b.vy += 260 * dt;
+          b.vx *= 1 - dt * 0.8;
+          b.x += b.vx * dt;
+          b.y += b.vy * dt;
+          b.life -= dt;
+        }
+        confetti = confetti.filter((b) => b.life > 0 && b.y < H + 10);
+        if (finale >= FINALE) {
+          finale = -1;
+          confetti = [];
+          pos = { x: STEPS[0].x, y: STEPS[0].y };
+          arrive(0);
+          target = 0;
+          return true;
+        }
+        return before < FINALE - 0.5 && finale >= FINALE - 0.5;
+      }
       if (target !== at) {
         travel = Math.min(1, travel + dt / 0.75);
         const a = STEPS[at];
@@ -1060,11 +1124,9 @@ export const euc: SceneFactory = (api) => {
       if (dwell > 0) return false;
       if (at === STEPS.length - 1) {
         runs++;
-        api.status(`Run ${runs} complete. Starting the next request.`);
-        pos = { x: STEPS[0].x, y: STEPS[0].y };
-        arrive(0);
-        target = 0;
-        dwell = 0.9;
+        finale = 0;
+        burst();
+        api.status(`Run ${runs} done: read, reviewed, approved, saved, calculated and sent.`);
         return true;
       }
       leave(at + 1);
@@ -1072,14 +1134,17 @@ export const euc: SceneFactory = (api) => {
     },
     ink(p) {
       if (p.tag === 20) return "dim";
+      if (p.tag === 70) return "accent";
       if (p.tag === 40) return waiting ? "accent" : "fg";
       if (p.tag === 60) return "fg";
       const i = p.tag - 100;
+      // Finale: the boxes light up in run order, then hold until the restart.
+      if (finale >= 0) return finale > 0.15 + i * 0.12 ? "accent" : "muted";
       return i === at && target === at ? "accent" : "muted";
     },
     act(name) {
       if (!waiting) {
-        api.status("Nothing is waiting for approval yet.");
+        api.status(finale >= 0 ? "This run is done. The next request is on its way." : "Nothing is waiting for approval yet.");
         return false;
       }
       if (name === "approve") approve();
@@ -1101,7 +1166,7 @@ export const euc: SceneFactory = (api) => {
         g.fillStyle = pal.muted;
         g.fillText(String(i + 1), s.x - BOX.w / 2 + 7, s.y - BOX.h / 2 + 8);
       });
-      // Staging marks the corrected row; Approval blinks a pending tag.
+      // Staging marks the corrected row; Approval blinks a pending tag; Notify sends.
       if (at === 1 && target === 1) {
         g.fillStyle = fixed ? pal.fg : pal.accent;
         g.fillText(fixed ? "row 3 fixed" : "row 3 invalid", STEPS[1].x, STEPS[1].y + 1);
@@ -1109,6 +1174,31 @@ export const euc: SceneFactory = (api) => {
       if (waiting && Math.floor(time * 2) % 2) {
         g.fillStyle = pal.accent;
         g.fillText("pending", STEPS[2].x, STEPS[2].y + 1);
+      }
+      if (at === 5 && target === 5 && finale < 0) {
+        g.fillStyle = pal.muted;
+        g.fillText(dwell > 0.45 ? "sending..." : "sent", STEPS[5].x, STEPS[5].y + 1);
+      }
+
+      if (finale >= 0) {
+        const fade = Math.max(0, Math.min(1, finale / 0.35, (FINALE - finale) / 0.5));
+        g.font = font(pal, 9);
+        g.textAlign = "center";
+        for (const b of confetti) {
+          g.globalAlpha = Math.max(0, Math.min(1, b.life)) * fade;
+          g.fillStyle = b.ink === "accent" ? pal.accent : b.ink === "fg" ? pal.fg : pal.muted;
+          g.fillText(b.ch, b.x, b.y);
+        }
+        // The label sits on a backing patch, over the confetti, so it always reads.
+        g.globalAlpha = fade;
+        g.fillStyle = pal.bg;
+        g.fillRect(197, 133, 96, 28);
+        g.textAlign = "left";
+        chip(g, pal, 200, 147, "WORKFLOW COMPLETE", pal.accent, pal.bg);
+        g.font = font(pal, 7.5);
+        g.fillStyle = pal.muted;
+        g.fillText(`6 of 6 steps, run ${runs}`, 200, 156);
+        g.globalAlpha = 1;
       }
       g.textAlign = "left";
     },
