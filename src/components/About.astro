@@ -111,7 +111,7 @@ const numbers = [
                 <li>
                   <button type="button" class="word" data-used={t.used.length ? `${t.name}: ${t.used.join(", ")}` : `${t.name}: used outside the projects listed here`}>
                     <img src={t.src} alt="" width="40" height="40" loading="lazy" decoding="async" />
-                    {t.name}
+                    <span class="word-text" data-glyph>{t.name}</span>
                   </button>
                 </li>
               ))}
@@ -282,6 +282,26 @@ const numbers = [
     min-height: calc(1.5em + 12px);
     text-transform: none;
   }
+  /* Terminal cursor after the caption; it blinks only while the caption types. */
+  .stk-used.is-typing::after {
+    content: "_";
+    margin-left: 1px;
+    color: var(--accent);
+    animation: stk-blink 0.5s steps(1) infinite;
+  }
+  @keyframes stk-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+  /* A glitching name holds its own width so the row never reflows. */
+  .word-text {
+    display: inline-block;
+    white-space: nowrap;
+  }
+  .word-text.is-glitch {
+    color: var(--accent);
+  }
 
   @media (max-width: 1100px) {
     .stk-name,
@@ -366,7 +386,7 @@ const numbers = [
         w.classList.toggle("is-on", w === on);
         w.setAttribute("aria-pressed", String(w === on));
       });
-      caption.textContent = on ? on.dataset.used! : caption.dataset.default!;
+      typeOut(caption, on ? on.dataset.used! : caption.dataset.default!);
     };
     words.forEach((w) => {
       // A second tap on the same word closes it; read the state before focus changes it.
@@ -379,4 +399,81 @@ const numbers = [
     row.addEventListener("pointerleave", (e) => e.pointerType === "mouse" && set(null));
     row.addEventListener("focusout", (e) => row.contains(e.relatedTarget as Node) || set(null));
   });
+
+  /* Terminal feel for the stack. Names decode from noise when the stack
+     scrolls in, then now and then one name glitches for a few frames and
+     settles. Only one name at a time, and never the one being read. */
+  const NOISE = "!<>-_\\/[]{}=+*^?#%01";
+  const glyphs = [...document.querySelectorAll<HTMLElement>("[data-glyph]")];
+  const noise = () => NOISE[(Math.random() * NOISE.length) | 0];
+
+  /** Resolve `el` to its real text from left to right over `ms`. */
+  function decode(el: HTMLElement, ms: number) {
+    const text = el.dataset.text ?? (el.dataset.text = el.textContent!);
+    // Hold the settled width so neighbours do not shift while glyphs churn.
+    el.style.width = `${el.getBoundingClientRect().width}px`;
+    el.classList.add("is-glitch");
+    const start = performance.now();
+    const tick = (now: number) => {
+      const done = Math.min(1, (now - start) / ms);
+      const fixed = Math.floor(done * text.length);
+      el.textContent = [...text].map((c, i) => (i < fixed || c === " " ? c : noise())).join("");
+      if (done < 1) requestAnimationFrame(tick);
+      else {
+        el.textContent = text;
+        el.classList.remove("is-glitch");
+        el.style.width = "";
+      }
+    };
+    requestAnimationFrame(tick);
+  }
+
+  /** Type `text` into `el` behind a blinking cursor; a newer call wins. */
+  let typing = 0;
+  function typeOut(el: HTMLElement, text: string) {
+    const id = ++typing;
+    if (reduced) {
+      el.textContent = text;
+      return;
+    }
+    el.classList.add("is-typing");
+    let i = 0;
+    const step = () => {
+      if (id !== typing) return;
+      i = Math.min(text.length, i + 3);
+      el.textContent = text.slice(0, i);
+      if (i < text.length) setTimeout(step, 12);
+      else setTimeout(() => id === typing && el.classList.remove("is-typing"), 900);
+    };
+    step();
+  }
+
+  if (!reduced && glyphs.length) {
+    const stk = document.querySelector<HTMLElement>("[data-stk]")!;
+    let visible = false;
+    let first = true;
+    const idle = () =>
+      setTimeout(() => {
+        if (visible && !document.hidden) {
+          const pick = glyphs[(Math.random() * glyphs.length) | 0];
+          if (!pick.closest(".is-on") && !pick.classList.contains("is-glitch")) decode(pick, 380);
+        }
+        idle();
+      }, 900 + Math.random() * 1600);
+    new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      if (visible && first) {
+        first = false;
+        glyphs.forEach((g, i) => setTimeout(() => decode(g, 520), i * 28));
+      }
+    }).observe(stk);
+    idle();
+    // Pointing at a name decodes it once more, like a command echoing back.
+    document.querySelectorAll<HTMLElement>("#about .word").forEach((w) =>
+      w.addEventListener("pointerenter", (e) => {
+        const g = w.querySelector<HTMLElement>("[data-glyph]")!;
+        if (e.pointerType === "mouse" && !g.classList.contains("is-glitch")) decode(g, 260);
+      }),
+    );
+  }
 </script>
