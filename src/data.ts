@@ -26,10 +26,12 @@ import photoSma from "./assets/experience/sma.jpg";
 import photoCimb1 from "./assets/experience/cimb-1.png";
 import photoCimb2 from "./assets/experience/cimb-2.jpg";
 
-// College years: assisting in class, campus events, a tree-planting day, and friends.
-const undipPhotos = Object.values(
+// College years: assisting in class, campus events, a tree-planting day, and
+// friends. Focus keeps the people in frame when a portrait is cropped to 4:3.
+const undipFocus = ["50% 35%", "50% 45%", "50% 92%", "50% 50%", "50% 50%", "50% 50%", "50% 55%"];
+const undipPhotos: Photo[] = Object.values(
   import.meta.glob<{ default: ImageMetadata }>("./assets/experience/undip-*.jpg", { eager: true }),
-).map((m) => m.default);
+).map((m, i) => ({ src: m.default, focus: undipFocus[i] }));
 
 export const person = {
   name: "Bintang Syafrian Rizal",
@@ -211,6 +213,10 @@ export const projects: Project[] = [
   },
 ];
 
+/* A photo, or a photo with the crop point the 4:3 frame should keep
+   (CSS object-position, e.g. "50% 90%" for a group at the bottom). */
+export type Photo = ImageMetadata | { src: ImageMetadata; focus: string };
+
 /* `from`/`to` are YYYY-MM and drive the timeline. Equal values draw a point;
    `to: null` means ongoing. `photos` can hold several; the detail panel
    scrolls through them. */
@@ -223,7 +229,7 @@ export type Experience = {
   period: string;
   text: string;
   logo: ImageMetadata;
-  photos: ImageMetadata[];
+  photos: Photo[];
 };
 
 export const experience: Experience[] = [

@@ -97,26 +97,30 @@ const rows = experience.map((x) => {
             <div class="tl-photos" data-strip>
               {r.photos.length ? (
                 <ul class="tl-strip" data-strip-track>
-                  {r.photos.map((p, k) => (
-                    <li>
-                      <button
-                        type="button"
-                        class="tl-shot"
-                        data-zoom
-                        aria-label={`Enlarge photo ${k + 1} of ${r.photos.length}`}
-                        style={`--focus:${p.height > p.width ? "50% 28%" : "50% 45%"}`}
-                      >
-                        <Image
-                          src={p}
-                          alt={`${r.role}, ${r.org}, photo ${k + 1} of ${r.photos.length}`}
-                          widths={[480, 720, 960, 1400]}
-                          sizes="(max-width: 860px) 90vw, 30vw"
-                          loading="lazy"
-                          draggable="false"
-                        />
-                      </button>
-                    </li>
-                  ))}
+                  {r.photos.map((photo, k) => {
+                    const p = "focus" in photo ? photo.src : photo;
+                    const focus = "focus" in photo ? photo.focus : p.height > p.width ? "50% 35%" : "50% 50%";
+                    return (
+                      <li>
+                        <button
+                          type="button"
+                          class="tl-shot"
+                          data-zoom
+                          aria-label={`Enlarge photo ${k + 1} of ${r.photos.length}`}
+                          style={`--focus:${focus}`}
+                        >
+                          <Image
+                            src={p}
+                            alt={`${r.role}, ${r.org}, photo ${k + 1} of ${r.photos.length}`}
+                            widths={[480, 720, 960, 1400]}
+                            sizes="(max-width: 860px) 90vw, 30vw"
+                            loading="lazy"
+                            draggable="false"
+                          />
+                        </button>
+                      </li>
+                    );
+                  })}
                 </ul>
               ) : (
                 <div class="tl-photo-empty">
@@ -751,23 +755,32 @@ const rows = experience.map((x) => {
     // A swipe is a hand step too: give the new photo its full time.
     track.addEventListener("touchend", restart, { passive: true });
 
+    // A mouse press becomes a drag only once it moves; until then the press
+    // stays a plain click on the photo. Capturing the pointer on press sent
+    // every click to the strip instead of the photo button.
     let startX = 0;
     let startLeft = 0;
+    let pressed = false;
     let dragging = false;
+    let moved = 0;
     track.addEventListener("pointerdown", (e) => {
       moved = 0;
-      if (e.pointerType !== "mouse") return;
-      dragging = true;
+      if (e.pointerType !== "mouse" || e.button !== 0) return;
+      pressed = true;
       startX = e.clientX;
       startLeft = track.scrollLeft;
-      track.classList.add("is-dragging");
-      track.setPointerCapture(e.pointerId);
     });
     track.addEventListener("pointermove", (e) => {
+      if (!pressed) return;
+      if (!dragging && Math.abs(e.clientX - startX) > 5) {
+        dragging = true;
+        track.classList.add("is-dragging");
+        track.setPointerCapture(e.pointerId);
+      }
       if (dragging) track.scrollLeft = startLeft - (e.clientX - startX);
     });
-    let moved = 0;
     const end = (e: PointerEvent) => {
+      pressed = false;
       if (!dragging) return;
       dragging = false;
       moved = Math.abs(e.clientX - startX);
