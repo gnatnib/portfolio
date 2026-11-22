@@ -388,17 +388,21 @@ export const certificateGroups = [
 ];
 
 /* Grouped by what the tool is for. `logo` names a file in src/assets/stack
-   (real brand marks: devicon originals, Gemini from svgl, Ultralytics and Tux
+   (real brand marks: devicon, Gemini from svgl, Ultralytics, Superset and Tux
    from simple-icons). `aka` matches project stack entries that mean or imply
    this tool, `host` matches where a project is deployed, `also` lists work
    outside `projects` (LexPalm is the thesis app on Streamlit). */
 export type Tool = { name: string; logo: string; aka?: string[]; host?: string; also?: string[] };
 
+// Work at CIMB Niaga is credited by employer only; the platform itself is private.
+const CIMB = "CIMB Niaga";
+
 export const stackGroups: { name: string; tools: Tool[] }[] = [
   {
     name: "Languages",
     tools: [
-      { name: "TypeScript", logo: "typescript" },
+      { name: "TypeScript", logo: "typescript", also: [CIMB] },
+      { name: "Java", logo: "java", also: [CIMB] },
       { name: "JavaScript", logo: "javascript" },
       { name: "Python", logo: "python", also: ["LexPalm"] },
       { name: "PHP", logo: "php" },
@@ -407,15 +411,19 @@ export const stackGroups: { name: string; tools: Tool[] }[] = [
   {
     name: "Frontend",
     tools: [
-      { name: "React", logo: "react", aka: ["Next.js"] },
+      { name: "React", logo: "react", aka: ["Next.js"], also: [CIMB] },
       { name: "Next.js", logo: "nextjs" },
+      { name: "Vite", logo: "vitejs", also: [CIMB] },
       { name: "Astro", logo: "astro", also: ["This site"] },
-      { name: "Tailwind CSS", logo: "tailwindcss" },
+      { name: "Tailwind CSS", logo: "tailwindcss", also: [CIMB] },
     ],
   },
   {
     name: "Backend",
     tools: [
+      { name: "Spring Boot", logo: "spring", also: [CIMB] },
+      { name: "Hibernate", logo: "hibernate", also: [CIMB] },
+      { name: "Gradle", logo: "gradle", also: [CIMB] },
       { name: "Node.js", logo: "nodejs" },
       { name: "Laravel", logo: "laravel" },
       { name: "Prisma", logo: "prisma" },
@@ -431,14 +439,15 @@ export const stackGroups: { name: string; tools: Tool[] }[] = [
       { name: "OpenCV", logo: "opencv" },
       { name: "Jupyter", logo: "jupyter" },
       { name: "Streamlit", logo: "streamlit", host: "streamlit.app", also: ["LexPalm"] },
+      { name: "Superset", logo: "superset", also: [CIMB] },
       { name: "Gemini", logo: "gemini" },
     ],
   },
   {
     name: "Databases",
     tools: [
-      { name: "PostgreSQL", logo: "postgresql" },
-      { name: "MySQL", logo: "mysql" },
+      { name: "MySQL", logo: "mysql", also: [CIMB] },
+      { name: "PostgreSQL", logo: "postgresql", also: [CIMB] },
       { name: "Supabase", logo: "supabase" },
       { name: "Firebase", logo: "firebase" },
     ],
@@ -446,11 +455,13 @@ export const stackGroups: { name: string; tools: Tool[] }[] = [
   {
     name: "Cloud and tools",
     tools: [
-      { name: "Docker", logo: "docker" },
+      { name: "Docker", logo: "docker", also: [CIMB] },
+      { name: "Nginx", logo: "nginx", also: [CIMB] },
+      { name: "GitHub Actions", logo: "githubactions", also: [CIMB] },
       { name: "AWS", logo: "amazonwebservices" },
       { name: "Vercel", logo: "vercel", host: "vercel.app", also: ["This site"] },
-      { name: "Git", logo: "git" },
-      { name: "Linux", logo: "linux" },
+      { name: "Git", logo: "git", also: [CIMB] },
+      { name: "Linux", logo: "linux", also: [CIMB] },
     ],
   },
 ];
