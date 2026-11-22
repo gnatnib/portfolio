@@ -75,13 +75,29 @@ export type Project = {
   summary: string;
   detail?: string;
   stack: string[];
-  image: ImageMetadata;
+  /** Absent for private work: no screenshot of internal screens is published. */
+  image?: ImageMetadata;
   repo?: string;
   live?: string;
   featured?: boolean;
+  /** Internal work under NDA: shown with a note instead of links. */
+  private?: boolean;
 };
 
 export const projects: Project[] = [
+  {
+    slug: "euc-platform",
+    title: "EUC Platform",
+    kind: "Workflow platform",
+    client: "CIMB Niaga",
+    year: "2026",
+    summary: "A workflow builder that lets HR teams automate their own work, from routine requests to multi-level approvals.",
+    detail:
+      "HR staff assemble a workflow from engine steps on a canvas, with no code: Capture reads uploaded PDFs, scans and spreadsheets, Staging lets a person review and correct what was read, Approval routes the record up the org hierarchy, then Table, Script and Notify save, calculate and tell people. Reports run on embedded dashboards. Built in a team; I work across the engines and the builder.",
+    stack: ["Java", "Spring Boot", "React", "TypeScript", "MySQL", "Superset"],
+    featured: true,
+    private: true,
+  },
   {
     slug: "pangan-id",
     title: "Pangan.id",
@@ -405,15 +421,15 @@ export const certificateGroups = [
    outside `projects` (LexPalm is the thesis app on Streamlit). */
 export type Tool = { name: string; logo: string; aka?: string[]; host?: string; also?: string[] };
 
-// Work at CIMB Niaga is credited by employer only; the platform itself is private.
-const CIMB = "CIMB Niaga";
+// Tools the EUC Platform uses beyond the six listed on the project itself.
+const EUC = "EUC Platform";
 
 export const stackGroups: { name: string; tools: Tool[] }[] = [
   {
     name: "Languages",
     tools: [
-      { name: "TypeScript", logo: "typescript", also: [CIMB] },
-      { name: "Java", logo: "java", also: [CIMB] },
+      { name: "TypeScript", logo: "typescript" },
+      { name: "Java", logo: "java" },
       { name: "JavaScript", logo: "javascript" },
       { name: "Python", logo: "python", also: ["LexPalm"] },
       { name: "PHP", logo: "php" },
@@ -422,19 +438,19 @@ export const stackGroups: { name: string; tools: Tool[] }[] = [
   {
     name: "Frontend",
     tools: [
-      { name: "React", logo: "react", aka: ["Next.js"], also: [CIMB] },
+      { name: "React", logo: "react", aka: ["Next.js"] },
       { name: "Next.js", logo: "nextjs" },
-      { name: "Vite", logo: "vitejs", also: [CIMB] },
+      { name: "Vite", logo: "vitejs", also: [EUC] },
       { name: "Astro", logo: "astro", also: ["This site"] },
-      { name: "Tailwind CSS", logo: "tailwindcss", also: [CIMB] },
+      { name: "Tailwind CSS", logo: "tailwindcss", also: [EUC] },
     ],
   },
   {
     name: "Backend",
     tools: [
-      { name: "Spring Boot", logo: "spring", also: [CIMB] },
-      { name: "Hibernate", logo: "hibernate", also: [CIMB] },
-      { name: "Gradle", logo: "gradle", also: [CIMB] },
+      { name: "Spring Boot", logo: "spring" },
+      { name: "Hibernate", logo: "hibernate", also: [EUC] },
+      { name: "Gradle", logo: "gradle", also: [EUC] },
       { name: "Node.js", logo: "nodejs" },
       { name: "Laravel", logo: "laravel" },
       { name: "Prisma", logo: "prisma" },
@@ -450,15 +466,15 @@ export const stackGroups: { name: string; tools: Tool[] }[] = [
       { name: "OpenCV", logo: "opencv" },
       { name: "Jupyter", logo: "jupyter" },
       { name: "Streamlit", logo: "streamlit", host: "streamlit.app", also: ["LexPalm"] },
-      { name: "Superset", logo: "superset", also: [CIMB] },
+      { name: "Superset", logo: "superset" },
       { name: "Gemini", logo: "gemini" },
     ],
   },
   {
     name: "Databases",
     tools: [
-      { name: "MySQL", logo: "mysql", also: [CIMB] },
-      { name: "PostgreSQL", logo: "postgresql", also: [CIMB] },
+      { name: "MySQL", logo: "mysql" },
+      { name: "PostgreSQL", logo: "postgresql", also: [EUC] },
       { name: "Supabase", logo: "supabase" },
       { name: "Firebase", logo: "firebase" },
     ],
@@ -466,13 +482,13 @@ export const stackGroups: { name: string; tools: Tool[] }[] = [
   {
     name: "Cloud and tools",
     tools: [
-      { name: "Docker", logo: "docker", also: [CIMB] },
-      { name: "Nginx", logo: "nginx", also: [CIMB] },
-      { name: "GitHub Actions", logo: "githubactions", also: [CIMB] },
+      { name: "Docker", logo: "docker", also: [EUC] },
+      { name: "Nginx", logo: "nginx", also: [EUC] },
+      { name: "GitHub Actions", logo: "githubactions", also: [EUC] },
       { name: "AWS", logo: "amazonwebservices" },
       { name: "Vercel", logo: "vercel", host: "vercel.app", also: ["This site"] },
-      { name: "Git", logo: "git", also: [CIMB] },
-      { name: "Linux", logo: "linux", also: [CIMB] },
+      { name: "Git", logo: "git", also: [EUC] },
+      { name: "Linux", logo: "linux", also: [EUC] },
     ],
   },
 ];

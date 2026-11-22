@@ -5,9 +5,15 @@ import { projects } from "../data";
 const featured = projects.filter((p) => p.featured);
 const pad = (n: number) => String(n).padStart(2, "0");
 const hostOf = (url: string) => new URL(url).host.replace(/^www\./, "");
+// The hover preview only holds projects that have a screenshot.
+const peekIndex = new Map(projects.filter((p) => p.image).map((p, k) => [p.slug, k]));
 
 // Buttons each dot scene offers under the stage.
 const actions: Record<string, { act: string; label: string }[]> = {
+  "euc-platform": [
+    { act: "approve", label: "Approve" },
+    { act: "reject", label: "Reject" },
+  ],
   scanmbg: [{ act: "refill", label: "Refill" }],
   rumeet: [{ act: "clear", label: "Clear my bookings" }],
   "helmet-detection": [{ act: "pause", label: "Pause" }],
@@ -76,27 +82,35 @@ const actions: Record<string, { act: string; label: string }[]> = {
                 <dd>{p.stack.join(", ")}</dd>
               </div>
             </dl>
-            <a class="ch-shot" href={p.live ?? p.repo} target="_blank" rel="noopener" aria-label={`Open ${p.title}`} data-reveal="clip">
-              <Image
-                src={p.image}
-                alt={`${p.title} screenshot`}
-                widths={[480, 720, 960]}
-                sizes="(max-width: 860px) 92vw, 30vw"
-                loading="lazy"
-              />
-            </a>
-            <p class="pj-links">
-              {p.live && (
-                <a href={p.live} target="_blank" rel="noopener" class="ul ul-on">
-                  {hostOf(p.live)} <span class="arrow">↗</span>
-                </a>
-              )}
-              {p.repo && (
-                <a href={p.repo} target="_blank" rel="noopener" class="ul">
-                  Source <span class="arrow">↗</span>
-                </a>
-              )}
-            </p>
+            {p.image && (
+              <a class="ch-shot" href={p.live ?? p.repo} target="_blank" rel="noopener" aria-label={`Open ${p.title}`} data-reveal="clip">
+                <Image
+                  src={p.image}
+                  alt={`${p.title} screenshot`}
+                  widths={[480, 720, 960]}
+                  sizes="(max-width: 860px) 92vw, 30vw"
+                  loading="lazy"
+                />
+              </a>
+            )}
+            {p.private ? (
+              <p class="ch-private mono">
+                <span>Private</span>Internal platform under NDA. No public demo or source code.
+              </p>
+            ) : (
+              <p class="pj-links">
+                {p.live && (
+                  <a href={p.live} target="_blank" rel="noopener" class="ul ul-on">
+                    {hostOf(p.live)} <span class="arrow">↗</span>
+                  </a>
+                )}
+                {p.repo && (
+                  <a href={p.repo} target="_blank" rel="noopener" class="ul">
+                    Source <span class="arrow">↗</span>
+                  </a>
+                )}
+              </p>
+            )}
           </article>
         ))
       }
@@ -113,7 +127,7 @@ const actions: Record<string, { act: string; label: string }[]> = {
     </div>
     {
       projects.map((p, i) => (
-        <details class="row" data-peek={i}>
+        <details class="row" data-peek={peekIndex.get(p.slug) ?? -1}>
           <summary>
             <span class="mono muted num">{pad(i + 1)}</span>
             <span class="row-title">{p.title}</span>
@@ -124,24 +138,32 @@ const actions: Record<string, { act: string; label: string }[]> = {
             <span class="row-plus" aria-hidden="true" />
           </summary>
           <div class="row-body">
-            <div class="row-thumb">
-              <Image src={p.image} alt="" widths={[480, 720]} sizes="(max-width: 860px) 92vw, 30vw" loading="lazy" />
-            </div>
+            {p.image && (
+              <div class="row-thumb">
+                <Image src={p.image} alt="" widths={[480, 720]} sizes="(max-width: 860px) 92vw, 30vw" loading="lazy" />
+              </div>
+            )}
             <div class="row-text">
               <p>{p.detail ?? p.summary}</p>
               <p class="muted">{p.stack.join(", ")}</p>
-              <p class="pj-links">
-                {p.live && (
-                  <a href={p.live} target="_blank" rel="noopener" class="ul ul-on">
-                    {hostOf(p.live)} <span class="arrow">↗</span>
-                  </a>
-                )}
-                {p.repo && (
-                  <a href={p.repo} target="_blank" rel="noopener" class="ul">
-                    Source <span class="arrow">↗</span>
-                  </a>
-                )}
-              </p>
+              {p.private ? (
+                <p class="ch-private mono">
+                  <span>Private</span>Internal platform under NDA. No public demo or source code.
+                </p>
+              ) : (
+                <p class="pj-links">
+                  {p.live && (
+                    <a href={p.live} target="_blank" rel="noopener" class="ul ul-on">
+                      {hostOf(p.live)} <span class="arrow">↗</span>
+                    </a>
+                  )}
+                  {p.repo && (
+                    <a href={p.repo} target="_blank" rel="noopener" class="ul">
+                      Source <span class="arrow">↗</span>
+                    </a>
+                  )}
+                </p>
+              )}
             </div>
           </div>
         </details>
@@ -149,9 +171,9 @@ const actions: Record<string, { act: string; label: string }[]> = {
     }
     <div class="peek" aria-hidden="true" data-peek-box>
       {
-        projects.map((p) => (
-          <Image src={p.image} alt="" widths={[480]} sizes="320px" loading="lazy" data-peek-img />
-        ))
+        projects.map((p) =>
+          p.image ? <Image src={p.image} alt="" widths={[480]} sizes="320px" loading="lazy" data-peek-img /> : null,
+        )
       }
     </div>
   </div>
@@ -328,6 +350,26 @@ const actions: Record<string, { act: string; label: string }[]> = {
     flex-wrap: wrap;
     gap: 20px;
     font-size: 15px;
+  }
+  .ch-private {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    text-transform: none;
+    color: var(--muted);
+  }
+  .ch-private span {
+    padding: 3px 8px;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    border-radius: 999px;
+    text-transform: uppercase;
+    font-size: 11px;
+  }
+  .row-body .row-text:only-child {
+    grid-column: 2 / -1;
   }
 
   /* Phones: the stage pins under the header, chapters scroll beneath it. */
@@ -551,7 +593,7 @@ const actions: Record<string, { act: string; label: string }[]> = {
 <script>
   import { ScrollTrigger, lenis, reduced } from "../scripts/motion";
   import { mountPeek } from "../scripts/peek";
-  import { mountStage, pangan, scanmbg, rumeet, helmet, fallback, type SceneFactory } from "../scripts/specimen";
+  import { mountStage, euc, pangan, scanmbg, rumeet, helmet, fallback, type SceneFactory } from "../scripts/specimen";
 
   document.querySelectorAll<HTMLElement>("#work [data-peek-root]").forEach(mountPeek);
 
@@ -563,6 +605,7 @@ const actions: Record<string, { act: string; label: string }[]> = {
       scanmbg,
       rumeet,
       "helmet-detection": helmet,
+      "euc-platform": euc,
     };
     const factories: Record<string, SceneFactory> = {};
     chapters.forEach((ch) => {

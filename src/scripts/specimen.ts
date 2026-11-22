@@ -950,6 +950,171 @@ export const helmet: SceneFactory = (api) => {
   };
 };
 
+/* EUC Platform: a workflow built from engines. A document travels Capture,
+   Staging, Approval, Table, Script, Notify along a snaking line. It waits at
+   Approval: Approve sends it on, Reject sends it back to Staging for a fix.
+   With no answer it is approved after a moment, so the loop keeps playing. */
+const STEPS = [
+  { name: "Capture", x: 70, y: 92, say: "Capture reads the uploaded spreadsheet and scans." },
+  { name: "Staging", x: 200, y: 92, say: "Staging: a reviewer checks the rows and fixes one." },
+  { name: "Approval", x: 330, y: 92, say: "Approval: waiting on the approver. Approve or reject." },
+  { name: "Table", x: 330, y: 208, say: "Saved to a table." },
+  { name: "Script", x: 200, y: 208, say: "Script recalculates the totals." },
+  { name: "Notify", x: 70, y: 208, say: "Notify tells the requester it is done." },
+];
+const BOX = { w: 84, h: 46 };
+const TABLE_ROWS = 3;
+
+export const euc: SceneFactory = (api) => {
+  // Static parts: each engine box as a dotted outline, and the connectors between them.
+  const frame: Pt[] = [];
+  STEPS.forEach((s, i) => {
+    const x0 = s.x - BOX.w / 2;
+    const y0 = s.y - BOX.h / 2;
+    let k = 0;
+    for (let x = x0; x <= x0 + BOX.w; x += 4) {
+      frame.push({ x, y: y0, tag: 100 + i, id: 10000 + i * 200 + k++ });
+      frame.push({ x, y: y0 + BOX.h, tag: 100 + i, id: 10000 + i * 200 + k++ });
+    }
+    for (let y = y0 + 4; y < y0 + BOX.h; y += 4) {
+      frame.push({ x: x0, y, tag: 100 + i, id: 10000 + i * 200 + k++ });
+      frame.push({ x: x0 + BOX.w, y, tag: 100 + i, id: 10000 + i * 200 + k++ });
+    }
+  });
+  for (let i = 0; i < STEPS.length - 1; i++) {
+    const a = STEPS[i];
+    const b = STEPS[i + 1];
+    const vertical = a.x === b.x;
+    const from = vertical ? a.y + BOX.h / 2 + 4 : Math.min(a.x, b.x) + BOX.w / 2 + 4;
+    const to = vertical ? b.y - BOX.h / 2 - 4 : Math.max(a.x, b.x) - BOX.w / 2 - 4;
+    let k = 0;
+    for (let v = from; v <= to; v += 5) {
+      frame.push(vertical ? { x: a.x, y: v, tag: 20, id: 20000 + i * 100 + k++ } : { x: v, y: a.y, tag: 20, id: 20000 + i * 100 + k++ });
+    }
+  }
+
+  let at = 0;
+  let target = 1;
+  let travel = 0;
+  let dwell = 0.9;
+  let waiting = false;
+  let wait = 0;
+  let rows = 0;
+  let fixed = false;
+  let runs = 0;
+  let pos = { x: STEPS[0].x, y: STEPS[0].y };
+
+  const arrive = (i: number) => {
+    at = i;
+    dwell = i === 2 ? 0 : 0.9;
+    waiting = i === 2;
+    wait = 2.6;
+    if (i === 3) rows = rows >= TABLE_ROWS ? 1 : rows + 1;
+    if (i === 1) fixed = false;
+    api.status(STEPS[i].say);
+  };
+  const leave = (to: number) => {
+    target = to;
+    travel = 0;
+  };
+  const approve = () => {
+    waiting = false;
+    api.status("Approved. On to the table.");
+    leave(3);
+  };
+
+  return {
+    repel: 0,
+    start: () => api.status(STEPS[at].say),
+    points() {
+      const pts = frame.slice();
+      // The document: a small block of dots that rides the line.
+      let k = 0;
+      // Rides the lower part of each box, under the engine name and note.
+      for (let dy = -4; dy <= 4; dy += 4) for (let dx = -4; dx <= 4; dx += 4) pts.push({ x: pos.x + dx, y: pos.y + 13 + dy, tag: 40, id: 30000 + k++ });
+      // Rows the Table step has saved so far.
+      const t = STEPS[3];
+      for (let r = 0; r < rows; r++) {
+        for (let x = t.x - 24; x <= t.x + 32; x += 4) pts.push({ x, y: t.y - 15 + r * 7, tag: 60, id: 40000 + r * 100 + x });
+      }
+      return pts;
+    },
+    tick(dt) {
+      if (api.reduced) return false;
+      if (target !== at) {
+        travel = Math.min(1, travel + dt / 0.75);
+        const a = STEPS[at];
+        const b = STEPS[target];
+        const e = travel < 0.5 ? 2 * travel * travel : 1 - (-2 * travel + 2) ** 2 / 2;
+        pos = { x: a.x + (b.x - a.x) * e, y: a.y + (b.y - a.y) * e };
+        if (travel >= 1) arrive(target);
+        return true;
+      }
+      if (waiting) {
+        wait -= dt;
+        if (wait <= 0) approve();
+        return false;
+      }
+      dwell -= dt;
+      if (at === 1 && dwell < 0.45) fixed = true;
+      if (dwell > 0) return false;
+      if (at === STEPS.length - 1) {
+        runs++;
+        api.status(`Run ${runs} complete. Starting the next request.`);
+        pos = { x: STEPS[0].x, y: STEPS[0].y };
+        arrive(0);
+        target = 0;
+        dwell = 0.9;
+        return true;
+      }
+      leave(at + 1);
+      return false;
+    },
+    ink(p) {
+      if (p.tag === 20) return "dim";
+      if (p.tag === 40) return waiting ? "accent" : "fg";
+      if (p.tag === 60) return "fg";
+      const i = p.tag - 100;
+      return i === at && target === at ? "accent" : "muted";
+    },
+    act(name) {
+      if (!waiting) {
+        api.status("Nothing is waiting for approval yet.");
+        return false;
+      }
+      if (name === "approve") approve();
+      if (name === "reject") {
+        waiting = false;
+        api.status("Rejected. Back to Staging for a fix.");
+        leave(1);
+      }
+      return false;
+    },
+    overlay(g, pal, time) {
+      g.font = font(pal, 8);
+      g.textAlign = "center";
+      g.textBaseline = "middle";
+      STEPS.forEach((s, i) => {
+        const on = i === at && target === at;
+        g.fillStyle = on ? pal.accent : pal.fg;
+        g.fillText(s.name, s.x, i === 3 ? s.y - 31 : s.y - 11);
+        g.fillStyle = pal.muted;
+        g.fillText(String(i + 1), s.x - BOX.w / 2 + 7, s.y - BOX.h / 2 + 8);
+      });
+      // Staging marks the corrected row; Approval blinks a pending tag.
+      if (at === 1 && target === 1) {
+        g.fillStyle = fixed ? pal.fg : pal.accent;
+        g.fillText(fixed ? "row 3 fixed" : "row 3 invalid", STEPS[1].x, STEPS[1].y + 1);
+      }
+      if (waiting && Math.floor(time * 2) % 2) {
+        g.fillStyle = pal.accent;
+        g.fillText("pending", STEPS[2].x, STEPS[2].y + 1);
+      }
+      g.textAlign = "left";
+    },
+  };
+};
+
 /** Any featured project without its own scene: its name, set in dots. */
 export const fallback =
   (title: string): SceneFactory =>
