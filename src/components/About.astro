@@ -459,7 +459,7 @@ const numbers = [
           if (!pick.closest(".is-on") && !pick.classList.contains("is-glitch")) decode(pick, 380);
         }
         idle();
-      }, 900 + Math.random() * 1600);
+      }, 400 + Math.random() * 600);
     new IntersectionObserver(([e]) => {
       visible = e.isIntersecting;
       if (visible && first) {
