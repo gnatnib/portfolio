@@ -26,6 +26,11 @@ import photoSma from "./assets/experience/sma.jpg";
 import photoCimb1 from "./assets/experience/cimb-1.png";
 import photoCimb2 from "./assets/experience/cimb-2.jpg";
 
+// College years: assisting in class, campus events, a tree-planting day, and friends.
+const undipPhotos = Object.values(
+  import.meta.glob<{ default: ImageMetadata }>("./assets/experience/undip-*.jpg", { eager: true }),
+).map((m) => m.default);
+
 export const person = {
   name: "Bintang Syafrian Rizal",
   handle: "gnatnib",
@@ -297,7 +302,7 @@ export const experience: Experience[] = [
     period: "Aug 2022 to Jun 2026",
     text: "GPA 3.65. Thesis on LLM extractive summarization.",
     logo: logoUndip,
-    photos: [],
+    photos: undipPhotos,
   },
   {
     role: "Graduated high school",
