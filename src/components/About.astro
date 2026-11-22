@@ -17,14 +17,15 @@ const usedIn = (t: Tool) => [
   ]),
 ];
 
-const groups = stackGroups.map((g) => ({
-  name: g.name,
-  tools: g.tools.map((t) => {
+const groups = stackGroups.map((g) => {
+  const tools = g.tools.map((t) => {
     const logo = logos[`../assets/stack/${t.logo}.svg`];
     if (!logo) throw new Error(`No logo file for ${t.name}: src/assets/stack/${t.logo}.svg`);
     return { name: t.name, src: logo.default.src, used: usedIn(t) };
-  }),
-}));
+  });
+  const all = [...new Set(tools.flatMap((t) => t.used))];
+  return { name: g.name, tools, shipped: all.length ? `Shipped in ${all.join(", ")}` : "" };
+});
 
 const certCount = certificateGroups.reduce((n, g) => n + g.items.length, 0);
 const numbers = [
@@ -93,38 +94,36 @@ const numbers = [
     </div>
   </div>
 
-  <div class="stk">
+  <div class="stk" data-stk>
     <div class="stk-head">
       <h3 class="stk-title">Stack</h3>
-      <p class="mono muted">Grouped by job. Under each tool, where I shipped it.</p>
+      <p class="mono muted">Point at a name to see where it shipped.</p>
     </div>
-    {
-      groups.map((grp, gi) => (
-        <div class="stk-group">
-          <h4 class="stk-name">
-            <span class="mono muted num">{String(gi + 1).padStart(2, "0")}</span>
-            {grp.name}
-          </h4>
-          <ul class="stk-tools" data-reveal="stagger">
-            {grp.tools.map((t) => (
-              <li class="tool">
-                <span class="tool-logo">
-                  <img src={t.src} alt="" width="28" height="28" loading="lazy" decoding="async" />
-                </span>
-                <span class="tool-text">
-                  <span class="tool-name">{t.name}</span>
-                  {t.used.length > 0 && (
-                    <span class="tool-used mono muted" title={t.used.join(", ")}>
-                      {t.used.join(", ")}
-                    </span>
-                  )}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))
-    }
+    <div data-reveal="stagger">
+      {
+        groups.map((grp, gi) => (
+          <div class="stk-row" data-stk-row>
+            <h4 class="stk-name mono">
+              <span class="muted num">{String(gi + 1).padStart(2, "0")}</span>
+              {grp.name}
+            </h4>
+            <ul class="stk-words">
+              {grp.tools.map((t) => (
+                <li>
+                  <button type="button" class="word" data-used={t.used.length ? `${t.name}: ${t.used.join(", ")}` : `${t.name}: used outside the projects listed here`}>
+                    <img src={t.src} alt="" width="40" height="40" loading="lazy" decoding="async" />
+                    {t.name}
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <p class="stk-used mono muted" data-default={grp.shipped} aria-live="polite">
+              {grp.shipped}
+            </p>
+          </div>
+        ))
+      }
+    </div>
   </div>
 </section>
 
@@ -214,93 +213,85 @@ const numbers = [
     line-height: 1;
   }
 
-  /* One row per job: the group name on the left, its tools in a fixed
-     four-column grid on the right, so every logo sits on the same column line. */
-  .stk-group {
+  /* Typeset like the rest of the page: one ruled row per job, the tools set
+     as large words. Logos sit in grey until a name is pointed at. */
+  .stk-row {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
     column-gap: var(--gap);
     border-top: 1px solid var(--rule-strong);
-    padding-block: 20px;
+    padding-block: 22px 16px;
   }
-  .stk-group:last-child {
+  .stk-row:last-child {
     border-bottom: 1px solid var(--rule-strong);
   }
   .stk-name {
     grid-column: 1 / span 3;
     display: flex;
-    gap: 14px;
-    align-items: baseline;
-    font-size: clamp(20px, 1.8vw, 26px);
-    font-weight: 500;
-    letter-spacing: -0.02em;
-    padding-top: 10px;
-  }
-  .stk-name .mono {
+    gap: 12px;
     font-size: 12px;
-    letter-spacing: 0;
+    text-transform: uppercase;
+    padding-top: 0.9em;
   }
-  .stk-tools {
+  .stk-words {
     grid-column: 4 / -1;
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    column-gap: var(--gap);
-  }
-  .tool {
     display: flex;
-    gap: 14px;
-    align-items: center;
-    min-width: 0;
-    padding-block: 10px;
-  }
-  .tool-logo {
-    flex: none;
-    width: 48px;
-    height: 48px;
-    display: grid;
-    place-items: center;
-    background: #fff;
-    border: 1px solid var(--rule);
-    border-radius: 10px;
-    transition: transform 0.4s var(--ease);
-  }
-  .tool-logo img {
-    width: 28px;
-    height: 28px;
-    object-fit: contain;
-  }
-  .tool:hover .tool-logo {
-    transform: translateY(-3px) rotate(-4deg);
-  }
-  .tool-text {
-    display: grid;
-    min-width: 0;
-    gap: 2px;
-  }
-  .tool-name {
-    font-size: 16px;
+    flex-wrap: wrap;
+    gap: 2px 0;
+    font-size: clamp(28px, 3.6vw, 58px);
+    line-height: 1.08;
+    letter-spacing: -0.04em;
     font-weight: 500;
-    letter-spacing: -0.01em;
-    line-height: 1.2;
   }
-  .tool-used {
-    font-size: 11.5px;
-    line-height: 1.4;
+  .stk-words li:not(:last-child)::after {
+    content: "/";
+    color: var(--rule-strong);
+    font-weight: 300;
+    margin: 0 0.28em;
+  }
+  .word {
+    font: inherit;
+    letter-spacing: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.22em;
+    transition: color 0.3s var(--ease);
+  }
+  .word img {
+    width: 0.66em;
+    height: 0.66em;
+    object-fit: contain;
+    filter: grayscale(1) contrast(1.15);
+    opacity: 0.75;
+    transition:
+      filter 0.35s var(--ease),
+      opacity 0.35s var(--ease),
+      transform 0.5s var(--ease);
+  }
+  .word.is-on img {
+    filter: none;
+    opacity: 1;
+    transform: rotate(-8deg) scale(1.1);
+  }
+  .stk-words:has(.is-on) .word:not(.is-on) {
+    color: var(--muted);
+  }
+  .stk-used {
+    grid-column: 4 / -1;
+    font-size: 12px;
+    padding-top: 12px;
+    min-height: calc(1.5em + 12px);
     text-transform: none;
-    letter-spacing: 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 
   @media (max-width: 1100px) {
-    .stk-name {
+    .stk-name,
+    .stk-words,
+    .stk-used {
       grid-column: 1 / -1;
-      padding: 0 0 8px;
     }
-    .stk-tools {
-      grid-column: 1 / -1;
+    .stk-name {
+      padding: 0 0 10px;
     }
   }
   @media (max-width: 860px) {
@@ -322,22 +313,8 @@ const numbers = [
     }
   }
   @media (max-width: 640px) {
-    .stk-tools {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    .tool {
-      gap: 10px;
-    }
-    .tool-logo {
-      width: 40px;
-      height: 40px;
-    }
-    .tool-logo img {
-      width: 24px;
-      height: 24px;
-    }
-    .tool-name {
-      font-size: 15px;
+    .stk-words {
+      font-size: 30px;
     }
   }
 </style>
@@ -379,4 +356,28 @@ const numbers = [
       { yPercent: 0, ease: "none", scrollTrigger: { trigger: frame, start: "top bottom", end: "bottom top", scrub: true } },
     );
   }
+
+  // Pointing at (or tapping) a tool lights its logo and swaps the row's
+  // caption from the group's projects to that tool's.
+  document.querySelectorAll<HTMLElement>("[data-stk-row]").forEach((row) => {
+    const words = [...row.querySelectorAll<HTMLButtonElement>(".word")];
+    const caption = row.querySelector<HTMLElement>(".stk-used")!;
+    const set = (on: HTMLButtonElement | null) => {
+      words.forEach((w) => {
+        w.classList.toggle("is-on", w === on);
+        w.setAttribute("aria-pressed", String(w === on));
+      });
+      caption.textContent = on ? on.dataset.used! : caption.dataset.default!;
+    };
+    words.forEach((w) => {
+      // A second tap on the same word closes it; read the state before focus changes it.
+      let wasOn = false;
+      w.addEventListener("pointerdown", () => (wasOn = w.classList.contains("is-on")));
+      w.addEventListener("pointerenter", (e) => e.pointerType === "mouse" && set(w));
+      w.addEventListener("focus", () => set(w));
+      w.addEventListener("click", (e) => set(e.detail > 0 && wasOn && !matchMedia("(hover: hover)").matches ? null : w));
+    });
+    row.addEventListener("pointerleave", (e) => e.pointerType === "mouse" && set(null));
+    row.addEventListener("focusout", (e) => row.contains(e.relatedTarget as Node) || set(null));
+  });
 </script>

@@ -94,12 +94,17 @@ type Particle = {
   phase: number;
 };
 
-const INK_STYLE: Record<Ink, { r: number; alpha: number }> = {
-  fg: { r: 1.55, alpha: 1 },
-  accent: { r: 1.75, alpha: 1 },
-  muted: { r: 1.35, alpha: 0.75 },
-  dim: { r: 1.05, alpha: 0.35 },
+/* Same ramp as the hero portrait. Each ink rests on its own band of it; a
+   glyph in flight drops to the light end, so a figure assembles from dashes
+   and dots into solid characters. */
+const RAMP = " .:-=+*o#%@";
+const BAND: Record<Ink, { from: number; to: number; alpha: number }> = {
+  fg: { from: 7, to: 10, alpha: 1 },
+  accent: { from: 8, to: 10, alpha: 1 },
+  muted: { from: 4, to: 6, alpha: 0.8 },
+  dim: { from: 1, to: 3, alpha: 0.4 },
 };
+const GLYPH_SIZE = 6.4;
 
 export function mountStage(root: HTMLElement, factories: Record<string, SceneFactory>, reduced: boolean) {
   const canvas = root.querySelector<HTMLCanvasElement>("[data-stage-canvas]")!;
@@ -265,30 +270,30 @@ export function mountStage(root: HTMLElement, factories: Record<string, SceneFac
     g.setTransform(scale * dpr, 0, 0, scale * dpr, ox * dpr, oy * dpr);
     if (!scene) return;
 
-    // One path per ink and opacity step, so a frame is a handful of fills.
-    const batches = new Map<string, { ink: Ink; alpha: number; path: Path2D }>();
+    g.font = `500 ${GLYPH_SIZE}px ${pal.mono}`;
+    g.textAlign = "center";
+    g.textBaseline = "middle";
+    let style = "";
+    // Glyphs at rest still turn over now and then, a slow shimmer rather than a still image.
+    const tick = reduced ? 0 : Math.floor(time * 2.5);
     for (const p of pool) {
       if (p.a < 0.03) continue;
       const ink = scene.ink(p, time);
-      const level = Math.min(4, Math.round(p.a * 4));
-      const key = ink + level;
-      let b = batches.get(key);
-      if (!b) {
-        b = { ink, alpha: (level / 4) * INK_STYLE[ink].alpha, path: new Path2D() };
-        batches.set(key, b);
+      const band = BAND[ink];
+      const span = band.to - band.from + 1;
+      const speed = Math.abs(p.vx) + Math.abs(p.vy);
+      let i = band.from + ((((p.phase * 1000) | 0) + (((tick + p.phase * 7) | 0) % 9 === 0 ? 1 : 0)) % span);
+      if (speed > 0.25) i = Math.max(1, Math.min(i, 5 - Math.min(4, Math.floor(speed / 1.2))));
+      const colour = ink === "fg" ? pal.fg : ink === "accent" ? pal.accent : pal.muted;
+      if (colour !== style) {
+        g.fillStyle = colour;
+        style = colour;
       }
-      const r = INK_STYLE[ink].r;
-      const jx = reduced ? 0 : Math.sin(time * 1.4 + p.phase) * 0.3;
-      const jy = reduced ? 0 : Math.cos(time * 1.1 + p.phase) * 0.3;
-      b.path.moveTo(p.x + jx + r, p.y + jy);
-      b.path.arc(p.x + jx, p.y + jy, r, 0, Math.PI * 2);
+      g.globalAlpha = Math.min(1, p.a) * band.alpha;
+      g.fillText(RAMP[i], p.x, p.y);
     }
-    batches.forEach((b) => {
-      g.globalAlpha = b.alpha;
-      g.fillStyle = b.ink === "fg" ? pal.fg : b.ink === "accent" ? pal.accent : pal.muted;
-      g.fill(b.path);
-    });
     g.globalAlpha = 1;
+    g.textAlign = "left";
     scene.overlay?.(g, pal, time);
   };
 
