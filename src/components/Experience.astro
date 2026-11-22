@@ -99,14 +99,22 @@ const rows = experience.map((x) => {
                 <ul class="tl-strip" data-strip-track>
                   {r.photos.map((p, k) => (
                     <li>
-                      <Image
-                        src={p}
-                        alt={`${r.role}, ${r.org}, photo ${k + 1} of ${r.photos.length}`}
-                        widths={[480, 720, 960]}
-                        sizes="(max-width: 860px) 90vw, 30vw"
-                        loading="lazy"
-                        draggable="false"
-                      />
+                      <button
+                        type="button"
+                        class="tl-shot"
+                        data-zoom
+                        aria-label={`Enlarge photo ${k + 1} of ${r.photos.length}`}
+                        style={`--focus:${p.height > p.width ? "50% 28%" : "50% 45%"}`}
+                      >
+                        <Image
+                          src={p}
+                          alt={`${r.role}, ${r.org}, photo ${k + 1} of ${r.photos.length}`}
+                          widths={[480, 720, 960, 1400]}
+                          sizes="(max-width: 860px) 90vw, 30vw"
+                          loading="lazy"
+                          draggable="false"
+                        />
+                      </button>
                     </li>
                   ))}
                 </ul>
@@ -139,6 +147,15 @@ const rows = experience.map((x) => {
         ))
       }
     </aside>
+  <dialog class="tl-view" data-tl-view aria-label="Photo">
+    <form method="dialog" class="tl-view-bar mono">
+      <span class="num" data-view-count></span>
+      <button type="button" data-view-prev aria-label="Previous photo">Prev</button>
+      <button type="button" data-view-next aria-label="Next photo">Next</button>
+      <button value="close">Close</button>
+    </form>
+    <img alt="" data-view-img />
+  </dialog>
   </div>
 </section>
 
@@ -322,6 +339,8 @@ const rows = experience.map((x) => {
     cursor: grabbing;
     scroll-snap-type: none;
   }
+  /* Every photo fills the same 4:3 frame; portraits are cropped toward the
+     faces, and the viewer shows each one whole. */
   .tl-strip li {
     flex: 0 0 100%;
     scroll-snap-align: start;
@@ -329,12 +348,112 @@ const rows = experience.map((x) => {
     overflow: hidden;
     background: var(--panel);
   }
-  .tl-strip :global(img) {
+  .tl-shot {
+    position: relative;
+    display: block;
     width: 100%;
     height: 100%;
-    /* Photos mix portrait and landscape; show each whole rather than crop people out. */
-    object-fit: contain;
+    cursor: zoom-in;
+  }
+  .tl-strip.is-dragging .tl-shot {
+    cursor: grabbing;
+  }
+  .tl-shot :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--focus, 50% 45%);
     user-select: none;
+    transition:
+      filter 0.6s var(--ease),
+      transform 0.9s var(--ease);
+  }
+  /* Corner ticks frame the shot like a viewfinder. */
+  .tl-shot::before,
+  .tl-shot::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    width: 14px;
+    height: 14px;
+    border: 0 solid rgb(255 255 255 / 0.9);
+    pointer-events: none;
+    transition: inset 0.5s var(--ease);
+  }
+  .tl-shot::before {
+    top: 10px;
+    left: 10px;
+    border-width: 1px 0 0 1px;
+  }
+  .tl-shot::after {
+    right: 10px;
+    bottom: 10px;
+    border-width: 0 1px 1px 0;
+  }
+  /* Pointer devices see the strip in black and white until they point at it. */
+  @media (hover: hover) {
+    .tl-shot :global(img) {
+      filter: grayscale(1) contrast(1.05);
+    }
+    .tl-photos:hover .tl-shot :global(img) {
+      filter: none;
+      transform: scale(1.04);
+    }
+    .tl-photos:hover .tl-shot::before {
+      top: 16px;
+      left: 16px;
+    }
+    .tl-photos:hover .tl-shot::after {
+      right: 16px;
+      bottom: 16px;
+    }
+  }
+
+  .tl-view {
+    width: min(1100px, 94vw);
+    max-height: 94vh;
+    padding: 0;
+    border: 0;
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .tl-view::backdrop {
+    background: rgb(19 19 17 / 0.82);
+  }
+  .tl-view[open] {
+    animation: tl-view-in 0.45s var(--ease);
+  }
+  @keyframes tl-view-in {
+    from {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+  }
+  .tl-view-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 8px 8px 16px;
+  }
+  .tl-view-bar span {
+    margin-right: auto;
+  }
+  .tl-view-bar button {
+    min-height: 40px;
+    padding-inline: 14px;
+    border: 1px solid rgb(236 234 228 / 0.3);
+    border-radius: 999px;
+  }
+  .tl-view-bar button:hover {
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .tl-view img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: calc(94vh - 56px);
+    object-fit: contain;
   }
   .tl-photo-empty {
     aspect-ratio: 4 / 3;
@@ -352,6 +471,25 @@ const rows = experience.map((x) => {
     justify-content: space-between;
     align-items: center;
     padding-top: 8px;
+  }
+  /* Created by the script, so it carries no scope attribute. */
+  .tl-photos :global(.tl-strip-bar) {
+    display: block;
+    height: 1px;
+    background: var(--fg);
+    transform-origin: 0 50%;
+    animation: tl-dwell var(--dwell, 4s) linear;
+  }
+  .tl-photos.is-paused :global(.tl-strip-bar) {
+    animation-play-state: paused;
+  }
+  @keyframes tl-dwell {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
   }
   .tl-strip-nav button {
     min-height: 36px;
@@ -549,7 +687,9 @@ const rows = experience.map((x) => {
   place();
   new ResizeObserver(place).observe(tl);
 
-  // Photo strips: buttons step one photo, a mouse can drag, touch swipes natively.
+  // Photo strips: they advance on their own, and buttons, mouse drag or a
+  // touch swipe still step them by hand.
+  const DWELL = 4; // seconds each photo stays up
   tl.querySelectorAll<HTMLElement>("[data-strip]").forEach((strip) => {
     const track = strip.querySelector<HTMLElement>("[data-strip-track]");
     const count = strip.querySelector<HTMLElement>("[data-strip-count]");
@@ -558,14 +698,64 @@ const rows = experience.map((x) => {
     const current = () => Math.round(track.scrollLeft / track.clientWidth);
     const go = (i: number) =>
       track.scrollTo({ left: ((i + n) % n) * track.clientWidth, behavior: reduced ? "auto" : "smooth" });
-    strip.querySelector("[data-strip-prev]")!.addEventListener("click", () => go(current() - 1));
-    strip.querySelector("[data-strip-next]")!.addEventListener("click", () => go(current() + 1));
+
+    // A hairline fills under the photo; when its animation ends, the next photo slides in.
+    // The animation pauses while the strip is off screen, hidden, hovered or held.
+    const bar = document.createElement("span");
+    bar.className = "tl-strip-bar";
+    bar.setAttribute("aria-hidden", "true");
+    bar.style.setProperty("--dwell", `${DWELL}s`);
+    track.after(bar);
+    const restart = () => {
+      bar.style.animation = "none";
+      void bar.offsetWidth;
+      bar.style.animation = "";
+    };
+    let visible = false;
+    let held = false;
+    const sync = () => strip.classList.toggle("is-paused", reduced || !visible || held || document.hidden);
+    sync();
+    bar.addEventListener("animationend", () => {
+      // Reduced motion shortens every animation to nothing; that must not spin the strip.
+      if (reduced) return;
+      go(current() + 1);
+      restart();
+    });
+    new IntersectionObserver(
+      ([e]) => {
+        visible = e.isIntersecting;
+        if (visible) restart();
+        sync();
+      },
+      { threshold: 0.5 },
+    ).observe(track);
+    document.addEventListener("visibilitychange", sync);
+    strip.addEventListener("pointerenter", (e) => {
+      if (e.pointerType === "mouse") {
+        held = true;
+        sync();
+      }
+    });
+    strip.addEventListener("pointerleave", () => {
+      held = false;
+      sync();
+    });
+
+    const step = (d: number) => {
+      go(current() + d);
+      restart();
+    };
+    strip.querySelector("[data-strip-prev]")!.addEventListener("click", () => step(-1));
+    strip.querySelector("[data-strip-next]")!.addEventListener("click", () => step(1));
     track.addEventListener("scroll", () => (count.textContent = `${current() + 1} / ${n}`), { passive: true });
+    // A swipe is a hand step too: give the new photo its full time.
+    track.addEventListener("touchend", restart, { passive: true });
 
     let startX = 0;
     let startLeft = 0;
     let dragging = false;
     track.addEventListener("pointerdown", (e) => {
+      moved = 0;
       if (e.pointerType !== "mouse") return;
       dragging = true;
       startX = e.clientX;
@@ -576,15 +766,65 @@ const rows = experience.map((x) => {
     track.addEventListener("pointermove", (e) => {
       if (dragging) track.scrollLeft = startLeft - (e.clientX - startX);
     });
-    const end = () => {
+    let moved = 0;
+    const end = (e: PointerEvent) => {
       if (!dragging) return;
       dragging = false;
+      moved = Math.abs(e.clientX - startX);
       track.classList.remove("is-dragging");
       go(current());
+      restart();
     };
     track.addEventListener("pointerup", end);
     track.addEventListener("pointercancel", end);
+
+    // A click opens the photo whole; the end of a drag is not a click.
+    const shots = [...track.querySelectorAll<HTMLButtonElement>("[data-zoom]")];
+    shots.forEach((shot, i) =>
+      shot.addEventListener("click", () => {
+        if (moved > 5) {
+          moved = 0;
+          return;
+        }
+        openViewer(shots.map((s) => s.querySelector("img")!), i);
+      }),
+    );
   });
+
+  // One viewer for every strip: full uncropped photo, arrow keys or buttons to step.
+  const view = tl.querySelector<HTMLDialogElement>("[data-tl-view]")!;
+  const viewImg = view.querySelector<HTMLImageElement>("[data-view-img]")!;
+  const viewCount = view.querySelector<HTMLElement>("[data-view-count]")!;
+  const viewPrev = view.querySelector<HTMLButtonElement>("[data-view-prev]")!;
+  const viewNext = view.querySelector<HTMLButtonElement>("[data-view-next]")!;
+  let viewSet: HTMLImageElement[] = [];
+  let viewAt = 0;
+  const showView = (i: number) => {
+    viewAt = (i + viewSet.length) % viewSet.length;
+    const src = viewSet[viewAt];
+    viewImg.srcset = src.srcset;
+    viewImg.sizes = "94vw";
+    viewImg.src = src.src;
+    viewImg.alt = src.alt;
+    viewCount.textContent = `${viewAt + 1} / ${viewSet.length}`;
+  };
+  function openViewer(set: HTMLImageElement[], i: number) {
+    viewSet = set;
+    viewPrev.hidden = viewNext.hidden = set.length < 2;
+    showView(i);
+    view.showModal();
+    window.dispatchEvent(new Event("lenis:stop"));
+  }
+  viewPrev.addEventListener("click", () => showView(viewAt - 1));
+  viewNext.addEventListener("click", () => showView(viewAt + 1));
+  view.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") showView(viewAt - 1);
+    if (e.key === "ArrowRight") showView(viewAt + 1);
+  });
+  view.addEventListener("click", (e) => {
+    if (e.target === view) view.close();
+  });
+  view.addEventListener("close", () => window.dispatchEvent(new Event("lenis:start")));
 
   if (!reduced) {
     gsap.from(tl.querySelectorAll("[data-tl-bar]"), {
