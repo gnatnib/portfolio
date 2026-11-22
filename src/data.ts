@@ -28,7 +28,7 @@ import photoCimb2 from "./assets/experience/cimb-2.jpg";
 
 // College years: assisting in class, campus events, a tree-planting day, and
 // friends. Focus keeps the people in frame when a portrait is cropped to 4:3.
-const undipFocus = ["50% 35%", "50% 45%", "50% 92%", "50% 50%", "50% 50%", "50% 50%", "50% 55%"];
+const undipFocus = ["50% 35%", "50% 45%", "50% 92%", "50% 50%", "50% 50%", "50% 50%", "50% 30%"];
 const undipPhotos: Photo[] = Object.values(
   import.meta.glob<{ default: ImageMetadata }>("./assets/experience/undip-*.jpg", { eager: true }),
 ).map((m, i) => ({ src: m.default, focus: undipFocus[i] }));
