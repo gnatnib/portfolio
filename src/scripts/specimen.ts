@@ -582,23 +582,38 @@ export const scanmbg: SceneFactory = (api) => {
   const hit = (x: number, y: number) =>
     COMPARTMENTS.findIndex((c) => x >= c.x && x <= c.x + c.w && y >= c.y && y <= c.y + c.h);
 
-  const idle = () => api.status("Tap a compartment to empty it, then scan the tray.");
+  // The scan runs on its own: once on arrival, then again after each result
+  // has been on screen a moment, and soon after the tray is changed.
+  let wait = 0.5;
+  const scan = () => {
+    found.clear();
+    done = false;
+    scanY = TRAY.y - 4;
+    api.status("Scanning the tray.");
+  };
   const report = () => {
     const missing = COMPARTMENTS.filter((_, i) => !present[i]).map((c) => c.name);
     const n = COMPARTMENTS.length - missing.length;
     api.status(
       missing.length
         ? `Found ${n} of 5 food groups. Missing: ${missing.join(", ")}.`
-        : "Found all 5 food groups: a complete tray.",
+        : "Found all 5 food groups. Tap a compartment to take it out.",
     );
   };
 
   return {
     repel: 0.8,
     points: () => all.filter((p) => p.tag === 20 || present[comp(p.tag)]),
-    start: () => (done ? report() : idle()),
+    start: () => {
+      if (done) report();
+      wait = Math.min(wait, 0.5);
+    },
     tick(dt) {
-      if (scanY < 0) return false;
+      if (scanY < 0) {
+        wait -= dt;
+        if (wait <= 0 && !api.reduced) scan();
+        return false;
+      }
       scanY += dt * 130;
       COMPARTMENTS.forEach((c, i) => {
         if (present[i] && scanY > c.y + c.h / 2) found.add(i);
@@ -606,6 +621,7 @@ export const scanmbg: SceneFactory = (api) => {
       if (scanY > TRAY.y + TRAY.h + 8) {
         scanY = -1;
         done = true;
+        wait = 3.2;
         report();
       }
       return false;
@@ -621,29 +637,24 @@ export const scanmbg: SceneFactory = (api) => {
     },
     tap(x, y) {
       const i = hit(x, y);
-      if (i < 0 || scanY >= 0) return false;
+      if (i < 0) return false;
       present[i] = !present[i];
+      scanY = -1;
       found.clear();
       done = false;
-      api.status(present[i] ? `Put the ${COMPARTMENTS[i].name} back.` : `Took out the ${COMPARTMENTS[i].name}. Scan to check the tray.`);
+      wait = 0.9;
+      api.status(present[i] ? `Put the ${COMPARTMENTS[i].name} back.` : `Took out the ${COMPARTMENTS[i].name}.`);
       return true;
     },
     act(name) {
-      if (name === "scan" && scanY < 0) {
-        found.clear();
-        done = false;
-        scanY = TRAY.y - 4;
-        api.status("Scanning the tray.");
-        return false;
-      }
-      if (name === "refill") {
-        present.fill(true);
-        found.clear();
-        done = false;
-        idle();
-        return true;
-      }
-      return false;
+      if (name !== "refill") return false;
+      present.fill(true);
+      scanY = -1;
+      found.clear();
+      done = false;
+      wait = 0.6;
+      api.status("Tray refilled.");
+      return true;
     },
     overlay(g, pal) {
       g.lineWidth = 0.7;

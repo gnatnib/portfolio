@@ -8,10 +8,7 @@ const hostOf = (url: string) => new URL(url).host.replace(/^www\./, "");
 
 // Buttons each dot scene offers under the stage.
 const actions: Record<string, { act: string; label: string }[]> = {
-  scanmbg: [
-    { act: "scan", label: "Scan tray" },
-    { act: "refill", label: "Refill" },
-  ],
+  scanmbg: [{ act: "refill", label: "Refill" }],
   rumeet: [{ act: "clear", label: "Clear my bookings" }],
   "helmet-detection": [{ act: "pause", label: "Pause" }],
 };
