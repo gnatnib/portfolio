@@ -10,6 +10,7 @@ const index = (ym: string) => {
 };
 const total = index(`${END.y}-${END.m}`) + 1;
 const years = Array.from({ length: END.y - START.y + 1 }, (_, i) => START.y + i);
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 // Ongoing roles run to the month the site was built.
 const built = new Date();
@@ -48,7 +49,7 @@ const rows = experience.map((x) => {
         </span>
       </div>
 
-      <ol class="tl-rows">
+      <ol class="tl-rows" data-reveal="stagger">
         {
           rows.map((r, i) => (
             <li>
@@ -58,11 +59,17 @@ const rows = experience.map((x) => {
                 data-tl-row={i}
                 aria-pressed={i === 0 ? "true" : "false"}
               >
+                <span class="tl-when mono" aria-hidden="true">
+                  <span class="num">{r.from.slice(0, 4)}</span>
+                  <span class="muted">{MONTHS[Number(r.from.slice(5, 7)) - 1]}</span>
+                </span>
+                <span class:list={["tl-dot", `k-${r.kind.toLowerCase()}`, { "is-ongoing": r.ongoing }]} aria-hidden="true" />
                 <span class="tl-label">
                   <Image src={r.logo} alt="" width={28} height={28} densities={[1, 2]} class="tl-logo" />
                   <span class="tl-text">
                     <span class="tl-role">{r.role}</span>
                     <span class="tl-org muted">{r.org}</span>
+                    <span class="tl-period mono muted">{r.period}</span>
                   </span>
                 </span>
                 <span class="tl-track">
@@ -110,13 +117,13 @@ const rows = experience.map((x) => {
               )}
               {r.photos.length > 1 && (
                 <div class="tl-strip-nav">
-                  <button type="button" class="mono" data-strip-prev aria-label="Previous photo">
+                  <button type="button" class="mono" data-strip-prev aria-label="Previous photo" data-magnetic>
                     Prev
                   </button>
                   <span class="mono num" data-strip-count>
                     1 / {r.photos.length}
                   </span>
-                  <button type="button" class="mono" data-strip-next aria-label="Next photo">
+                  <button type="button" class="mono" data-strip-next aria-label="Next photo" data-magnetic>
                     Next
                   </button>
                 </div>
@@ -375,64 +382,154 @@ const rows = experience.map((x) => {
     font-weight: 500;
   }
 
-  /* Phones: label above its bar so role names are not truncated. */
+  .tl-when,
+  .tl-dot,
+  .tl-period {
+    display: none;
+  }
+
+  /* Phones: a gantt squeezed into 360px says nothing. The rows become a
+     vertical rail, newest first, and the detail opens under the tapped entry. */
   @media (max-width: 860px) {
-    .tl-chart {
+    .tl-chart,
+    .tl-detail {
       grid-column: 1 / -1;
     }
     .tl-detail {
-      grid-column: 1 / -1;
-      position: static;
+      display: none;
     }
     .tl-axis,
-    .tl-row {
-      grid-template-columns: 1fr;
-      gap: 8px;
+    .tl-track,
+    .tl-now {
+      display: none !important;
     }
-    .tl-axis-label {
-      display: none;
+    .tl-legend {
+      margin-bottom: 8px;
+    }
+    .tl-legend i {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+    .tl-rows {
+      position: relative;
+    }
+    .tl-rows::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 67.5px;
+      width: 1px;
+      background: var(--rule-strong);
+    }
+    .tl-row {
+      grid-template-columns: 48px 16px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      padding-block: 18px;
+      border-bottom: 0;
+    }
+    .tl-row:hover,
+    .tl-row.is-on {
+      background: none;
+    }
+    .tl-when {
+      display: grid;
+      font-size: 12px;
+      line-height: 1.3;
+      text-align: right;
+      padding-top: 2px;
+    }
+    .tl-dot {
+      display: block;
+      position: relative;
+      width: 13px;
+      height: 13px;
+      margin: 5px auto 0;
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px var(--bg);
+      transition: transform 0.3s var(--ease);
+    }
+    .tl-dot.is-ongoing {
+      box-shadow:
+        0 0 0 3px var(--bg),
+        0 0 0 4.5px var(--accent);
+    }
+    .tl-row.is-on .tl-dot {
+      transform: scale(1.3);
     }
     .tl-label {
       padding-left: 0;
+      align-items: start;
     }
     .tl-role,
     .tl-org {
       white-space: normal;
     }
-    .tl-row {
-      padding-inline: 8px;
+    .tl-role {
+      font-size: 16px;
     }
-    .tl-track {
-      height: 20px;
+    .tl-period {
+      display: block;
+      font-size: 11px;
+      padding-top: 4px;
     }
-    .tl-bar {
-      top: 2px;
+    /* The detail card is moved into the row's list item by the script. */
+    .tl-rows .tl-card {
+      margin: 0 0 24px 88px;
+    }
+    .tl-rows .tl-card > .mono,
+    .tl-rows .tl-card-role,
+    .tl-rows .tl-card-role + .muted {
+      display: none;
     }
   }
 </style>
 
 <script>
-  import { gsap, reduced } from "../scripts/motion";
+  import { gsap, ScrollTrigger, reduced } from "../scripts/motion";
 
   const tl = document.querySelector<HTMLElement>("[data-tl]")!;
   const rows = [...tl.querySelectorAll<HTMLButtonElement>("[data-tl-row]")];
   const cards = [...tl.querySelectorAll<HTMLElement>("[data-tl-card]")];
 
+  const aside = tl.querySelector<HTMLElement>(".tl-detail")!;
+  const phone = matchMedia("(max-width: 860px)");
+  let current = 0;
+
   const select = (i: number) => {
+    current = i;
     rows.forEach((r, j) => {
       r.classList.toggle("is-on", i === j);
       r.setAttribute("aria-pressed", String(i === j));
     });
     cards.forEach((c, j) => (c.hidden = i !== j));
   };
+
+  // Phones show each card under its own row; wider screens keep them in the side panel.
+  const home = () => {
+    cards.forEach((c, j) => (phone.matches ? rows[j].parentElement!.append(c) : aside.append(c)));
+    if (!phone.matches && current < 0) select(0);
+  };
+  home();
+  phone.addEventListener("change", home);
+
   rows.forEach((row, i) => {
-    row.addEventListener("click", () => select(i));
+    // On a phone, tapping the open entry closes it again.
+    row.addEventListener("click", () => {
+      select(phone.matches && current === i ? -1 : i);
+      // The page below just changed height; keep scroll-linked effects on their marks.
+      if (phone.matches) requestAnimationFrame(() => ScrollTrigger.refresh());
+    });
     // Hover selects only after the pointer rests, so moving across rows on the
     // way to the photo panel does not swap the panel out.
     let rest = 0;
-    row.addEventListener("mouseenter", () => (rest = window.setTimeout(() => select(i), 220)));
+    row.addEventListener("mouseenter", () => {
+      if (!phone.matches) rest = window.setTimeout(() => select(i), 220);
+    });
     row.addEventListener("mouseleave", () => clearTimeout(rest));
-    row.addEventListener("focus", () => select(i));
+    row.addEventListener("focus", () => phone.matches || select(i));
   });
 
   // Today's marker, placed on the same scale as the bars.

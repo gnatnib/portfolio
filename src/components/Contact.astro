@@ -15,12 +15,12 @@ const year = new Date().getFullYear();
       <a href={`mailto:${person.email}`} class="ct-email" data-magnet>
         <span>{person.email.split("@")[0]}</span><span class="muted">@{person.email.split("@")[1]}</span>
       </a>
-      <button type="button" class="ct-copy mono" data-copy={person.email}>
+      <button type="button" class="ct-copy mono" data-copy={person.email} data-magnetic>
         <span data-copy-label>Copy address</span>
       </button>
     </div>
 
-    <dl class="ct-cols">
+    <dl class="ct-cols" data-reveal="stagger">
       <div>
         <dt class="mono muted">Elsewhere</dt>
         <dd>

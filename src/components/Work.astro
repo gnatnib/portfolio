@@ -5,6 +5,16 @@ import { projects } from "../data";
 const featured = projects.filter((p) => p.featured);
 const pad = (n: number) => String(n).padStart(2, "0");
 const hostOf = (url: string) => new URL(url).host.replace(/^www\./, "");
+
+// Buttons each dot scene offers under the stage.
+const actions: Record<string, { act: string; label: string }[]> = {
+  scanmbg: [
+    { act: "scan", label: "Scan tray" },
+    { act: "refill", label: "Refill" },
+  ],
+  rumeet: [{ act: "clear", label: "Clear my bookings" }],
+  "helmet-detection": [{ act: "pause", label: "Pause" }],
+};
 ---
 
 <section id="work" class="sec work" data-tone="dark" data-label="Work" tabindex="-1">
@@ -13,70 +23,90 @@ const hostOf = (url: string) => new URL(url).host.replace(/^www\./, "");
     <h2 class="sec-title" data-reveal="lines">Selected work<sup>({pad(featured.length)})</sup></h2>
   </header>
 
-  <div class="hz" data-hz>
-    <div class="hz-track" data-hz-track>
+  <div class="spx wrap" data-spx>
+    <div class="spx-stage" data-stage>
+      <canvas data-stage-canvas aria-hidden="true"></canvas>
+      <div class="spx-top mono">
+        <span class="num" data-stage-index>01 / {pad(featured.length)}</span>
+        <span data-stage-name>{featured[0]?.title}</span>
+        <span class="spx-ticks">
+          {
+            featured.map((p, i) => (
+              <button type="button" data-stage-tick={i} aria-label={`Show ${p.title}`} aria-current={i === 0 ? "true" : "false"} />
+            ))
+          }
+        </span>
+      </div>
+      <div class="spx-foot">
+        <p class="mono spx-status" data-stage-status aria-live="polite"></p>
+        <div class="spx-acts">
+          {
+            featured.flatMap((p) =>
+              (actions[p.slug] ?? []).map((a) => (
+                <button type="button" class="mono" data-scene={p.slug} data-act={a.act} data-magnetic hidden>
+                  {a.label}
+                </button>
+              )),
+            )
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="spx-chapters">
       {
         featured.map((p, i) => (
-          <article class="pj" aria-labelledby={`pj-${p.slug}`}>
-            <a
-              class="pj-media"
-              href={p.live ?? p.repo}
-              target="_blank"
-              rel="noopener"
-              aria-label={`Open ${p.title}`}
-              data-pj-media
-            >
+          <article class="ch" data-chapter={p.slug} data-title={p.title} aria-labelledby={`pj-${p.slug}`}>
+            <p class="mono muted">
+              <span class="num">{pad(i + 1)}</span> / {p.kind}
+            </p>
+            <h3 id={`pj-${p.slug}`} class="ch-title">
+              {p.title}
+            </h3>
+            <p class="ch-summary">{p.summary}</p>
+            {p.detail && <p class="ch-detail muted">{p.detail}</p>}
+            <dl class="ch-facts">
+              <div>
+                <dt class="mono muted">For</dt>
+                <dd>{p.client}</dd>
+              </div>
+              <div>
+                <dt class="mono muted">Year</dt>
+                <dd class="num">{p.year}</dd>
+              </div>
+              <div>
+                <dt class="mono muted">Stack</dt>
+                <dd>{p.stack.join(", ")}</dd>
+              </div>
+            </dl>
+            <a class="ch-shot" href={p.live ?? p.repo} target="_blank" rel="noopener" aria-label={`Open ${p.title}`} data-reveal="clip">
               <Image
                 src={p.image}
                 alt={`${p.title} screenshot`}
-                widths={[640, 960, 1280, 1600]}
-                sizes="(max-width: 860px) 92vw, 56vw"
-                loading={i === 0 ? "eager" : "lazy"}
-                data-pj-img
+                widths={[480, 720, 960]}
+                sizes="(max-width: 860px) 92vw, 30vw"
+                loading="lazy"
               />
             </a>
-            <div class="pj-meta">
-              <p class="mono muted num">
-                {pad(i + 1)} / {pad(featured.length)}
-              </p>
-              <h3 id={`pj-${p.slug}`} class="pj-title">
-                {p.title}
-              </h3>
-              <p class="pj-summary">{p.summary}</p>
-              <p class="pj-facts mono muted">
-                <span>{p.client}</span>
-                <span class="num">{p.year}</span>
-              </p>
-              <ul class="pj-chips" aria-label="Stack">
-                {p.stack.map((s) => (
-                  <li>{s}</li>
-                ))}
-              </ul>
-              <p class="pj-links">
-                {p.live && (
-                  <a href={p.live} target="_blank" rel="noopener" class="ul ul-on">
-                    {hostOf(p.live)} <span class="arrow">↗</span>
-                  </a>
-                )}
-                {p.repo && (
-                  <a href={p.repo} target="_blank" rel="noopener" class="ul">
-                    Source <span class="arrow">↗</span>
-                  </a>
-                )}
-              </p>
-            </div>
+            <p class="pj-links">
+              {p.live && (
+                <a href={p.live} target="_blank" rel="noopener" class="ul ul-on">
+                  {hostOf(p.live)} <span class="arrow">↗</span>
+                </a>
+              )}
+              {p.repo && (
+                <a href={p.repo} target="_blank" rel="noopener" class="ul">
+                  Source <span class="arrow">↗</span>
+                </a>
+              )}
+            </p>
           </article>
         ))
       }
     </div>
-    <div class="hz-progress wrap mono" aria-hidden="true">
-      <span class="num" data-hz-count>01 / {pad(featured.length)}</span>
-      <span class="hz-bar"><span data-hz-bar></span></span>
-      <span>Scroll</span>
-    </div>
   </div>
 
-  <div class="idx wrap" data-peek-root>
+  <div class="idx wrap" data-peek-root data-reveal="stagger">
     <div class="idx-head">
       <h3 class="idx-title">Index</h3>
       <p class="mono muted">{projects.length} projects, newest first</p>
@@ -135,126 +165,221 @@ const hostOf = (url: string) => new URL(url).host.replace(/^www\./, "");
     padding-bottom: clamp(96px, 12vw, 180px);
   }
 
-  /* Horizontal track. Without JS (or on narrow screens) it is a plain column. */
-  .hz {
+  /* Dot stage on the left stays put while the project chapters scroll past it. */
+  .spx {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
     padding-top: clamp(32px, 4vw, 56px);
   }
-  .hz-track {
-    display: grid;
-    gap: 72px;
-    padding-inline: var(--pad);
-  }
-  .pj {
-    display: grid;
-    gap: 20px;
-  }
-  .pj-media {
-    display: block;
-    aspect-ratio: 16 / 10;
+  .spx-stage {
+    grid-column: 1 / span 7;
+    position: sticky;
+    top: calc(var(--header-h) + 16px);
+    height: calc(100svh - var(--header-h) - 32px);
+    align-self: start;
+    border: 1px solid var(--rule);
+    background: var(--bg);
     overflow: hidden;
-    background: var(--panel);
   }
-  .pj-media img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transform: scale(1.12);
-    transition: filter 0.5s var(--ease);
+  html:not(.js) .spx-stage {
+    display: none;
   }
-  .pj-media:hover img {
-    filter: brightness(1.06);
+  .spx-stage canvas {
+    position: absolute;
+    inset: 48px 12px 76px;
+    width: calc(100% - 24px);
+    height: calc(100% - 124px);
   }
-  .pj-meta {
+  .spx-top {
+    position: absolute;
+    inset: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 16px;
+    height: 48px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .spx-ticks {
+    display: flex;
+    margin-left: auto;
+  }
+  .spx-ticks button {
+    width: 30px;
+    height: 32px;
     display: grid;
-    gap: 12px;
-    align-content: start;
+    place-items: center;
   }
-  .pj-title {
-    font-size: clamp(36px, 4.4vw, 72px);
+  .spx-ticks button::before {
+    content: "";
+    width: 20px;
+    height: 2px;
+    background: var(--rule-strong);
+    transition:
+      background-color 0.3s var(--ease),
+      width 0.3s var(--ease);
+  }
+  .spx-ticks button[aria-current="true"]::before {
+    background: var(--fg);
+    width: 26px;
+  }
+  .spx-foot {
+    position: absolute;
+    inset: auto 0 0;
+    min-height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--rule);
+  }
+  .spx-status {
+    font-size: 12.5px;
+    line-height: 1.45;
+    max-width: 52ch;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .spx-acts {
+    display: flex;
+    gap: 8px;
+    flex: none;
+  }
+  .spx-acts button {
+    min-height: 40px;
+    padding: 0 16px;
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    font-size: 12px;
+    text-transform: uppercase;
+    transition:
+      background-color 0.2s var(--ease),
+      color 0.2s var(--ease);
+  }
+  .spx-acts button:hover {
+    background: var(--fg);
+    color: var(--bg);
+  }
+  .spx-acts button[hidden] {
+    display: none;
+  }
+
+  .spx-chapters {
+    grid-column: 9 / span 4;
+  }
+  .ch {
+    min-height: 92svh;
+    display: grid;
+    align-content: center;
+    gap: 14px;
+    padding-block: 48px;
+  }
+  .ch-title {
+    font-size: clamp(36px, 4vw, 64px);
     line-height: 0.95;
     letter-spacing: -0.04em;
     font-weight: 500;
   }
-  .pj-summary {
+  .ch-summary {
     font-size: 19px;
     line-height: 1.35;
-    max-width: 36ch;
+    max-width: 34ch;
   }
-  .pj-facts {
-    display: flex;
-    gap: 16px;
-    padding-top: 4px;
+  .ch-detail {
+    font-size: 15px;
+    line-height: 1.55;
+    max-width: 46ch;
   }
-  .pj-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
+  .ch-facts {
+    margin-top: 6px;
   }
-  .pj-chips li {
-    font-family: var(--mono);
+  .ch-facts div {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 12px;
+    align-items: baseline;
+    padding-block: 9px;
+    border-top: 1px solid var(--rule);
+    font-size: 14px;
+  }
+  .ch-facts div:last-child {
+    border-bottom: 1px solid var(--rule);
+  }
+  .ch-facts dt {
     font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    padding: 6px 10px;
-    border: 1px solid var(--rule-strong);
-    border-radius: 999px;
+  }
+  .ch-shot {
+    display: block;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--panel);
+    margin-top: 6px;
+  }
+  .ch-shot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s var(--ease);
+  }
+  .ch-shot:hover img {
+    transform: scale(1.04);
   }
   .pj-links {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    padding-top: 6px;
     font-size: 15px;
   }
-  .hz-progress {
-    display: none;
-  }
 
-  @media (min-width: 861px) {
-    html.motion .hz {
-      height: calc(100svh - 0px);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      overflow: hidden;
-      padding-top: var(--header-h);
-    }
-    html.motion .hz-track {
-      display: flex;
-      gap: clamp(48px, 6vw, 120px);
-      width: max-content;
-      padding-right: 20vw;
-    }
-    html.motion .pj {
-      width: clamp(760px, 80vw, 1440px);
-      grid-template-columns: minmax(0, 2.3fr) minmax(0, 1fr);
-      gap: clamp(24px, 2.4vw, 40px);
-      align-items: end;
-    }
-    html.motion .pj-media {
-      max-height: calc(100svh - 220px);
-    }
-    html.motion .hz-progress {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      padding-top: 28px;
-    }
-    .hz-bar {
-      flex: 1;
-      height: 1px;
-      background: var(--rule);
-    }
-    .hz-bar span {
+  /* Phones: the stage pins under the header, chapters scroll beneath it. */
+  @media (max-width: 860px) {
+    .spx {
       display: block;
-      height: 100%;
-      width: 100%;
-      background: var(--fg);
-      transform-origin: 0 50%;
-      transform: scaleX(0);
     }
-    html:not(.motion) .hz-track {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    .spx-stage {
+      top: var(--header-h);
+      height: calc(min(66vw, 34svh) + 136px);
+      z-index: 2;
+      margin-inline: calc(var(--pad) * -1);
+      border-inline: 0;
+      /* When the header slides away, paint the strip it leaves so chapters
+         scrolling under the stage do not peek out above it. */
+      box-shadow: 0 calc(var(--header-h) * -1) 0 var(--bg);
+    }
+    .spx-stage canvas {
+      inset: 44px 8px 92px;
+      width: calc(100% - 16px);
+      height: calc(100% - 136px);
+    }
+    .spx-top {
+      height: 44px;
+    }
+    .spx-foot {
+      min-height: 92px;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+    }
+    .spx-status {
+      font-size: 11px;
+    }
+    .spx-acts button {
+      min-height: 36px;
+      font-size: 11px;
+    }
+    .ch {
+      min-height: 0;
+      padding-block: 40px 56px;
+    }
+    .ch-title {
+      font-size: 40px;
+    }
+    .ch-summary {
+      font-size: 17px;
     }
   }
 
@@ -427,73 +552,62 @@ const hostOf = (url: string) => new URL(url).host.replace(/^www\./, "");
 </style>
 
 <script>
-  import { gsap, ScrollTrigger, reduced } from "../scripts/motion";
+  import { ScrollTrigger, lenis, reduced } from "../scripts/motion";
   import { mountPeek } from "../scripts/peek";
+  import { mountStage, pangan, scanmbg, rumeet, helmet, fallback, type SceneFactory } from "../scripts/specimen";
 
   document.querySelectorAll<HTMLElement>("#work [data-peek-root]").forEach(mountPeek);
 
-  const hz = document.querySelector<HTMLElement>("[data-hz]");
-  if (hz && !reduced) {
-    const track = hz.querySelector<HTMLElement>("[data-hz-track]")!;
-    const bar = hz.querySelector<HTMLElement>("[data-hz-bar]")!;
-    const count = hz.querySelector<HTMLElement>("[data-hz-count]")!;
-    const panels = [...track.querySelectorAll<HTMLElement>(".pj")];
-    const total = String(panels.length).padStart(2, "0");
-
-    const mm = gsap.matchMedia();
-    mm.add("(min-width: 861px)", () => {
-      const distance = () => track.scrollWidth - window.innerWidth;
-      const tween = gsap.to(track, {
-        x: () => -distance(),
-        ease: "none",
-        scrollTrigger: {
-          trigger: hz,
-          start: "top top",
-          end: () => `+=${distance()}`,
-          pin: true,
-          refreshPriority: 1,
-          scrub: 0.8,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            bar.style.transform = `scaleX(${self.progress})`;
-            const i = Math.round(self.progress * (panels.length - 1)) + 1;
-            count.textContent = `${String(i).padStart(2, "0")} / ${total}`;
-          },
-        },
-      });
-
-      // Each screenshot drifts inside its frame against the scroll direction.
-      panels.forEach((panel) => {
-        const img = panel.querySelector("[data-pj-img]");
-        gsap.fromTo(
-          img,
-          { xPercent: 5 },
-          {
-            xPercent: -5,
-            ease: "none",
-            scrollTrigger: {
-              trigger: panel,
-              containerAnimation: tween,
-              start: "left right",
-              end: "right left",
-              scrub: true,
-            },
-          },
-        );
-      });
+  const root = document.querySelector<HTMLElement>("[data-stage]");
+  if (root) {
+    const chapters = [...document.querySelectorAll<HTMLElement>("[data-chapter]")];
+    const known: Record<string, SceneFactory> = {
+      "pangan-id": pangan,
+      scanmbg,
+      rumeet,
+      "helmet-detection": helmet,
+    };
+    const factories: Record<string, SceneFactory> = {};
+    chapters.forEach((ch) => {
+      factories[ch.dataset.chapter!] = known[ch.dataset.chapter!] ?? fallback(ch.dataset.title!);
     });
 
-    mm.add("(max-width: 860px)", () => {
-      panels.forEach((panel) => {
-        const img = panel.querySelector("[data-pj-img]");
-        gsap.fromTo(
-          img,
-          { yPercent: -5 },
-          { yPercent: 5, ease: "none", scrollTrigger: { trigger: panel, start: "top bottom", end: "bottom top", scrub: true } },
-        );
-      });
-    });
+    const stage = mountStage(root, factories, reduced);
+    const index = root.querySelector<HTMLElement>("[data-stage-index]")!;
+    const name = root.querySelector<HTMLElement>("[data-stage-name]")!;
+    const ticks = [...root.querySelectorAll<HTMLButtonElement>("[data-stage-tick]")];
+    const total = String(chapters.length).padStart(2, "0");
 
-    window.addEventListener("load", () => ScrollTrigger.refresh());
+    const activate = (i: number) => {
+      const ch = chapters[i];
+      stage.show(ch.dataset.chapter!);
+      index.textContent = `${String(i + 1).padStart(2, "0")} / ${total}`;
+      name.textContent = ch.dataset.title!;
+      ticks.forEach((t, j) => t.setAttribute("aria-current", String(i === j)));
+    };
+    activate(0);
+
+    // A chapter owns the stage while it crosses the reading line. Enter
+    // callbacks fire for every chapter a fast jump skips, in order, so the
+    // stage ends on the right one.
+    chapters.forEach((ch, i) =>
+      ScrollTrigger.create({
+        trigger: ch,
+        start: "top 60%",
+        end: "bottom 60%",
+        onEnter: () => activate(i),
+        onEnterBack: () => activate(i),
+      }),
+    );
+
+    ticks.forEach((tick, i) =>
+      tick.addEventListener("click", () => {
+        const phone = matchMedia("(max-width: 860px)").matches;
+        const offset = phone ? -root.getBoundingClientRect().bottom + 8 : -innerHeight * 0.2;
+        if (lenis) lenis.scrollTo(chapters[i], { offset, duration: 1.2 });
+        else scrollTo({ top: chapters[i].getBoundingClientRect().top + scrollY + offset });
+        activate(i);
+      }),
+    );
   }
 </script>

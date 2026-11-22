@@ -54,6 +54,8 @@ if (location.hash.length > 1) {
     requestAnimationFrame(() => jumpTo(location.hash.slice(1), false));
   });
 }
+// A hash typed into the address bar lands the same way as a menu click.
+window.addEventListener("hashchange", () => jumpTo(location.hash.slice(1), !reduced));
 
 // The header takes the tone of the section passing underneath it. Only the
 // header recolours; sections paint themselves.
@@ -135,6 +137,60 @@ function reveal() {
       yPercent: speed * 100,
       ease: "none",
       scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true },
+    });
+  });
+
+  // Lists and blocks: direct children rise in one after another. Children that
+  // run their own reveal, or are decorative, are left alone.
+  document.querySelectorAll<HTMLElement>('[data-reveal="stagger"]').forEach((el) => {
+    el.classList.add("is-ready");
+    const items = el.querySelectorAll(':scope > :not([data-reveal]):not([aria-hidden="true"])');
+    gsap.from(items, {
+      y: 28,
+      opacity: 0,
+      duration: 1,
+      ease: "expo.out",
+      stagger: 0.06,
+      clearProps: "transform,opacity",
+      scrollTrigger: { trigger: el, start: "top 85%", once: true },
+    });
+  });
+
+  // Images open from the bottom edge while the picture settles from a slight zoom.
+  document.querySelectorAll<HTMLElement>('[data-reveal="clip"]').forEach((el) => {
+    el.classList.add("is-ready");
+    const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: "top 88%", once: true } });
+    tl.fromTo(el, { clipPath: "inset(100% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.3, ease: "expo.inOut" });
+    const img = el.querySelector("img");
+    if (img) tl.from(img, { scale: 1.25, duration: 1.6, ease: "expo.out", clearProps: "transform" }, 0);
+  });
+
+  // Section titles slide a little against the scroll, so big type never sits
+  // dead still. Wide screens only: on a phone the shift eats the side margin.
+  gsap.matchMedia().add("(min-width: 861px)", () => {
+    document.querySelectorAll<HTMLElement>(".sec-title").forEach((el) => {
+      gsap.fromTo(
+        el,
+        { xPercent: 2 },
+        { xPercent: -2, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true } },
+      );
+    });
+  });
+}
+
+// Pill buttons lean toward the pointer and spring back when it leaves.
+if (!reduced && matchMedia("(hover: hover)").matches) {
+  document.querySelectorAll<HTMLElement>("[data-magnetic]").forEach((el) => {
+    const x = gsap.quickTo(el, "x", { duration: 0.5, ease: "power3.out" });
+    const y = gsap.quickTo(el, "y", { duration: 0.5, ease: "power3.out" });
+    el.addEventListener("pointermove", (e) => {
+      const r = el.getBoundingClientRect();
+      x((e.clientX - r.left - r.width / 2) * 0.3);
+      y((e.clientY - r.top - r.height / 2) * 0.3);
+    });
+    el.addEventListener("pointerleave", () => {
+      x(0);
+      y(0);
     });
   });
 }

@@ -387,35 +387,70 @@ export const certificateGroups = [
   },
 ];
 
-/* `icon` is a simple-icons slug; items without one render as a lettermark
-   (simple-icons has no AWS entry). */
-export const stack = [
-  { name: "TypeScript", icon: "typescript", group: "Web" },
-  { name: "JavaScript", icon: "javascript", group: "Web" },
-  { name: "React", icon: "react", group: "Web" },
-  { name: "Next.js", icon: "nextdotjs", group: "Web" },
-  { name: "Astro", icon: "astro", group: "Web" },
-  { name: "Node.js", icon: "nodedotjs", group: "Web" },
-  { name: "Laravel", icon: "laravel", group: "Web" },
-  { name: "PHP", icon: "php", group: "Web" },
-  { name: "Tailwind CSS", icon: "tailwindcss", group: "Web" },
-  { name: "Python", icon: "python", group: "Data" },
-  { name: "pandas", icon: "pandas", group: "Data" },
-  { name: "NumPy", icon: "numpy", group: "Data" },
-  { name: "PyTorch", icon: "pytorch", group: "Data" },
-  { name: "YOLO", icon: "ultralytics", group: "Data" },
-  { name: "OpenCV", icon: "opencv", group: "Data" },
-  { name: "Streamlit", icon: "streamlit", group: "Data" },
-  { name: "Jupyter", icon: "jupyter", group: "Data" },
-  { name: "Gemini", icon: "googlegemini", group: "Data" },
-  { name: "PostgreSQL", icon: "postgresql", group: "Infra" },
-  { name: "MySQL", icon: "mysql", group: "Infra" },
-  { name: "Supabase", icon: "supabase", group: "Infra" },
-  { name: "Prisma", icon: "prisma", group: "Infra" },
-  { name: "Firebase", icon: "firebase", group: "Infra" },
-  { name: "Docker", icon: "docker", group: "Infra" },
-  { name: "AWS", icon: null, group: "Infra" },
-  { name: "Vercel", icon: "vercel", group: "Infra" },
-  { name: "Git", icon: "git", group: "Infra" },
-  { name: "Linux", icon: "linux", group: "Infra" },
-] as const;
+/* Grouped by what the tool is for. `logo` names a file in src/assets/stack
+   (real brand marks: devicon originals, Gemini from svgl, Ultralytics and Tux
+   from simple-icons). `aka` matches project stack entries that mean or imply
+   this tool, `host` matches where a project is deployed, `also` lists work
+   outside `projects` (LexPalm is the thesis app on Streamlit). */
+export type Tool = { name: string; logo: string; aka?: string[]; host?: string; also?: string[] };
+
+export const stackGroups: { name: string; tools: Tool[] }[] = [
+  {
+    name: "Languages",
+    tools: [
+      { name: "TypeScript", logo: "typescript" },
+      { name: "JavaScript", logo: "javascript" },
+      { name: "Python", logo: "python", also: ["LexPalm"] },
+      { name: "PHP", logo: "php" },
+    ],
+  },
+  {
+    name: "Frontend",
+    tools: [
+      { name: "React", logo: "react", aka: ["Next.js"] },
+      { name: "Next.js", logo: "nextjs" },
+      { name: "Astro", logo: "astro", also: ["This site"] },
+      { name: "Tailwind CSS", logo: "tailwindcss" },
+    ],
+  },
+  {
+    name: "Backend",
+    tools: [
+      { name: "Node.js", logo: "nodejs" },
+      { name: "Laravel", logo: "laravel" },
+      { name: "Prisma", logo: "prisma" },
+    ],
+  },
+  {
+    name: "Data and ML",
+    tools: [
+      { name: "pandas", logo: "pandas" },
+      { name: "NumPy", logo: "numpy" },
+      { name: "PyTorch", logo: "pytorch" },
+      { name: "YOLO", logo: "ultralytics", aka: ["YOLOv11"] },
+      { name: "OpenCV", logo: "opencv" },
+      { name: "Jupyter", logo: "jupyter" },
+      { name: "Streamlit", logo: "streamlit", host: "streamlit.app", also: ["LexPalm"] },
+      { name: "Gemini", logo: "gemini" },
+    ],
+  },
+  {
+    name: "Databases",
+    tools: [
+      { name: "PostgreSQL", logo: "postgresql" },
+      { name: "MySQL", logo: "mysql" },
+      { name: "Supabase", logo: "supabase" },
+      { name: "Firebase", logo: "firebase" },
+    ],
+  },
+  {
+    name: "Cloud and tools",
+    tools: [
+      { name: "Docker", logo: "docker" },
+      { name: "AWS", logo: "amazonwebservices" },
+      { name: "Vercel", logo: "vercel", host: "vercel.app", also: ["This site"] },
+      { name: "Git", logo: "git" },
+      { name: "Linux", logo: "linux" },
+    ],
+  },
+];
