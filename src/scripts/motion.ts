@@ -49,10 +49,17 @@ document.addEventListener("click", (e) => {
 // browser jumps before fonts and pinned sections settle, so redo it after.
 if (location.hash.length > 1) {
   history.scrollRestoration = "manual";
-  window.addEventListener("load", () => {
-    ScrollTrigger.refresh();
-    requestAnimationFrame(() => jumpTo(location.hash.slice(1), false));
-  });
+  // Wait for the fonts too: the reveal triggers are created then, and a refresh
+  // running while they are created leaves ScrollTrigger half initialised.
+  const settle = () =>
+    document.fonts.ready.then(() =>
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+        requestAnimationFrame(() => jumpTo(location.hash.slice(1), false));
+      }),
+    );
+  if (document.readyState === "complete") settle();
+  else window.addEventListener("load", settle, { once: true });
 }
 // A hash typed into the address bar lands the same way as a menu click.
 window.addEventListener("hashchange", () => jumpTo(location.hash.slice(1), !reduced));
@@ -167,15 +174,23 @@ function reveal() {
 
   // Section titles slide a little against the scroll, so big type never sits
   // dead still. Wide screens only: on a phone the shift eats the side margin.
-  gsap.matchMedia().add("(min-width: 861px)", () => {
-    document.querySelectorAll<HTMLElement>(".sec-title").forEach((el) => {
-      gsap.fromTo(
-        el,
-        { xPercent: 2 },
-        { xPercent: -2, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true } },
-      );
-    });
-  });
+  // A plain check rather than gsap.matchMedia: tweens made inside a matchMedia
+  // context during a refresh left ScrollTrigger half initialised on hash loads.
+  // Created two frames later: on hash loads ScrollTrigger's own load refresh can
+  // still be running when the fonts land, and a trigger made inside it breaks.
+  if (matchMedia("(min-width: 861px)").matches) {
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        document.querySelectorAll<HTMLElement>(".sec-title").forEach((el) => {
+          gsap.fromTo(
+            el,
+            { xPercent: 2 },
+            { xPercent: -2, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true } },
+          );
+        });
+      }),
+    );
+  }
 }
 
 // Pill buttons lean toward the pointer and spring back when it leaves.

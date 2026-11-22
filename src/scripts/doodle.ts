@@ -22,7 +22,10 @@ const hash = (n: number) => {
   return s - Math.floor(s);
 };
 
-export function mountDoodle(root: HTMLElement, word: string, reduced: boolean) {
+export function mountDoodle(root: HTMLElement, initial: string, reduced: boolean) {
+  // The footer's typing quest swaps the word (to the score) and dims it while you type.
+  let word = initial;
+  let dim = false;
   const canvas = root.querySelector<HTMLCanvasElement>("[data-doodle-canvas]")!;
   const g = canvas.getContext("2d")!;
   const say = root.querySelector<HTMLElement>("[data-doodle-say]");
@@ -68,7 +71,8 @@ export function mountDoodle(root: HTMLElement, word: string, reduced: boolean) {
     const unit = cellWidth(r.width) * 1.7;
     const wordH = ((pm.actualBoundingBoxAscent + pm.actualBoundingBoxDescent) / pm.width) * r.width * 0.98;
     const want = Math.round(wordH + (CAT_ROWS + 2.5) * unit);
-    if (Math.abs(want - r.height) > 2) {
+    // During the typing quest the canvas is stretched behind the panel by CSS; fill whatever it is.
+    if (!root.classList.contains("is-questing") && Math.abs(want - r.height) > 2) {
       canvas.style.height = `${want}px`;
       return;
     }
@@ -133,7 +137,6 @@ export function mountDoodle(root: HTMLElement, word: string, reduced: boolean) {
     for (let i = Math.max(0, Math.floor(x)); i < Math.min(cols, Math.floor(x) + CAT_W - 1); i++) s = Math.min(s, surface[i]);
     return s - CAT_ROWS;
   };
-  const LINES = ["meow", "mrrp?", "hi :)", "prrr", "feed me", "ok bye"];
   const sprite = (): string[] => {
     const tail = cat.dir > 0 ? "~" : "";
     const tailL = cat.dir < 0 ? "~" : "";
@@ -212,7 +215,8 @@ export function mountDoodle(root: HTMLElement, word: string, reduced: boolean) {
   canvas.addEventListener("click", (e) => {
     const [x, y] = toCell(e);
     if (onCat(x, y)) {
-      talk(LINES[(Math.random() * LINES.length) | 0], 1.6);
+      talk("quest!", 1.2);
+      window.dispatchEvent(new CustomEvent("quest:open"));
     } else {
       ripples.push({ x, y, r: 0, life: 1 });
       if (Math.abs(x - (cat.x + CAT_W / 2)) < 18 && cat.mood !== "talk") {
@@ -332,6 +336,12 @@ export function mountDoodle(root: HTMLElement, word: string, reduced: boolean) {
             g.fillText(RAMP[Math.min(10, i + 1)], cx, cy - wave * ch * 0.45);
             continue;
           }
+          if (dim) {
+            fill(muted);
+            g.globalAlpha = 0.16;
+            g.fillText(RAMP[i], cx, cy);
+            continue;
+          }
           fill(fg);
           g.globalAlpha = 1;
           g.fillText(RAMP[i], cx, cy);
@@ -344,7 +354,8 @@ export function mountDoodle(root: HTMLElement, word: string, reduced: boolean) {
     }
 
     // The cat paints over a cleared patch so letters never show through it.
-    if (intro >= 1 && rows > CAT_ROWS) {
+    // The cat steps aside while the quest is being typed over the wordmark.
+    if (intro >= 1 && rows > CAT_ROWS && !dim) {
       const lines = sprite();
       const ox = Math.round(cat.x);
       const oy = Math.round(cat.y - Math.sin(cat.hop * Math.PI) * 1.6);
@@ -364,6 +375,13 @@ export function mountDoodle(root: HTMLElement, word: string, reduced: boolean) {
         g.textAlign = "left";
         g.fillText(bubble, (ox + CAT_W) * cw, (oy - 0.4) * ch + ch / 2);
         g.textAlign = "center";
+      }
+      if (cat.mood !== "talk") {
+        // Quest marker: the cat has something for you. Bobs over its head like an RPG giver.
+        fill(accent);
+        g.font = `700 ${ch * 1.1}px ${mono}`;
+        g.fillText("!", (ox + 3.5) * cw, (oy - 1.1 - Math.abs(Math.sin(clock * 3)) * 0.5) * ch + ch / 2);
+        g.font = `500 ${ch * 0.78}px ${mono}`;
       }
     }
     g.globalAlpha = 1;
@@ -427,4 +445,19 @@ export function mountDoodle(root: HTMLElement, word: string, reduced: boolean) {
     else sleep();
   }).observe(canvas);
   document.addEventListener("visibilitychange", () => (document.hidden ? sleep() : wake()));
+  window.addEventListener("doodle:word", (e) => {
+    const text = (e as CustomEvent<{ text: string }>).detail.text;
+    if (text === word) return;
+    word = text;
+    // The new word resolves out of noise, like the first scroll-in.
+    intro = reduced ? 1 : 0;
+    layout();
+    draw();
+    wake();
+  });
+  window.addEventListener("doodle:dim", (e) => {
+    dim = (e as CustomEvent<{ on: boolean }>).detail.on;
+    draw();
+    wake();
+  });
 }

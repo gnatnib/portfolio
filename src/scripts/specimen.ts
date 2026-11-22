@@ -520,11 +520,11 @@ export const pangan: SceneFactory = (api) => {
    sweep labels each food group it finds and names the ones that are missing. */
 const TRAY = { x: 70, y: 62, w: 260, h: 176 };
 const COMPARTMENTS = [
-  { name: "sayur", x: 84, y: 78, w: 72, h: 62 },
-  { name: "buah", x: 164, y: 78, w: 72, h: 62 },
-  { name: "lauk nabati", x: 244, y: 78, w: 72, h: 62 },
-  { name: "nasi", x: 84, y: 148, w: 132, h: 76 },
-  { name: "lauk hewani", x: 224, y: 148, w: 92, h: 76 },
+  { name: "vegetables", x: 84, y: 78, w: 72, h: 62 },
+  { name: "fruit", x: 164, y: 78, w: 72, h: 62 },
+  { name: "plant protein", x: 244, y: 78, w: 72, h: 62 },
+  { name: "rice", x: 84, y: 148, w: 132, h: 76 },
+  { name: "animal protein", x: 224, y: 148, w: 92, h: 76 },
 ];
 
 export const scanmbg: SceneFactory = (api) => {

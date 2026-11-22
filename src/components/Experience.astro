@@ -697,7 +697,13 @@ const rows = experience.map((x) => {
   tl.querySelectorAll<HTMLElement>("[data-strip]").forEach((strip) => {
     const track = strip.querySelector<HTMLElement>("[data-strip-track]");
     const count = strip.querySelector<HTMLElement>("[data-strip-count]");
-    if (!track || !count) return;
+    if (!track) return;
+    // A single photo has no strip controls or autoplay, but still opens in the viewer.
+    if (!count) {
+      const shot = track.querySelector<HTMLButtonElement>("[data-zoom]");
+      shot?.addEventListener("click", () => openViewer([shot.querySelector("img")!], 0));
+      return;
+    }
     const n = track.children.length;
     const current = () => Math.round(track.scrollLeft / track.clientWidth);
     const go = (i: number) =>

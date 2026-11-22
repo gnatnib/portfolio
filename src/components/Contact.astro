@@ -1,5 +1,6 @@
 ---
 import { person, socials, resumeUrl, resume } from "../data";
+import TypingQuest from "./TypingQuest.astro";
 const year = new Date().getFullYear();
 ---
 
@@ -56,6 +57,7 @@ const year = new Date().getFullYear();
   <footer class="ft">
     <div class="ft-play" data-doodle>
       <p class="ft-mark" aria-hidden="true">gnatnib</p>
+      <TypingQuest />
       <canvas class="ft-canvas" data-doodle-canvas aria-hidden="true"></canvas>
       <p class="sr-only" aria-live="polite" data-doodle-say></p>
     </div>
@@ -152,6 +154,13 @@ const year = new Date().getFullYear();
     height: clamp(180px, 34vw, 560px);
     touch-action: pan-y;
     cursor: crosshair;
+  }
+  /* While the quest runs, the canvas stretches behind it as a dim backdrop. */
+  html.js .ft-play.is-questing .ft-canvas {
+    position: absolute;
+    inset: 0;
+    height: 100% !important;
+    pointer-events: none;
   }
   .ft-bar {
     display: flex;
