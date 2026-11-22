@@ -472,7 +472,7 @@ export const pangan: SceneFactory = (api) => {
 
   const say = (i: number) => {
     const isle = ISLANDS[i];
-    api.status(`${isle.name}: ${isle.provinces} of 38 provinces. Hover or tap an island.`);
+    api.status(`${isle.name}: ${isle.provinces} of 38 provinces.`);
   };
 
   return {
@@ -856,7 +856,7 @@ export const helmet: SceneFactory = (api) => {
   riders.forEach((r) => (r.wrapped = false));
 
   const say = () =>
-    api.status(`${seen} riders counted, ${flagged} without a helmet. ${paused ? "Paused." : "Tap the frame to pause."}`);
+    api.status(`${seen} riders counted, ${flagged} without a helmet.`);
 
   const toggle = () => {
     paused = !paused;

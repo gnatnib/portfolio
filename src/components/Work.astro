@@ -109,7 +109,7 @@ const actions: Record<string, { act: string; label: string }[]> = {
   <div class="idx wrap" data-peek-root data-reveal="stagger">
     <div class="idx-head">
       <h3 class="idx-title">List of projects</h3>
-      <p class="mono muted">All {projects.length}, newest first. Open a row for details.</p>
+      <p class="mono muted num">{String(projects.length).padStart(2, "0")}</p>
     </div>
     <div class="idx-cols mono muted" aria-hidden="true">
       <span>No.</span><span>Project</span><span>Type</span><span>For</span><span>Stack</span><span>Year</span>
